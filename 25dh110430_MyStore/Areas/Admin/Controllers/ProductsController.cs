@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using _25dh110430_MyStore.Models;
+using _25dh110430_MyStore.Models.ViewModel;
+using PagedList;
+
 
 namespace _25dh110430_MyStore.Areas.Admin.Controllers
 {
@@ -16,11 +19,12 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         private MyStoreEntities db = new MyStoreEntities();
 
         // GET: Admin/Products
-        public async Task<ActionResult> Index()
-        {
-            var products = db.Products.Include(p => p.Category);
-            return View(await products.ToListAsync());
-        }
+
+        //public async Task<ActionResult> Index()
+        //{
+        //    var products = db.Products.Include(p => p.Category);
+        //    return View(await products.ToListAsync());
+        //}
 
         // GET: Admin/Products/Details/5
         public ActionResult Details(int? id)
@@ -130,6 +134,66 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+        public ActionResult Index(string searchTerm, decimal? minPrice, decimal? maxPrice, string sortOrder, int? page)
+        {
+            var model = new ProductSearchVM();
+            var products = db.Products.AsQueryable();
+
+            // Tìm kiếm sản phẩm theo từ khóa
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                model.SearchTerm = searchTerm; // Gán giá trị tìm kiếm vào ViewModel
+                products = products.Where(p => p.ProductName.Contains(searchTerm) ||
+                               p.ProductPrice.ToString().Contains(searchTerm) || 
+                               p.ProductDescription.Contains(searchTerm));
+            }
+
+            // Tìm kiếm sản phẩm dựa trên giá tối thiểu
+            if (minPrice.HasValue)
+            {
+                model.MinPrice = minPrice.Value; // Gán giá trị minPrice vào ViewModel
+                products = products.Where(p => p.ProductPrice >= minPrice.Value);   
+            }
+
+            // Tìm kiếm sản phẩm dựa trên giá tối đa
+            if (maxPrice.HasValue)
+            {
+                model.MaxPrice = maxPrice.Value; // Gán giá trị maxPrice vào ViewModel
+                products = products.Where(p => p.ProductPrice >= minPrice.Value);
+            }
+
+            // Sắp xếp kết quả dựa trên sortOrder
+            switch (sortOrder)
+            {
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName);
+                    break;
+                case "name_desc":
+                    products = products.OrderByDescending(p => p.ProductName);
+                    break;
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice);
+                    break;
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice);
+                    break;
+                default: // Mặc định sắp xếp theo tên
+                    products = products.OrderBy(p => p.ProductName);
+                    break;
+            }
+            model.SortOrder = sortOrder;
+
+            // Xử lý phân trang
+            //lấy trạng hiện tại của trang từ query string, nếu không có thì mặc định là trang 1
+            int pageNumber = page ?? 1; // Trang hiện tại, mặc định là trang 1
+            int pageSize = 2; // Số lượng sản phẩm hiển thị trên 1 trang (có thể đổi thành 5, 10...)
+
+            // Sử dụng ToPagedList để phân trang danh sách sản phẩm
+            //model.Products = products.ToPagedList();
+            model.Products = products.ToPagedList(pageNumber, pageSize);
+
+            return View(model);
         }
     }
 }
