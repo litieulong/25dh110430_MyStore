@@ -1,8 +1,41 @@
-﻿
+﻿@model _25dh110430_MyStore.Models.HomeProductVM
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/Admin_Layout .cshtml";
+    ViewBag.Title = "Customer Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Hoặc layout tương ứng của bạn
 }
 
-<h2>TRANG QUẢN TRỊ  </h2>
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="~/Content/myStyle/CustomerHome.css" />
+}
 
+<!-- PHẦN BANNER -->
+<section class="container-fluid banner">
+    <div class="banner-container">
+        <h2>Chào mừng đến trang web E-commerce</h2>
+        <p>Mua sắm trực tuyến với hàng ngàn sản phẩm đa dạng và chất lượng</p>
+        <a href="#" class="btnBanner">Bắt đầu mua sắm</a>
+    </div>
+</section>
+
+<!-- PHẦN TÌM KIẾM SẢN PHẨM -->
+<section class="container-fluid searchProd">
+    <h2>Tìm kiếm sản phẩm</h2>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+    {
+        <div class="form-group search-container">
+            @Html.TextBoxFor(m => m.SearchTerm, new
+            {
+                @class = "search-input",
+                placeholder = "Nhập tên, mô tả hoặc chủng loại sản phẩm"
+            })
+            <button type="submit" class="search-button">Tìm kiếm</button>
+        </div>
+    }
+</section>
+<hr />
+
+<!-- PHẦN SẢN PHẨM NỔI BẬT -->
+@Html.Partial("_PVFeatureProduct", Model)
+
+<!-- PHẦN SẢN PHẨM MỚI -->
+@Html.Partial("_PVNewProduct", Model)
