@@ -35,5 +35,13 @@ namespace _25dh110430_MyStore.Controllers
             }
             return View(category);
         }
+        [HttpPost]
+        public ActionResult AddToCart(int productId, int quantity = 1)
+        {
+            // lấy sản phẩm
+            // thêm vào Cart
+            // lưu Cart
+            return RedirectToAction("Index", "Cart");
+        }
     }
 }

@@ -33,5 +33,17 @@ namespace _25dh110430_MyStore.Controllers
         {
             return View();
         }
+
+        // GET: Order/OrderSuccess/{id}
+        public ActionResult OrderSuccess(int id)
+        {
+            var order = db.Orders.Include("OrderDetails").SingleOrDefault(o => o.OrderID == id);
+            if (order == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(order);
+        }
     }
 }

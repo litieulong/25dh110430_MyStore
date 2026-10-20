@@ -1,45 +1,149 @@
-﻿<!DOCTYPE html>
+﻿@{
+    // Lấy thông tin giỏ hàng
+    var cart = Session["Cart"] as _25dh110430_MyStore.Models.ViewModel.Cart;
+
+    // Tạo đối tượng ViewBag.pmmodel dạng PersonalMenuVM, và lưu trong ViewBag,
+    // khởi tạo giá trị dựa trên thông tin tài khoản đăng nhập
+    ViewBag.pmmodel = new _25dh110430_MyStore.Models.ViewModel.PersonalMenuVM
+    {
+        IsLoggedIn = User.Identity.IsAuthenticated,
+        Username = User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty
+    };
+
+    // Nếu giỏ hàng không rỗng thì gán số lượng mặt hàng trong giỏ cho CartCount
+    if (cart != null && cart.Items.Any())
+    {
+        ViewBag.pmmodel.CartCount = cart.Items.Count();
+    }
+}
+
+<!DOCTYPE html>
 <html>
 <head>
-    @RenderSection("Styles", required: false)
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - QUẢN TRỊ WEBSITE</title>
+
+    <title>My Store: @ViewBag.Title</title>
+
     @Styles.Render("~/Content/css")
+    @RenderSection("Styles", required: false)
+
     @Scripts.Render("~/bundles/modernizr")
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <style>
+        /* Basic styling for the menu */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        li {
+            margin-right: 20px;
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+                .dropdown-content a:hover {
+                    background-color: #f1f1f1;
+                }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container" style="background-color:lightgreen;">
+            <h4 style="text-align:center; color:green;">Free ship đơn từ 40k, giảm nhiều hơn cùng <span style="font-weight:bolder; font-style:italic;"><span style="color:blue;">FREESHIP</span> XTRA</span></h4>
+        </div>
         <div class="container">
-            @Html.ActionLink("My Store", "Index", "Home", new { area = "Admin" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "Admin" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Danh mục", "Index", "Categories", new { area = "Admin" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Sản phẩm", "Index", "Products", new { area = "Admin" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Khách hàng", "Index", "Customers", null, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Đơn hàng", "Index", "Orders", new { area = "Admin" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Tài khoản", "Index", "Users", null, new { @class = "nav-link" })</li>
-                </ul>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" title="more options">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="@Url.Action("Index", "Home")" class="navbar-brand"><img src="~/Images/logo.PNG" style="max-height:30px;" /></a>
+            </div>
+            <div class="navbar-collapse collapse navbar-nav">
+                <li>
+                    <div style="position:relative;">
+                        <i class="fas fa-home"></i>
+                        @Html.ActionLink("Trang chủ", "Index", "Home")
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <div style="position:relative;">
+                        <i class="fas fa-user"></i>
+                        <a href="javascript:void(0)" id="account-name">
+                            @if (ViewBag.pmmodel.IsLoggedIn)
+                            {
+                                <text>Hello,</text>@ViewBag.pmmodel.Username
+                            }
+                            else
+                            {
+                                <text>Tài khoản</text>
+                            }
+                        </a>
+                    </div>
+                    <div class="dropdown-content">
+                        @if (ViewBag.pmmodel.IsLoggedIn)
+                        {
+                            <a href="@Url.Action("Profile", "Account")">Thông tin tài khoản</a>
+                            <a href="@Url.Action("OrderHistory", "Order")">Lịch sử mua hàng</a>
+                            <a href="@Url.Action("Logout", "Account")">Đăng xuất</a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Register", "Account")">Đăng ký</a>
+                            <a href="@Url.Action("Login", "Account")">Đăng nhập</a>
+                        }
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <a href="@Url.Action("Index2", "Cart")">
+                            <i class="fas fa-shopping-cart"></i>
+                            (<span id="cart-count">@ViewBag.pmmodel.CartCount</span>)
+                        </a>
+                    </div>
+                </li>
             </div>
         </div>
-    </nav>
-    <div class="container body-content">
+    </div>
+
+    <!-- Nội dung của từng View -->
+    <div class="container body-content" style="margin-top: 80px;">
         @RenderBody()
+
         <hr />
+
         <footer>
-            <p>&copy; @DateTime.Now.Year - Tên ứng dụng</p>
-            <h4>Contact</h4>
-            <p>Dương Hoàng Long </p>
+            <p>&copy; @DateTime.Now.Year - My Store</p>
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
 </body>
 </html>
