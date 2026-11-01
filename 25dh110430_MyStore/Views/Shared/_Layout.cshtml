@@ -32,75 +32,267 @@
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
     <style>
-        /* Basic styling for the menu */
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
+        /* CSS tuỳ chỉnh phần Header / Navbar */
+        body {
+            padding-top: 70px;
         }
 
-        li {
-            margin-right: 20px;
+        .navbar-fixed-top {
+            background-color: #111 !important;
+            border-color: #111 !important;
+            min-height: 60px;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            height: 60px;
+        }
+
+        .navbar-brand {
+            color: #fff !important;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 !important;
+        }
+
+        .navbar-nav-custom {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 20px;
+        }
+
+        .navbar-nav-custom > li {
             position: relative;
         }
 
-        .dropdown-content {
-            display: none;
+        .navbar-nav-custom > li > a,
+        .navbar-nav-custom > li > div > a,
+        .navbar-nav-custom > li > div {
+            color: #fff !important;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 0;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+        }
+
+        .navbar-nav-custom > li > a:hover,
+        .navbar-nav-custom > li > div > a:hover {
+            color: #ff4d4d !important;
+        }
+
+        /*  Dropdown menu ẩn mặc định và hiển thị dạng cột khi hover */
+        .navbar-nav-custom .dropdown-content {
+            display: none !important;
             position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1000;
+            list-style: none;
+            padding: 8px 0;
+            border-radius: 4px;
         }
 
-            .dropdown-content a {
-                color: black;
-                padding: 12px 16px;
-                text-decoration: none;
-                display: block;
-            }
+        .navbar-nav-custom .dropdown-content a {
+            color: #333 !important;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block !important;
+            font-size: 13px;
+            white-space: nowrap;
+            background: none !important;
+        }
 
-                .dropdown-content a:hover {
-                    background-color: #f1f1f1;
-                }
+        .navbar-nav-custom .dropdown-content a:hover {
+            background-color: #f1f1f1 !important;
+            color: #d0021b !important;
+        }
 
-        .dropdown:hover .dropdown-content {
+        .navbar-nav-custom .dropdown:hover .dropdown-content {
+            display: block !important;
+        }
+
+       /* CSS tuỳ chỉnh Footer mới giống hình mẫu */
+        .bsg-footer {
+            background-color: #000;
+            color: #fff;
+            padding-top: 50px;
+            font-size: 14px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px 40px 15px;
+        }
+
+        .footer-col h4 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .footer-col p,
+        .footer-col a {
+            color: #ccc;
+            text-decoration: none;
+            margin-bottom: 10px;
             display: block;
+            font-size: 13px;
+            line-height: 1.6;
         }
+
+        .footer-col a:hover {
+            color: #ff4d4d;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: #222;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 14px;
+        }
+
+        .social-icons a:hover {
+            background: #ff4d4d;
+        }
+
+        .footer-map {
+            width: 100%;
+            max-width: 260px;
+            height: 140px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .bsg-copyright {
+            background-color: #000;
+            border-top: 1px solid #222;
+            padding: 20px 15px;
+            text-align: center;
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        .navbar-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+    }
     </style>
 </head>
 <body>
+
+    <!-- NAVBAR / HEADER -->
     <div class="navbar navbar-default navbar-fixed-top">
-        <div class="container" style="background-color:lightgreen;">
-            <h4 style="text-align:center; color:green;">Free ship đơn từ 40k, giảm nhiều hơn cùng <span style="font-weight:bolder; font-style:italic;"><span style="color:blue;">FREESHIP</span> XTRA</span></h4>
-        </div>
-        <div class="container">
+        <div class="navbar-container">
+            <!-- Logo Thương hiệu -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" title="more options">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a href="@Url.Action("Index", "Home")" class="navbar-brand"><img src="~/Images/logo.PNG" style="max-height:30px;" /></a>
+                <a href="@Url.Action("Index", "Home")" class="navbar-brand">
+                    <i class="fas fa-mountain"></i> balosaigon<span style="color: #ff4d4d;">.com</span>
+                </a>
             </div>
-            <div class="navbar-collapse collapse navbar-nav">
+
+            <!-- Các Menu Links chính -->
+            <ul class="navbar-nav-custom">
                 <li>
-                    <div style="position:relative;">
-                        <i class="fas fa-home"></i>
-                        @Html.ActionLink("Trang chủ", "Index", "Home")
+                    <a href="@Url.Action("Index", "Home")">Trang Chủ</a>
+                </li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Balo <i class="fas fa-angle-down" style="font-size: 11px;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="@Url.Action("LapTop", "Products")">
+                            Balo Laptop
+                        </a>
+                        <a href="@Url.Action("Travel", "Products")">
+                            Balo Du Lịch
+                        </a>
+                        <a href="@Url.Action("Camera", "Products")">
+                            Balo Máy Ảnh
+                        </a>
+                        <a href="@Url.Action("Soldier", "Products")">
+                            Balo Quân Đội
+                        </a>
                     </div>
                 </li>
                 <li class="dropdown">
-                    <div style="position:relative;">
-                        <i class="fas fa-user"></i>
-                        <a href="javascript:void(0)" id="account-name">
+                    <a href="javascript:void(0)">Túi Xách <i class="fas fa-angle-down" style="font-size: 11px;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="@Url.Action("LapTopBag", "Products")">
+                            Túi Đựng Laptop
+                        </a>
+                        <a href="@Url.Action("TravelBag", "Products")">
+                            Túi Du Lịch
+                        </a>
+                        <a href="@Url.Action("CameraBag", "Products")">
+                            Túi Máy Ảnh
+                        </a>
+                        <a href="@Url.Action("CrossBodyBag", "Products")">
+                            Túi Đeo Chéo
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <a href="#">Phụ Kiện</a>
+                </li>
+                <li>
+                    <a href="#">May Theo Yêu Cầu</a>
+                </li>
+               
+
+
+
+                <!-- Tài khoản -->
+                <li class="dropdown">
+                    <div style="position:relative; display: flex; align-items: center; gap: 5px;">
+                        <a href="javascript:void(0)" id="account-name" style="color: #fff;">
+                            <i class="fas fa-user"></i>
                             @if (ViewBag.pmmodel.IsLoggedIn)
                             {
-                                <text>Hello,</text>@ViewBag.pmmodel.Username
+                                <text>Hello, </text>@ViewBag.pmmodel.Username
                             }
                             else
                             {
@@ -108,7 +300,7 @@
                             }
                         </a>
                     </div>
-                    <div class="dropdown-content">
+                    <div class="dropdown-content" style="right: 0; left: auto;">
                         @if (ViewBag.pmmodel.IsLoggedIn)
                         {
                             <a href="@Url.Action("Profile", "Account")">Thông tin tài khoản</a>
@@ -122,28 +314,76 @@
                         }
                     </div>
                 </li>
+
+                <!-- Giỏ hàng -->
                 <li>
                     <div>
-                        <a href="@Url.Action("Index2", "Cart")">
-                            <i class="fas fa-shopping-cart"></i>
-                            (<span id="cart-count">@ViewBag.pmmodel.CartCount</span>)
+                        <a href="@Url.Action("Index", "Cart")"
+                           @*title="Giỏ hàng"*@
+                           style="display: flex; align-items: center; gap: 4px;">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>(<span id="cart-count">@ViewBag.pmmodel.CartCount</span>)</span>
                         </a>
                     </div>
                 </li>
-            </div>
+            </ul>
         </div>
     </div>
 
-    <!-- Nội dung của từng View -->
-    <div class="container body-content" style="margin-top: 80px;">
-        @RenderBody()
+    <!-- 4. BODY CONTAINER -->
+    <main class="bsg-main-wrapper">
+        <div class="bsg-container">
+            <div class="bsg-card-container">
+                @RenderBody()
+            </div>
+        </div>
+    </main>
 
-        <hr />
+    <!-- 5. FOOTER -->
+    <footer class="bsg-footer">
+        <div class="bsg-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>VỀ BALOSAIGON</h4>
+                    <p>BaloSaigon.com chuyên phân phối các loại Balo laptop, Balo du lịch, Vali, Túi xách chính hãng từ các thương hiệu hàng đầu thế giới.</p>
+                    <p><strong>Địa chỉ:</strong> Cống Quỳnh, P. Nguyễn Cư Trinh, Quận 1, TP.HCM</p>
+                </div>
 
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My Store</p>
-        </footer>
-    </div>
+                <div class="footer-col">
+                    <h4>DANH MỤC SẢN PHẨM</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Balo Laptop Chống Nước</a></li>
+                        <li><a href="#">Balo Du Lịch / Phượt</a></li>
+                        <li><a href="#">Túi Bao Tử / Crossbody</a></li>
+                        <li><a href="#">Vali Kéo Du Lịch</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>CHÍNH SÁCH</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Chính sách bảo hành trọn đời</a></li>
+                        <li><a href="#">Chính sách đổi trả trong 7 ngày</a></li>
+                        <li><a href="#">Phương thức thanh toán</a></li>
+                        <li><a href="#">Chính sách vận chuyển</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>TỔNG ĐÀI HỖ TRỢ</h4>
+                    <p>Mua hàng online: <strong>0834.273.273</strong></p>
+                    <p>Góp ý, khiếu nại: <strong>0902.920.670</strong></p>
+                    <p>Email: info@balosaigon.com</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bsg-copyright">
+            <div class="bsg-container">
+                <p>&copy; @DateTime.Now.Year BaloSaigon.com. Dự án bài tập luận ASP.NET MVC.</p>
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>

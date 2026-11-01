@@ -1,48 +1,351 @@
 ﻿@model _25dh110430_MyStore.Models.Product
-<head>
-    <style>
-        img{
-            height: 250px;
-            max-width: 250px;
+
+<style>
+    .product-detail {
+        display: flex;
+        gap: 40px;
+        padding: 25px;
+        background-color: white;
+    }
+
+    /* ==================== */
+    /* KHU VỰC HÌNH ẢNH */
+    /* ==================== */
+
+    .product-gallery {
+        width: 55%;
+    }
+
+    .main-image {
+        width: 100%;
+        height: 450px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #eee;
+        margin-bottom: 15px;
+        background-color: white;
+    }
+
+        .main-image img {
+            max-width: 100%;
+            max-height: 430px;
+            object-fit: contain;
         }
-    </style>
-</head>
-<div class="container-fluid">
-    <dl class="dl-horizontal">
-        <img src="@Html.DisplayFor(model => model.ProductImage)" />
-        <dt>
-            Tên sản phẩm
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ProductName)
-        </dd>
 
-        <dt>
-            Mô tả
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ProductDescription)
-        </dd>
+    .thumbnail-list {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
 
-        <dt>
-            Đơn giá
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ProductPrice)
-        </dd>
+    .thumbnail {
+        width: 85px;
+        height: 85px;
+        border: 1px solid #ddd;
+        padding: 4px;
+        cursor: pointer;
+        background-color: white;
+    }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .thumbnail:hover {
+            border: 2px solid #007bff;
+        }
+
+    /* ==================== */
+    /* THÔNG TIN SẢN PHẨM */
+    /* ==================== */
+
+    .product-info {
+        width: 45%;
+    }
+
+    .product-name {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .product-price {
+        font-size: 24px;
+        font-weight: bold;
+        color: #e53935;
+        margin-bottom: 25px;
+    }
+
+    /* ==================== */
+    /* MÀU SẮC */
+    /* ==================== */
+
+    .color-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .color-item {
+        display: inline-block;
+        padding: 8px 15px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        cursor: pointer;
+    }
+
+        .color-item:hover {
+            border-color: #007bff;
+        }
+
+        .color-item.active {
+            border: 2px solid #007bff;
+            background-color: #eef6ff;
+        }
+
+    .product-description {
+        margin-top: 25px;
+        line-height: 1.6;
+    }
+</style>
 
 
-        <dt>
-            Danh mục
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Category.CategoryName)
-        </dd>
+<div class="product-detail">
 
-        <dt style="padding:10px"></dt>
-        <dd style="padding:10px"></dd>
+    <!-- ======================== -->
+    <!-- BÊN TRÁI - HÌNH ẢNH -->
+    <!-- ======================== -->
+
+    <div class="product-gallery">
+
+        <div class="main-image">
+            <img id="mainProductImage" src="" />
+        </div>
+
+        <div id="thumbnailList" class="thumbnail-list">
+        </div>
+
+    </div>
 
 
+    <!-- ======================== -->
+    <!-- BÊN PHẢI - THÔNG TIN -->
+    <!-- ======================== -->
 
-    </dl>
+    <div class="product-info">
+
+        <div class="product-name">
+            @Model.ProductName
+        </div>
+
+        <div class="product-price">
+            @String.Format("{0:N0}", Model.ProductPrice) VNĐ
+        </div>
+
+
+        <!-- MÀU SẮC -->
+
+        <div>
+            <div class="color-title">
+                Màu sắc
+            </div>
+
+            @if (Model.ProductColors != null && Model.ProductColors.Any())
+            {
+                foreach (var color in Model.ProductColors)
+                {
+                    <button type="button"
+                            class="color-item"
+                            onclick="selectColor(this)"
+                            data-color="@color.ColorName">
+                        @color.ColorName
+                        @*@if (color.ProductImages != null)
+                        {
+                            <span>
+                                - Có @color.ProductImages.Count() ảnh
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                - Không có ảnh
+                            </span>
+                        }*@
+                    </button>
+                }
+            }
+            else
+            {
+                <span>Chưa có màu</span>
+            }
+        </div>
+
+
+        <div class="product-description">
+
+            <strong>Mô tả sản phẩm</strong>
+
+            <p>
+                @Model.ProductDescription
+            </p>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+<script>
+
+    /*
+        Lưu hình ảnh theo từng màu
+    */
+
+
+   var colorImages = {};
+
+@if (Model.ProductColors != null)
+{
+    foreach (var color in Model.ProductColors)
+    {
+        var images = color.ProductImages
+            .Select(x => x.ImagePath)
+            .ToList();
+
+        <text>
+            colorImages[@Html.Raw(Json.Encode(color.ColorName))] =
+                @Html.Raw(Json.Encode(images));
+        </text>
+    }
+}
+
+
+    /*
+        Khi chọn màu
+    */
+
+    function selectColor(element) {
+
+        var colorName = element.getAttribute("data-color");
+
+        var images = colorImages[colorName];
+
+        console.log("Màu đang chọn:", colorName);
+        console.log("Ảnh của màu:", images);
+
+        /*
+            Bỏ active của màu cũ
+        */
+
+        document.querySelectorAll(".color-item")
+            .forEach(function (item) {
+
+                item.classList.remove("active");
+
+            });
+
+
+        /*
+            Active màu đang chọn
+        */
+
+        element.classList.add("active");
+
+
+        /*
+            Xóa thumbnail cũ
+        */
+
+        var thumbnailList =
+            document.getElementById("thumbnailList");
+
+        thumbnailList.innerHTML = "";
+
+
+        /*
+            Nếu màu không có ảnh
+        */
+
+        if (!images || images.length === 0) {
+
+            document.getElementById("mainProductImage").src = "";
+
+            return;
+        }
+
+
+        /*
+            Hiện ảnh đầu tiên
+        */
+
+        document.getElementById("mainProductImage").src =
+            images[0];
+
+
+        /*
+            Tạo thumbnail
+        */
+
+        images.forEach(function (imageUrl) {
+
+            var thumbnail =
+                document.createElement("div");
+
+            thumbnail.className = "thumbnail";
+
+
+            var img =
+                document.createElement("img");
+
+            img.src = imageUrl;
+
+
+            thumbnail.appendChild(img);
+
+
+            /*
+                Bấm thumbnail
+                -> đổi ảnh lớn
+            */
+
+            thumbnail.onclick = function () {
+
+                document.getElementById(
+                    "mainProductImage"
+                ).src = imageUrl;
+
+            };
+
+
+            thumbnailList.appendChild(thumbnail);
+
+        });
+
+    }
+
+
+    /*
+        Tự động chọn màu đầu tiên
+        khi mở trang
+    */
+
+    window.onload = function () {
+
+        var firstColor =
+            document.querySelector(".color-item");
+
+        if (firstColor) {
+
+            selectColor(firstColor);
+
+        }
+
+    };
+
+</script>

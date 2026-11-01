@@ -80,9 +80,12 @@ namespace _25dh110430_MyStore.Controllers
             // Đoạn code liên quan tới phân trang
             // Lấy số trang hiện tại (mặc định là trang 1 nếu không có giá trị)
             int pageNumber = page ?? 1;
-            int pageSize = cart.PageSize; // Số sản phẩm mỗi trang
+            int pageSize = cart.PageSize;
 
-            cart.SimilarProducts = similarProducts.OrderBy(p => p.ProductID).ToPagedList(pageNumber, pageSize);
+            cart.SimilarProducts = similarProducts
+                .OrderBy(p => p.ProductID)
+                .ToPagedList(pageNumber, pageSize);
+
             return View(cart);
         }
     }

@@ -13,7 +13,7 @@ namespace _25dh110430_MyStore.Models.ViewModel
         public Product product { get; set; }
         public int quantity { get; set; } = 1;
         // Tính giá trị tạm thời
-        public decimal estimatedValue => quantity * product.ProductPrice;
+        public decimal estimatedValue { get; set; }
 
         // Các thuộc tính hỗ trợ phân trang
         public int PageNumber { get; set; } // Trang hiện tại
@@ -24,5 +24,7 @@ namespace _25dh110430_MyStore.Models.ViewModel
 
         // danh sách 8 sản phẩm bán chạy nhất cùng danh mục
         public PagedList.IPagedList<Product> TopProducts { get; set; }
+
+        public List<Product> FeaturedProducts { get; set; }
     }
 }

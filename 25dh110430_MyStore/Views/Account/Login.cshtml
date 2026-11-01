@@ -6,12 +6,93 @@
 }
 
 <style>
-    .accountbtn {
-        width: 275px;
+    /* Căn giữa khung form ra giữa màn hình, nhưng chữ bên trong canh trái */
+    div > form, .form-horizontal {
+        max-width: 450px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        text-align: left; /* Canh lề trái cho toàn bộ khung form */
+    }
+
+        /* Đưa các hàng (form-group) về dạng khối dọc và canh trái */
+        .form-horizontal .form-group {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Canh trái các phần tử con theo chiều ngang */
+            margin-bottom: 15px;
+        }
+
+        /* Tiêu đề Đăng nhập canh trái */
+        .form-horizontal h2, .form-group h2 {
+            width: 100%;
+            text-align: left;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        /* Canh nhãn (label) chữ nằm phía trên ô input và canh trái */
+        .form-horizontal .control-label {
+            text-align: left !important;
+            width: 100%;
+            padding-top: 0;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        /* Chỉnh kích thước các cột chứa input và nút bấm full khung */
+        .form-horizontal .col-md-4,
+        .form-horizontal .col-md-6,
+        .form-horizontal .col-md-offset-2 {
+            width: 100% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+        }
+
+    /* Định dạng ô nhập liệu (input) đều đặn, đẹp mắt */
+    .form-control {
+        width: 100% !important;
         height: 40px;
-        border: 1px solid #808080;
-        margin: 5px;
-        align-items: center;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+
+    /* Định dạng nút Đăng ký / Đăng nhập thành màu xanh ngọc chuẩn */
+    .accountbtn {
+        width: 100% !important;
+        max-width: 180px !important; /* Đặt chiều rộng nút vừa phải giống mẫu */
+        height: 42px !important;
+        background-color: #00839b !important; /* Màu xanh ngọc chuẩn */
+        border-color: #00839b !important;
+        color: white !important;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-radius: 4px;
+        margin: 10px 0 10px 0;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .accountbtn:hover {
+            background-color: #006b7d !important;
+            border-color: #006b7d !important;
+        }
+
+    /* Đoạn văn bản điều hướng bên dưới canh trái */
+    .form-horizontal p, .form-horizontal div > a {
+        text-align: left;
+        width: 100%;
+        margin-top: 5px;
+        color: #00839b;
+        text-decoration: none;
     }
 </style>
 

@@ -53,7 +53,23 @@
           <Property Name="ProductName" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ProductDescription" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="ProductImage" Type="nvarchar(max)" />
+          <Property Name="ProductImage" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductColor">
+          <Key>
+            <PropertyRef Name="ProductColorID" />
+          </Key>
+          <Property Name="ProductColorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="ColorName" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductImage">
+          <Key>
+            <PropertyRef Name="ProductImageID" />
+          </Key>
+          <Property Name="ProductImageID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductColorID" Type="int" Nullable="false" />
+          <Property Name="ImagePath" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -121,6 +137,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductColor_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="ProductColor" Type="Self.ProductColor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="ProductColor">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductImage_ProductColor">
+          <End Role="ProductColor" Type="Self.ProductColor" Multiplicity="1" />
+          <End Role="ProductImage" Type="Self.ProductImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductColor">
+              <PropertyRef Name="ProductColorID" />
+            </Principal>
+            <Dependent Role="ProductImage">
+              <PropertyRef Name="ProductColorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Customer">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
@@ -139,6 +179,8 @@
           <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderDetail" EntityType="Self.OrderDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductColor" EntityType="Self.ProductColor" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductImage" EntityType="Self.ProductImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Order__CustomerI__5441852A" Association="Self.FK__Order__CustomerI__5441852A">
@@ -156,6 +198,14 @@
           <AssociationSet Name="FK_Pro_Category" Association="Self.FK_Pro_Category">
             <End Role="Category" EntitySet="Category" />
             <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductColor_Product" Association="Self.FK_ProductColor_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="ProductColor" EntitySet="ProductColor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductImage_ProductColor" Association="Self.FK_ProductImage_ProductColor">
+            <End Role="ProductColor" EntitySet="ProductColor" />
+            <End Role="ProductImage" EntitySet="ProductImage" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Customer" Association="Self.FK_User_Customer">
             <End Role="User" EntitySet="User" />
@@ -220,10 +270,11 @@
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
           <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="ProductImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Category" Relationship="Self.FK_Pro_Category" FromRole="Product" ToRole="Category" />
           <NavigationProperty Name="OrderDetails" Relationship="Self.FK__OrderDeta__Produ__571DF1D5" FromRole="Product" ToRole="OrderDetail" />
           <Property Name="ProductDescription" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ProductColors" Relationship="MyStoreModel.FK_ProductColor_Product" FromRole="Product" ToRole="ProductColor" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -332,7 +383,60 @@
             <End Role="Product" EntitySet="Products" />
             <End Role="OrderDetail" EntitySet="OrderDetails" />
           </AssociationSet>
+          <EntitySet Name="ProductColors" EntityType="MyStoreModel.ProductColor" />
+          <EntitySet Name="ProductImages" EntityType="MyStoreModel.ProductImage" />
+          <AssociationSet Name="FK_ProductColor_Product" Association="MyStoreModel.FK_ProductColor_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ProductColor" EntitySet="ProductColors" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductImage_ProductColor" Association="MyStoreModel.FK_ProductImage_ProductColor">
+            <End Role="ProductColor" EntitySet="ProductColors" />
+            <End Role="ProductImage" EntitySet="ProductImages" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="ProductColor">
+          <Key>
+            <PropertyRef Name="ProductColorID" />
+          </Key>
+          <Property Name="ProductColorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="ColorName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Product" Relationship="MyStoreModel.FK_ProductColor_Product" FromRole="ProductColor" ToRole="Product" />
+          <NavigationProperty Name="ProductImages" Relationship="MyStoreModel.FK_ProductImage_ProductColor" FromRole="ProductColor" ToRole="ProductImage" />
+        </EntityType>
+        <EntityType Name="ProductImage">
+          <Key>
+            <PropertyRef Name="ProductImageID" />
+          </Key>
+          <Property Name="ProductImageID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductColorID" Type="Int32" Nullable="false" />
+          <Property Name="ImagePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ProductColor" Relationship="MyStoreModel.FK_ProductImage_ProductColor" FromRole="ProductImage" ToRole="ProductColor" />
+        </EntityType>
+        <Association Name="FK_ProductColor_Product">
+          <End Type="MyStoreModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="MyStoreModel.ProductColor" Role="ProductColor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="ProductColor">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductImage_ProductColor">
+          <End Type="MyStoreModel.ProductColor" Role="ProductColor" Multiplicity="1" />
+          <End Type="MyStoreModel.ProductImage" Role="ProductImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductColor">
+              <PropertyRef Name="ProductColorID" />
+            </Principal>
+            <Dependent Role="ProductImage">
+              <PropertyRef Name="ProductColorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -411,6 +515,24 @@
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="UserRole" ColumnName="UserRole" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductColors">
+            <EntityTypeMapping TypeName="MyStoreModel.ProductColor">
+              <MappingFragment StoreEntitySet="ProductColor">
+                <ScalarProperty Name="ColorName" ColumnName="ColorName" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ProductColorID" ColumnName="ProductColorID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductImages">
+            <EntityTypeMapping TypeName="MyStoreModel.ProductImage">
+              <MappingFragment StoreEntitySet="ProductImage">
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="ProductColorID" ColumnName="ProductColorID" />
+                <ScalarProperty Name="ProductImageID" ColumnName="ProductImageID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -172,10 +172,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MyStoreModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Order.cs" />
-    <Compile Include="Models\OrderDetail.cs" />
+    <Compile Include="Models\Order.cs">
+      <DependentUpon>MyStoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OrderDetail.cs">
+      <DependentUpon>MyStoreModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PersonalMenuVM.cs" />
     <Compile Include="Models\Product.cs">
+      <DependentUpon>MyStoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductColor.cs">
+      <DependentUpon>MyStoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductImage.cs">
       <DependentUpon>MyStoreModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RegisterVM.cs" />
@@ -191,6 +201,7 @@
     <Compile Include="Models\ViewModel\CheckoutVM.cs" />
     <Compile Include="Models\ViewModel\HomeProductVM.cs" />
     <Compile Include="Models\ViewModel\LoginVM.cs" />
+    <Compile Include="Models\ViewModel\ProductCreateVM.cs" />
     <Compile Include="Models\ViewModel\ProductDetailsVM.cs" />
     <Compile Include="Models\ViewModel\ProductSearchVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -294,14 +305,21 @@
     <Content Include="Views\Shared\_PVSimilarProduct.cshtml" />
     <Content Include="Views\Order\Checkout.cshtml" />
     <Content Include="Views\Order\OrderSuccess.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Products\Travel.cshtml" />
+    <Content Include="Views\Products\LapTop.cshtml" />
+    <Content Include="Views\Products\Camera.cshtml" />
+    <Content Include="Views\Products\Soldier.cshtml" />
+    <Content Include="Views\Products\TravelBag.cshtml" />
+    <Content Include="Views\Products\CrossBodyBag.cshtml" />
+    <Content Include="Views\Products\LaptopBag.cshtml" />
+    <Content Include="Views\Products\CameraBag.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Views\Cart\" />
     <Folder Include="Views\Categories\" />
     <Folder Include="Views\Paypal\" />
-    <Folder Include="Views\Products\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

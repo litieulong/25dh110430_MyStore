@@ -13,9 +13,9 @@
             {
                 <li class="product-item">
                     <div>
-                        <a href="@Url.Action("ProductDetail", "Home", new { id = product.ProductID })">
-                            <img src="@Html.DisplayFor(modelItem => product.ProductImage)" />
-                        </a>
+                       <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductID })">
+                           <img src="@product.ProductImage" />
+                       </a>
                         <p class="prodPrice">@Html.DisplayFor(modelItem => product.ProductPrice)</p>
                         <p class="prodName">@Html.DisplayFor(modelItem => product.ProductName)</p>
                         <p class="prodSale">

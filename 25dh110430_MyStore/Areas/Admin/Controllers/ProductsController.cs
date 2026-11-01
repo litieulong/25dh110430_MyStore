@@ -31,23 +31,55 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                // Dòng này chính là nguyên nhân gây ra trang báo lỗi HTTP 400
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Product product = db.Products.Find(id);
+            Product product = db.Products
+                .Include("ProductColors.ProductImages")
+                .FirstOrDefault(p => p.ProductID == id);
+
             if (product == null)
             {
                 return HttpNotFound();
             }
+
+            foreach (var color in product.ProductColors)
+            {
+                var images = db.ProductImages
+                    .Where(x => x.ProductColorID == color.ProductColorID)
+                    .ToList();
+
+                System.Diagnostics.Debug.WriteLine(
+                    "MÀU: " + color.ColorName +
+                    " - SỐ ẢNH: " + images.Count
+                );
+
+                foreach (var image in images)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "    IMAGE: " + image.ImagePath
+                    );
+                }
+            }
+
             return View(product);
         }
-
         // GET: Admin/Products/Create
         public ActionResult Create()
         {
-            ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName");
-            return View();
+            ViewBag.CategoryID =
+                new SelectList(
+                    db.Categories,
+                    "CategoryID",
+                    "CategoryName"
+                );
+
+            var model = new ProductCreateVM();
+
+            // Tạo sẵn 1 màu
+            model.Colors.Add(new ProductColorVM());
+
+            return View(model);
         }
 
         // POST: Admin/Products/Create
@@ -55,17 +87,152 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ProductID,CategoryID,ProductName,ProductPrice,ProductImage,ProductDescription")] Product product)
+
+        //public async Task<ActionResult> Create([Bind(Include = "ProductID,CategoryID,ProductName,ProductPrice,ProductImage,ProductDescription")] Product product)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Products.Add(product);
+        //        await db.SaveChangesAsync();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName", product.CategoryID);
+        //    return View(product);
+        //}
+
+        public async Task<ActionResult> Create(ProductCreateVM model)
         {
-            if (ModelState.IsValid)
+           
+            if (!ModelState.IsValid)
             {
-                db.Products.Add(product);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                ViewBag.CategoryID = new SelectList(
+                    db.Categories,
+                    "CategoryID",
+                    "CategoryName",
+                    model.CategoryID
+                );
+
+                return View(model);
             }
 
-            ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName", product.CategoryID);
-            return View(product);
+            // 1. LẤY LINK ẢNH ĐẦU TIÊN
+            string firstImageUrl = null;
+
+            if (model.Colors != null)
+            {
+                foreach (var color in model.Colors)
+                {
+                    if (color.Images != null)
+                    {
+                        foreach (var imageUrl in color.Images)
+                        {
+                            if (!string.IsNullOrWhiteSpace(imageUrl))
+                            {
+                                firstImageUrl = imageUrl;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(firstImageUrl))
+                        break;
+                }
+            }
+
+            // 2. LƯU SẢN PHẨM
+            Product product = new Product();
+
+            product.CategoryID = model.CategoryID;
+            product.ProductName = model.ProductName;
+            product.ProductPrice = model.ProductPrice;
+            product.ProductDescription = model.ProductDescription;
+
+            // ProductImage là trường bắt buộc
+            // Nếu có link ảnh thì lấy link ảnh đầu tiên
+            // Nếu chưa nhập ảnh thì dùng ảnh mặc định
+            product.ProductImage = firstImageUrl ?? "default.jpg";
+
+            db.Products.Add(product);
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                string error = "";
+
+                foreach (var entityErrors in ex.EntityValidationErrors)
+                {
+                    error += "Entity: "
+                           + entityErrors.Entry.Entity.GetType().Name
+                           + "<br/>";
+
+                    foreach (var validationError in entityErrors.ValidationErrors)
+                    {
+                        error += "Property: "
+                               + validationError.PropertyName
+                               + " - Error: "
+                               + validationError.ErrorMessage
+                               + "<br/>";
+                    }
+                }
+
+                return Content(error);
+            }
+
+            // 3. LƯU MÀU SẮC VÀ LINK HÌNH ẢNH
+            if (model.Colors != null)
+            {
+                foreach (var color in model.Colors)
+                {
+                    if (string.IsNullOrWhiteSpace(color.ColorName))
+                        continue;
+
+                    ProductColor productColor = new ProductColor();
+
+                    productColor.ProductID = product.ProductID;
+                    productColor.ColorName = color.ColorName;
+
+                    db.ProductColors.Add(productColor);
+
+                    await db.SaveChangesAsync();
+
+                    // 4. LƯU CÁC LINK HÌNH ẢNH
+                    if (color.Images != null)
+                    {
+                        foreach (var imageUrl in color.Images)
+                        {
+                            if (string.IsNullOrWhiteSpace(imageUrl))
+                                continue;
+
+                            ProductImage productImage = new ProductImage();
+
+                            productImage.ProductColorID =
+                                productColor.ProductColorID;
+
+                            productImage.ImagePath = imageUrl;
+
+                            db.ProductImages.Add(productImage);
+                        }
+
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+
+            var savedColors = db.ProductColors
+    .Where(x => x.ProductID == product.ProductID)
+    .ToList();
+
+            return Content(
+                "Số màu đã lưu: " + savedColors.Count +
+                "<br/>" +
+                string.Join("<br/>", savedColors.Select(x => x.ColorName))
+            );
+
+            return RedirectToAction("Index");
         }
 
         // GET: Admin/Products/Edit/5
@@ -75,13 +242,32 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Product product = await db.Products.FindAsync(id);
+
             if (product == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName", product.CategoryID);
-            return View(product);
+
+            ViewBag.CategoryID = new SelectList(
+                db.Categories,
+                "CategoryID",
+                "CategoryName",
+                product.CategoryID
+            );
+
+            var model = new ProductCreateVM();
+
+            model.ProductID = product.ProductID;
+            model.CategoryID = product.CategoryID;
+            model.ProductName = product.ProductName;
+            model.ProductPrice = product.ProductPrice;
+            model.ProductDescription = product.ProductDescription;
+
+            return View(model);
+
+           
         }
 
         // POST: Admin/Products/Edit/5
@@ -89,16 +275,37 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ProductID,CategoryID,ProductName,ProductPrice,ProductImage,ProductDescription")] Product product)
+        public async Task<ActionResult> Edit(ProductCreateVM model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                db.Entry(product).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                ViewBag.CategoryID = new SelectList(
+                    db.Categories,
+                    "CategoryID",
+                    "CategoryName",
+                    model.CategoryID
+                );
+
+                return View(model);
             }
-            ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName", product.CategoryID);
-            return View(product);
+
+            // Tìm sản phẩm thật trong database
+            Product product = await db.Products.FindAsync(model.ProductID);
+
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Cập nhật thông tin sản phẩm
+            product.CategoryID = model.CategoryID;
+            product.ProductName = model.ProductName;
+            product.ProductPrice = model.ProductPrice;
+            product.ProductDescription = model.ProductDescription;
+
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
 
         // GET: Admin/Products/Delete/5
@@ -122,8 +329,31 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             Product product = await db.Products.FindAsync(id);
+
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+
+            var productColors = db.ProductColors
+                .Where(x => x.ProductID == id)
+                .ToList();
+
+            foreach (var color in productColors)
+            {
+                var productImages = db.ProductImages
+                    .Where(x => x.ProductColorID == color.ProductColorID)
+                    .ToList();
+
+                db.ProductImages.RemoveRange(productImages);
+            }
+
+            db.ProductColors.RemoveRange(productColors);
+
             db.Products.Remove(product);
+
             await db.SaveChangesAsync();
+
             return RedirectToAction("Index");
         }
 

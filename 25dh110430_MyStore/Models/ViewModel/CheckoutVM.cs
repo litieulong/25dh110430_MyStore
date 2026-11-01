@@ -33,5 +33,7 @@ namespace _25dh110430_MyStore.Models.ViewModel
 
         // Các thuộc tính khác của đơn hàng
         public List<OrderDetail> OrderDetails { get; set; }
+
+        
     }
 }

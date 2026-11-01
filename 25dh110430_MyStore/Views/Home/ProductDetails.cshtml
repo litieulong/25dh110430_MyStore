@@ -1,4 +1,5 @@
 ﻿@model _25dh110430_MyStore.Models.ViewModel.ProductDetailsVM
+
 @{
     ViewBag.Title = "ProductDetails";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,86 +7,528 @@
 
 <head>
     <style>
-        .pro {
-            padding: 50px 10px 50px 10px;
-            background-color: ghostwhite;
-        }
-
-        .pro-section {
-            background-color: white;
-            border: 1px groove #ffffff;
-            border-radius: 10px;
-            padding: 5px;
-            margin: 10px;
-        }
-
-            .pro-section img {
-                max-height: 250px;
-                max-width: 200px;
-                padding: 5px;
+            
+            <style >
+            /* =========================
+           TOÀN BỘ TRANG
+           ========================= */
+            .pro {
+                padding: 40px 30px 50px 30px;
+                background-color: ghostwhite;
             }
 
-        .pro-price {
-            font-weight: bolder;
-            font-size: larger;
-            color: red;
+
+            /* =========================
+           KHUNG CHÍNH SẢN PHẨM
+           ========================= */
+
+            .product-detail {
+                display: flex;
+                gap: 40px;
+                padding: 30px;
+                background-color: white;
+                border-radius: 10px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+
+            /* =========================
+           KHU VỰC HÌNH ẢNH
+           ========================= */
+
+            .product-gallery {
+                width: 55%;
+                box-sizing: border-box;
+            }
+
+
+            /* Ảnh lớn */
+
+            .main-image {
+                width: 100%;
+                height: 550px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid #eee;
+                border-radius: 8px;
+                background-color: white;
+                margin-bottom: 15px;
+                overflow: hidden;
+            }
+
+
+                .main-image img {
+                    max-width: 100%;
+                    max-height: 530px;
+                    object-fit: contain;
+                }
+
+
+            /* =========================
+           DANH SÁCH ẢNH NHỎ
+           ========================= */
+
+            .thumbnail-list {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+
+
+            .thumbnail {
+                width: 85px;
+                height: 85px;
+                border: 1px solid #ddd;
+                padding: 4px;
+                cursor: pointer;
+                background-color: white;
+                border-radius: 5px;
+                box-sizing: border-box;
+            }
+
+
+                .thumbnail img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
+
+
+                .thumbnail:hover {
+                    border: 2px solid #007bff;
+                }
+
+
+            /* =========================
+           THÔNG TIN SẢN PHẨM
+           ========================= */
+
+            .product-info {
+                width: 45%;
+                box-sizing: border-box;
+                padding: 10px;
+            }
+
+
+            /* Tên sản phẩm */
+
+            .product-name {
+                font-size: 28px;
+                font-weight: bold;
+                margin-top: 0;
+                margin-bottom: 15px;
+                line-height: 1.3;
+            }
+
+
+            /* Số lượng đã bán */
+
+            .pro-sale {
+                font-size: 14px;
+                color: #777;
+                margin-bottom: 10px;
+            }
+
+
+            /* Giá sản phẩm */
+
+            .product-price {
+                font-size: 26px;
+                font-weight: bold;
+                color: #e53935;
+                margin: 15px 0;
+            }
+
+
+            /* =========================
+           PHÂN LOẠI MÀU
+           ========================= */
+
+            .color-section {
+                margin-top: 20px;
+            }
+
+
+            .color-title {
+                font-weight: bold;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+
+            .color-item {
+                display: inline-block;
+                padding: 8px 18px;
+                margin-right: 8px;
+                margin-bottom: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: white;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+
+                .color-item:hover {
+                    border-color: #007bff;
+                }
+
+
+                /* Màu đang được chọn */
+
+                .color-item.active {
+                    border: 2px solid #007bff;
+                    background-color: #eef6ff;
+                    color: #007bff;
+                    font-weight: bold;
+                }
+
+
+            /* =========================
+           MÔ TẢ SẢN PHẨM
+           ========================= */
+
+            .product-description {
+                line-height: 1.6;
+                margin-top: 15px;
+            }
+
+
+                .product-description h4 {
+                    margin-bottom: 10px;
+                }
+
+
+                .product-description p {
+                    margin-bottom: 0;
+                    line-height: 1.7;
+                }
+
+
+            /* =========================
+           GIỎ HÀNG
+           ========================= */
+
+            .cart-box {
+                margin-top: 20px;
+            }
+
+
+            /* Ô nhập số lượng */
+
+            .quantity-input {
+                width: 120px;
+                height: 38px;
+            }
+
+
+            /* Tiêu đề tạm tính */
+
+            .subtotal-title {
+                margin-top: 20px;
+            }
+
+
+            /* Nút thêm vào giỏ */
+
+            .btn-cart {
+                margin-top: 10px;
+                width: 200px;
+                padding: 10px;
+                font-size: 15px;
+            }
+
+
+        /* =========================
+   SẢN PHẨM NỔI BẬT
+   ========================= */
+
+        .featured-section {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: white;
+            border-radius: 10px;
         }
 
-        .pro-sale {
-            font-weight: lighter;
+        .featured-title {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
         }
+
+            .featured-title h3 {
+                margin: 0;
+                font-size: 22px;
     </style>
 </head>
 
 <div class="container-fluid pro">
-    <div class="div-horizontal">
-        <!-- Khối bên trái -->
-        <div class="col-md-3 pro-section">
-            @* Ảnh sản phẩm *@
-            <img src="@Model.product.ProductImage" />
+
+    <!-- ================= SẢN PHẨM ================= -->
+
+    <div class="product-detail">
+
+        <!-- ================= HÌNH ẢNH ================= -->
+
+        <div class="product-gallery">
+
+            <div class="main-image">
+
+                <img id="mainProductImage"
+                     src="@Model.product.ProductImage"
+                     alt="@Model.product.ProductName" />
+
+            </div>
+
+            <!-- Các ảnh nhỏ -->
+
+            <div id="thumbnailList" class="thumbnail-list">
+            </div>
+
         </div>
 
-        <!-- Khối ở giữa -->
-        <div class="col-md-5 pro-section">
-            @* Phần thông tin sản phẩm *@
-            <div>
-                <h4><strong>@Html.DisplayFor(model => model.product.ProductName)</strong></h4>
-                <p class="pro-sale">Đã bán: &nbsp;@Model.product.OrderDetails.Count</p>
-                <p class="pro-price">@Model.product.ProductPrice.ToString("C")</p>
-                <p>Tủ sách:&nbsp;@Model.product.Category.CategoryName</p>
-                <hr />
-                <h5><strong>Mô tả</strong></h5>
-                <p>@Model.product.ProductDescription</p>
+
+        <!-- ================= THÔNG TIN SẢN PHẨM ================= -->
+
+        <div class="product-info">
+
+            <!-- Tên sản phẩm -->
+
+            <h2 class="product-name">
+
+                @Model.product.ProductName
+
+            </h2>
+
+
+            <!-- Đã bán -->
+
+            <p class="pro-sale">
+
+                Đã bán:
+                @Model.product.OrderDetails.Count
+
+            </p>
+
+
+            <!-- Giá -->
+
+            <div class="product-price">
+
+                @Model.product.ProductPrice.ToString("N0") đ
+
             </div>
+
+
             <hr />
 
-            @* khối Related Product *@
-            <div>@Html.Partial("_PVRelatedProduct", Model)</div>
-        </div>
 
-        <!-- Khối bên phải -->
-        <div class="col-md-3 pro-section">
-            <div class="form-group">
-                @* Phần tạm tính *@
-                @using (Html.BeginForm("ProductDetails", "Home", FormMethod.Get))
+            <!-- Danh mục -->
+
+            <p>
+
+                <strong>Tủ sách:</strong>
+
+                @Model.product.Category.CategoryName
+
+            </p>
+
+
+            <!-- ================= CHỌN MÀU ================= -->
+
+            <div class="color-section">
+
+                <div class="color-title">
+
+                    Màu sắc
+
+                </div>
+
+
+                @if (Model.product.ProductColors != null
+                    && Model.product.ProductColors.Any())
                 {
-                    <h4><strong>Số lượng</strong></h4>
-                    <p>
-                        @Html.TextBoxFor(model => model.quantity, new { @class = "form-control", @type = "number", @min = 1 })
-                    </p>
+                    foreach (var color in Model.product.ProductColors)
+                    {
+                        <button type="button"
+                                class="color-item"
+                                data-color-id="@color.ProductColorID"
+                                onclick="selectColor(this)">
 
-                    <h4><strong>Tạm tính</strong></h4>
-                    <p>@Model.estimatedValue.ToString("N0")</p>
+                            @color.ColorName
 
-                    <p>
-                        @Html.ActionLink("Thêm vào giỏ hàng", "AddToCart", "Cart", new { id = Model.product.ProductID, quantity = Model.quantity }, new { @class = "btn btn-info" })
-                    </p>
+                        </button>
+                    }
                 }
+                else
+                {
+                    <span>
+
+                        Chưa có màu
+
+                    </span>
+                }
+
             </div>
+
+
             <hr />
+
+
+            <!-- ================= MÔ TẢ ================= -->
+
+            <div class="product-description">
+
+                <h4>
+
+                    <strong>
+                        Mô tả sản phẩm
+                    </strong>
+
+                </h4>
+
+                <p>
+
+                    @Model.product.ProductDescription
+
+                </p>
+
+            </div>
+
+
+            <hr />
+
+
+            <!-- ================= GIỎ HÀNG ================= -->
+
+            <div class="cart-box">
+
+               
+
+                    @Html.ActionLink(
+                        "Thêm vào giỏ hàng",
+                        "AddToCart",
+                        "Cart",
+                        new
+                        {
+                            id = Model.product.ProductID,
+                            quantity = Model.quantity
+                        },
+                        new
+                        {
+                            @class = "btn btn-info btn-cart"
+                        }
+                    )
+
+            </div>
+
         </div>
 
-        @* Khối TopProduct *@
-        <div>@Html.Partial("_PVTopProduct", Model)</div>
     </div>
-</div>
+
+    <!-- Sản phẩm tương tự -->
+    <div class="related-section">
+        <div class="featured-title">
+            <h3>
+                <strong>Sản phẩm tương tự</strong>
+            </h3>
+        </div>
+        @Html.Partial("_PVRelatedProduct", Model)
+    </div>
+
+    <script>
+    // Lưu hình ảnh theo từng màu
+    var colorImages = {};
+
+    @if (Model.product.ProductColors != null)
+    {
+        foreach (var color in Model.product.ProductColors)
+        {
+            var images = new List<string>();
+
+            if (color.ProductImages != null)
+            {
+                images = color.ProductImages
+                    .Select(x => x.ImagePath)
+                    .Where(x => !String.IsNullOrEmpty(x))
+                    .ToList();
+            }
+
+            <text>
+                colorImages["@color.ProductColorID"] =
+                    @Html.Raw(Json.Encode(images));
+            </text>
+        }
+    }
+
+    // Khi bấm vào màu
+    function selectColor(element) {
+
+        var colorId = element.getAttribute("data-color-id");
+
+        var images = colorImages[colorId];
+
+        // Bỏ active của tất cả màu
+        document.querySelectorAll(".color-item")
+            .forEach(function (item) {
+                item.classList.remove("active");
+            });
+
+        // Active màu đang chọn
+        element.classList.add("active");
+
+        var thumbnailList =
+            document.getElementById("thumbnailList");
+
+        thumbnailList.innerHTML = "";
+
+        // Nếu màu không có hình
+        if (!images || images.length === 0) {
+            return;
+        }
+
+        // Hình lớn
+        document.getElementById("mainProductImage").src =
+            images[0];
+
+        // Tạo thumbnail
+        images.forEach(function (imageUrl) {
+
+            var thumbnail =
+                document.createElement("div");
+
+            thumbnail.className = "thumbnail";
+
+            var img =
+                document.createElement("img");
+
+            img.src = imageUrl;
+
+            thumbnail.appendChild(img);
+
+            thumbnail.onclick = function () {
+
+                document.getElementById(
+                    "mainProductImage"
+                ).src = imageUrl;
+
+            };
+
+            thumbnailList.appendChild(thumbnail);
+        });
+    }
+
+    // Khi mở trang, tự chọn màu đầu tiên
+    window.onload = function () {
+
+        var firstColor =
+            document.querySelector(".color-item");
+
+        if (firstColor) {
+            selectColor(firstColor);
+        }
+    };
+    </script>
