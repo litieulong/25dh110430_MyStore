@@ -27,6 +27,7 @@ namespace _25dh110430_MyStore.Models
         public decimal ProductPrice { get; set; }
         public string ProductImage { get; set; }
         public string ProductDescription { get; set; }
+        public int StockQuantity { get; set; }
     
         public virtual Category Category { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

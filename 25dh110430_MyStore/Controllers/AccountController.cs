@@ -19,6 +19,27 @@ namespace _25dh110430_MyStore.Controllers
             return View(db.Categories.ToList());
         }
 
+
+        public ActionResult Profile()
+        {
+            var username = User.Identity.Name;
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var customer = db.Customers
+                .FirstOrDefault(c => c.Username == username);
+
+            if (customer == null)
+            {
+                return Content("Không tìm thấy thông tin khách hàng.");
+            }
+
+            return View(customer);
+        }
+
         // GET: Account/Register
         public ActionResult Register()
         {
@@ -45,7 +66,7 @@ namespace _25dh110430_MyStore.Controllers
                 {
                     Username = model.Username,
                     Password = model.Password, // Lưu ý: Nên mã hóa mật khẩu trước khi lưu
-                    UserRole = "Customer"
+                    UserRole = "C"
                 };
                 db.Users.Add(user);
 
@@ -61,7 +82,28 @@ namespace _25dh110430_MyStore.Controllers
                 db.Customers.Add(customer);
 
                 // lưu thông tin tài khoản và thông tin khách hàng vào CSDL
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+                {
+                    string errorMessage = "";
+
+                    foreach (var entityValidationErrors in ex.EntityValidationErrors)
+                    {
+                        foreach (var validationError in entityValidationErrors.ValidationErrors)
+                        {
+                            errorMessage +=
+                                "Trường: " + validationError.PropertyName +
+                                " - Lỗi: " + validationError.ErrorMessage +
+                                "<br/>";
+                        }
+                    }
+
+                    return Content(errorMessage);
+                }
+
                 return RedirectToAction("Index", "Home");
             }
 
@@ -81,9 +123,11 @@ namespace _25dh110430_MyStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = db.Users.SingleOrDefault(u => u.Username == model.Username
-                                                      && u.Password == model.Password
-                                                      && u.UserRole == "Customer");
+                var user = db.Users.SingleOrDefault(u =>
+                    u.Username == model.Username &&
+                    u.Password == model.Password
+                );
+
                 if (user != null)
                 {
                     // Lưu trạng thái đăng nhập vào session
@@ -100,7 +144,17 @@ namespace _25dh110430_MyStore.Controllers
                     ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
                 }
             }
+
             return View(model);
+        }
+
+        // GET: Account/Logout (Đăng xuất)
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            Session.Clear();
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

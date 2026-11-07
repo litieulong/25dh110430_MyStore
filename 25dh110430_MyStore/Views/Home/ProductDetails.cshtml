@@ -7,7 +7,7 @@
 
 <head>
     <style>
-            
+
             <style >
             /* =========================
            TOÀN BỘ TRANG
@@ -262,6 +262,131 @@
             .featured-title h3 {
                 margin: 0;
                 font-size: 22px;
+            }
+
+        /* =========================
+   SẢN PHẨM TƯƠNG TỰ
+   ========================= */
+
+        .related-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+        }
+
+        .related-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .related-subtitle {
+            font-size: 12px;
+            color: #999;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .related-header h3 {
+            font-size: 25px;
+            font-weight: 700;
+            color: #222;
+            margin: 5px 0 0;
+        }
+
+        .related-line {
+            flex: 1;
+            height: 1px;
+            background: #e8e8e8;
+        }
+
+        .related-content {
+            width: 100%;
+        }
+
+            /* Danh sách sản phẩm */
+
+            .related-content .featureProd {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                background: transparent;
+            }
+
+                .related-content .featureProd > h4 {
+                    display: none;
+                }
+
+            .related-content .list-container {
+                display: grid !important;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 20px;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+            }
+
+            /* Thẻ sản phẩm */
+
+            .related-content .fproduct-item {
+                display: flex;
+                flex-direction: column;
+                padding: 12px;
+                background: #fff;
+                border: 1px solid #eee;
+                border-radius: 10px;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                min-width: 0;
+            }
+
+                .related-content .fproduct-item:hover {
+                    transform: translateY(-6px);
+                    box-shadow: 0 8px 22px rgba(0,0,0,0.10);
+                    border-color: #ddd;
+                }
+
+                /* Hình ảnh */
+
+                .related-content .fproduct-item > div:first-child {
+                    width: 100%;
+                    height: 210px;
+                    overflow: hidden;
+                    background: #f8f8f8;
+                    border-radius: 8px;
+                }
+
+                .related-content .fproduct-item img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    transition: transform 0.3s ease;
+                }
+
+                .related-content .fproduct-item:hover img {
+                    transform: scale(1.06);
+                }
+
+                /* Thông tin sản phẩm */
+
+                .related-content .fproduct-item h5 {
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: #333;
+                    line-height: 1.5;
+                    margin: 14px 0 8px;
+                    min-height: 45px;
+                }
+
+                .related-content .fproduct-item .prodSale {
+                    color: #e53935;
+                    font-size: 18px;
+                    font-weight: 700;
+                    margin: 0;
+                }
     </style>
 </head>
 
@@ -406,22 +531,22 @@
 
             <div class="cart-box">
 
-               
 
-                    @Html.ActionLink(
-                        "Thêm vào giỏ hàng",
-                        "AddToCart",
-                        "Cart",
-                        new
-                        {
-                            id = Model.product.ProductID,
-                            quantity = Model.quantity
-                        },
-                        new
-                        {
-                            @class = "btn btn-info btn-cart"
-                        }
-                    )
+
+                @Html.ActionLink(
+                    "Thêm vào giỏ hàng",
+                    "AddToCart",
+                    "Cart",
+                    new
+                    {
+                        id = Model.product.ProductID,
+                        quantity = Model.quantity
+                    },
+                    new
+                    {
+                        @class = "btn btn-info btn-cart"
+                    }
+                )
 
             </div>
 
@@ -429,14 +554,22 @@
 
     </div>
 
-    <!-- Sản phẩm tương tự -->
+    <!-- SẢN PHẨM TƯƠNG TỰ -->
     <div class="related-section">
-        <div class="featured-title">
-            <h3>
-                <strong>Sản phẩm tương tự</strong>
-            </h3>
+
+        <div class="related-header">
+            <div>
+                <span class="related-subtitle">CÓ THỂ BẠN SẼ THÍCH</span>
+                <h3>Sản phẩm tương tự</h3>
+            </div>
+
+            <div class="related-line"></div>
         </div>
-        @Html.Partial("_PVRelatedProduct", Model)
+
+        <div class="related-content">
+            @Html.Partial("_PVRelatedProduct", Model)
+        </div>
+
     </div>
 
     <script>

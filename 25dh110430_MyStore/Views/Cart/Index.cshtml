@@ -1,59 +1,301 @@
 ﻿@model _25dh110430_MyStore.Models.ViewModel.Cart
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Giỏ hàng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
-    .shoppingcart {
-        background-color: ghostwhite;
-        text-align: center;
-        padding: 40px 20px;
+    .cart-page {
+        background: #fff;
+        padding: 35px 0 60px;
+        color: #222;
     }
 
-    .cart-section {
-        background-color: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 10px;
-        padding: 30px 20px;
-        margin: 20px auto;
-        max-width: 600px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    /* Kiểu cho nút "QUAY TRỞ LẠI CỬA HÀNG" */
-    .cart-button, .empty-cart-btn {
-        display: inline-block;
-        background-color: #00839b; /* Màu xanh ngọc giống trong hình */
-        color: white;
-        font-weight: bold;
-        text-transform: uppercase;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 4px;
-        text-decoration: none;
-        cursor: pointer;
-        width: auto; /* Để co giãn theo chữ hoặc giữ width cố định nếu bạn muốn */
-        min-width: 250px;
-        margin: 15px 5px;
-        transition: background-color 0.2s;
-    }
-
-        .cart-button:hover {
-            background-color: #006b7d;
+        .cart-page h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 30px;
         }
 
-    .shoppingcart p, .cart-section p {
+    /* Chia hai cột */
+    .cart-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -15px;
+    }
+
+    .cart-left {
+        width: 58.3333%;
+        padding: 0 30px 0 15px;
+    }
+
+    .cart-right {
+        width: 41.6667%;
+        padding: 0 15px 0 35px;
+        border-left: 1px solid #e5e5e5;
+    }
+
+    /* Bảng sản phẩm */
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .cart-table th {
+            font-size: 17px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 0 10px 12px;
+            border-bottom: 3px solid #e9e9e9;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+            .cart-table th:first-child {
+                text-align: left;
+            }
+
+        .cart-table td {
+            padding: 18px 10px;
+            border-bottom: 1px solid #e5e5e5;
+            vertical-align: middle;
+            text-align: center;
+            font-size: 15px;
+        }
+
+    .cart-product {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-align: left;
+        min-width: 220px;
+    }
+
+        .cart-product img {
+            width: 95px;
+            height: 95px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .cart-product a {
+            color: #009bb5;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+            .cart-product a:hover {
+                color: #006f82;
+            }
+
+    .cart-price {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* Nút tăng giảm số lượng */
+    .quantity-control {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #ddd;
+        height: 45px;
+    }
+
+        .quantity-control button {
+            width: 30px;
+            height: 43px;
+            border: none;
+            background: #f8f8f8;
+            color: #555;
+            cursor: pointer;
+        }
+
+            .quantity-control button:hover {
+                background: #e9e9e9;
+            }
+
+        .quantity-control input {
+            width: 42px;
+            height: 43px;
+            border: none;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            text-align: center;
+            background: white;
+        }
+
+    /* Nút xóa sản phẩm */
+    .remove-product {
+        color: #aaa;
+        font-size: 23px;
+        text-decoration: none;
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .remove-product:hover {
+            color: #d43f3a;
+            border-color: #d43f3a;
+            text-decoration: none;
+        }
+
+    /* Nút tiếp tục mua hàng */
+    .cart-actions {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .continue-button,
+    .update-button {
+        display: inline-block;
+        padding: 12px 22px;
+        font-weight: 700;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: 2px solid #00a0bb;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .continue-button {
+        color: #009bb5;
+        background: white;
+    }
+
+        .continue-button:hover {
+            background: #009bb5;
+            color: white;
+            text-decoration: none;
+        }
+
+    .update-button {
+        color: white;
+        background: #66b8c6;
+        border-color: #66b8c6;
+    }
+
+        .update-button:hover {
+            background: #399aaa;
+        }
+
+    /* Cột tổng giỏ hàng */
+    .cart-summary h3 {
+        font-size: 19px;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #e9e9e9;
+        margin-top: 0;
+    }
+
+    .summary-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #e5e5e5;
         font-size: 16px;
-        color: #333;
-        margin-bottom: 20px;
+    }
+
+        .summary-line strong {
+            font-weight: 700;
+        }
+
+    .summary-total {
+        border-bottom: 3px solid #e9e9e9;
+    }
+
+    .shipping-info {
+        padding: 15px 0;
+        border-bottom: 1px solid #e5e5e5;
+        color: #666;
+        font-size: 15px;
+        text-align: right;
+    }
+
+        .shipping-info p {
+            margin-bottom: 8px;
+        }
+
+    /* Nút thanh toán */
+    .checkout-button {
+        display: block;
+        width: 100%;
+        padding: 13px 10px;
+        margin-top: 30px;
+        background: #c83d1c;
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        border: none;
+    }
+
+        .checkout-button:hover {
+            background: #a92f14;
+            color: white;
+            text-decoration: none;
+        }
+
+    /* Giỏ hàng trống */
+    .empty-cart {
+        text-align: center;
+        padding: 50px 15px;
+        font-size: 18px;
+    }
+
+        .empty-cart .continue-button {
+            margin-top: 15px;
+        }
+
+    /* Responsive điện thoại */
+    @@media (max-width: 768px) {
+        .cart-left,
+        .cart-right {
+            width: 100%;
+            padding: 15px;
+        }
+
+        .cart-right {
+            border-left: none;
+            border-top: 1px solid #ddd;
+            margin-top: 30px;
+            padding-top: 25px;
+        }
+
+        .cart-left {
+            overflow-x: auto;
+        }
+
+        .cart-table {
+            min-width: 650px;
+        }
+
+        .cart-actions {
+            flex-direction: column;
+        }
+
+        .continue-button,
+        .update-button {
+            width: 100%;
+        }
     }
 </style>
 
-<script language="JavaScript">
+<script>
     function cartUpdateQuantity(id, newQuantity) {
         if (newQuantity < 1) return;
+
         const form = document.createElement('form');
         form.method = 'post';
         form.action = '@Url.Action("UpdateQuantity", "Cart")';
@@ -75,70 +317,164 @@
     }
 </script>
 
-<div>
-    <h2>GIỎ HÀNG</h2>
-    <div class="shoppingcart">
+<div class="cart-page">
+    <div class="container">
+
+        <h2>GIỎ HÀNG</h2>
+
         @if (Model == null || !Model.Items.Any())
         {
-            <p>Bạn chưa có sản phẩm nào trong giỏ.</p>
+            <div class="empty-cart">
+                <p>Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
+
+                @Html.ActionLink(
+                    "TIẾP TỤC MUA HÀNG",
+                    "Index",
+                    "Home",
+                    null,
+                    new { @class = "continue-button" })
+            </div>
         }
         else
         {
-            <div class="col-md-8">
-                @foreach (var categoryGroup in Model.GroupedItems)
-                {
-                    <div class="cart-section">
-                        <h3>@categoryGroup.Key</h3>
-                        <table class="table cart-section">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Sản phẩm</th>
-                                    <th>Số lượng</th>
-                                    <th>Đơn giá</th>
-                                    <th>Thành tiền</th>
-                                    <th title="Xóa tất cả mặt hàng trong giỏ">
-                                        <a href="@Url.Action("ClearCart", "Cart", null)">
-                                            <img src="~/Images/remove.png" style="max-height:20px;" />
-                                        </a>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in categoryGroup)
+            <div class="cart-row">
+
+                <!-- CỘT TRÁI: DANH SÁCH SẢN PHẨM -->
+                <div class="cart-left">
+
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Tạm tính</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var categoryGroup in Model.GroupedItems)
+                            {
+                                foreach (var item in categoryGroup)
                                 {
                                     <tr>
-                                        <td><img src="@item.ProductImage" alt="@item.ProductName" style="max-height:80px;" /></td>
-                                        <td class="col-md-3">@item.ProductName</td>
                                         <td>
-                                            @using (Html.BeginForm("UpdateQuantity", "Cart", FormMethod.Post))
-                                            {
-                                                <input type="hidden" name="id" value="@item.ProductID" />
-                                                <button type="button" style="width: 20px;" onclick="cartUpdateQuantity(@item.ProductID, @item.Quantity - 1)">-</button>
-                                                <input type="number" name="quantity" value="@item.Quantity" min="1" max="100" style="width: 40px; text-align:right;" readonly />
-                                                <button type="button" style="width: 20px;" onclick="cartUpdateQuantity(@item.ProductID, @item.Quantity + 1)">+</button>
-                                            }
+                                            <div class="cart-product">
+
+                                                <a href="@Url.Action(
+                                                    "RemoveFromCart",
+                                                    "Cart",
+                                                    new { id = item.ProductID })"
+                                                   class="remove-product"
+                                                   title="Xóa sản phẩm">×</a>
+
+                                                <img src="@item.ProductImage"
+                                                     alt="@item.ProductName" />
+
+                                                <a href="#">
+                                                    @item.ProductName
+                                                </a>
+                                            </div>
                                         </td>
-                                        <td>@item.UnitPrice.ToString("N0")</td>
-                                        <td>@item.TotalPrice.ToString("N0")</td>
+
+                                        <td class="cart-price">
+                                            @item.UnitPrice.ToString("N0") VNĐ
+                                        </td>
+
                                         <td>
-                                            <a href="@Url.Action("RemoveFromCart", "Cart", new { id = item.ProductID })">
-                                                <img src="~/Images/remove.png" style="max-height:20px;" />
-                                            </a>
+                                            <div class="quantity-control">
+
+                                                <button type="button"
+                                                        onclick="cartUpdateQuantity(
+                                                            @item.ProductID,
+                                                            @item.Quantity - 1)">
+                                                    -
+                                                </button>
+
+                                                <input type="number"
+                                                       value="@item.Quantity"
+                                                       readonly />
+
+                                                <button type="button"
+                                                        onclick="cartUpdateQuantity(
+                                                            @item.ProductID,
+                                                            @item.Quantity + 1)">
+                                                    +
+                                                </button>
+
+                                            </div>
                                         </td>
+
+                                        <td class="cart-price">
+                                            @item.TotalPrice.ToString("N0") VNĐ
+                                        </td>
+
+                                        <td></td>
                                     </tr>
                                 }
-                            </tbody>
-                        </table>
-                        <hr />
-                    </div>
-                }
-            </div>
+                            }
+                        </tbody>
+                    </table>
 
-            <div class="col-md-3 cart-section">
-                <div><strong>Tổng giá trị: &nbsp;<span style="color: red;">@Model.TotalValue().ToString("N0")</span></strong></div>
-                <div>@Html.ActionLink("Mua hàng", "Checkout", "Payment", null, new { @class = "btn btn-danger cart-button" })</div>
+                    <div class="cart-actions">
+
+                        @Html.ActionLink(
+                            "← TIẾP TỤC XEM SẢN PHẨM",
+                            "Index",
+                            "Home",
+                            null,
+                            new { @class = "continue-button" })
+
+                        <a href="@Url.Action("ClearCart", "Cart")"
+                           class="update-button"
+                           onclick="return confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')">
+                            XÓA GIỎ HÀNG
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- CỘT PHẢI: TỔNG GIỎ HÀNG -->
+                <div class="cart-right">
+
+                    <div class="cart-summary">
+
+                        <h3>TỔNG CỘNG GIỎ HÀNG</h3>
+
+                        <div class="summary-line">
+                            <span>Tạm tính</span>
+
+                            <strong>
+                                @Model.TotalValue().ToString("N0") VNĐ
+                            </strong>
+                        </div>
+
+                        <div class="shipping-info">
+                            <p>Giao hàng</p>
+                            <p>Phí giao hàng sẽ được tính khi thanh toán.</p>
+                        </div>
+
+                        <div class="summary-line summary-total">
+                            <span>Tổng</span>
+
+                            <strong>
+                                @Model.TotalValue().ToString("N0") VNĐ
+                            </strong>
+                        </div>
+
+                        @Html.ActionLink(
+                            "TIẾN HÀNH THANH TOÁN",
+                            "Checkout",
+                            "Order",
+                            null,
+                            new { @class = "checkout-button" })
+
+                    </div>
+                </div>
+
             </div>
         }
-        <div class="col-md-12">@Html.ActionLink("Tiếp tục mua hàng", "Index", "Home", null, new { @class = "btn btn-warning cart-button" })</div>
+
     </div>
 </div>

@@ -4,109 +4,302 @@
     Layout = "~/Views/Shared/_Layout.cshtml"; // Hoặc layout tương ứng của bạn
 }
 <style>
-    /* =========================
-       CHỈ ÁP DỤNG CHO TRANG HOME
-       ========================= */
 
-    /* SẢN PHẨM NỔI BẬT */
-    .feature-container {
-        display: grid !important;
-        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-        gap: 20px !important;
-        width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        overflow: visible !important;
-    }
+    /* =====================================
+    KHU VỰC HIỂN THỊ SẢN PHẨM
+    ===================================== */
 
-    /* SẢN PHẨM MỚI */
-    .list-container {
-        display: grid !important;
-        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-        gap: 20px !important;
-        width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-
-    /* CARD SẢN PHẨM */
+    /* Lưới sản phẩm nổi bật và sản phẩm mới */
     .feature-container .product-item,
     .list-container .product-item {
         width: 100% !important;
-        height: 350px !important;
         min-width: 0 !important;
-        max-height: none !important;
+        min-height: 340px !important;
         margin: 0 !important;
         padding: 0 !important;
-        border: 1px solid #aaa !important;
-        border-radius: 10px !important;
+        background: white !important;
+        border: 1px solid #e8edf0 !important;
+        border-radius: 12px !important;
         box-sizing: border-box !important;
         overflow: hidden !important;
-        background-color: white !important;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
     }
 
-    /* KHU VỰC ẢNH */
-    .feature-container .product-item img,
-    .list-container .product-item img {
-        display: block !important;
+    /* =====================================
+    CARD SẢN PHẨM
+    ===================================== */
+    .feature-container .product-item,
+    .list-container .product-item {
+        position: relative;
+        display: flex !important;
+        flex-direction: column !important;
         width: 100% !important;
-        height: 200px !important;
-        max-height: none !important;
-        padding: 10px !important;
-        box-sizing: border-box !important;
-        object-fit: contain !important;
-        background-color: white !important;
-    }
-
-    /* GIÁ */
-    .feature-container .prodPrice,
-    .list-container .prodPrice {
+        min-width: 0 !important;
+        min-height: 375px !important;
+        height: auto !important;
         margin: 0 !important;
-        padding: 10px 5px 0 5px !important;
+        padding: 0 !important;
+        background: #fff !important;
+        border: 1px solid #e8edf0 !important;
+        border-radius: 13px !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+        transition: all 0.3s ease;
     }
 
-    /* TÊN */
+        /* Hiệu ứng khi di chuột vào sản phẩm */
+        .feature-container .product-item:hover,
+        .list-container .product-item:hover {
+            transform: translateY(-6px);
+            border-color: #b5dfe0 !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+        }
+
+        /* =====================================
+    HÌNH ẢNH SẢN PHẨM
+    ===================================== */
+        .feature-container .product-item img,
+        .list-container .product-item img {
+            display: block !important;
+            width: 100% !important;
+            height: 220px !important;
+            max-height: none !important;
+            padding: 15px !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+            object-fit: contain !important;
+            background: #f7f9fa !important;
+            transition: transform 0.35s ease;
+        }
+
+        /* Phóng to ảnh nhẹ khi hover */
+        .feature-container .product-item:hover img,
+        .list-container .product-item:hover img {
+            transform: scale(1.06);
+        }
+
+    /* =====================================
+    TÊN SẢN PHẨM
+    ===================================== */
     .feature-container .prodName,
     .list-container .prodName {
-        margin: 10px 0 0 0 !important;
-        padding: 0 5px !important;
-        min-height: 40px !important;
+        padding: 0 12px !important;
+        margin: 13px 0 5px !important;
+        min-height: 42px !important;
+        color: #263f53 !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        line-height: 1.5 !important;
+        /* Giới hạn tên tối đa 2 dòng */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    /* LOẠI */
-    .feature-container .prodCate {
-        margin: 5px 0 0 0 !important;
-        padding: 0 5px !important;
+    /* =====================================
+    GIÁ SẢN PHẨM
+    ===================================== */
+    .feature-container .prodPrice,
+    .list-container .prodPrice {
+        padding: 0 12px !important;
+        margin: 5px 0 0 !important;
+        color: #e05252 !important;
+        font-size: 18px !important;
+        font-weight: 800 !important;
     }
 
-    /* ĐÃ BÁN */
+    /* =====================================
+    DANH MỤC SẢN PHẨM
+    ===================================== */
+    .feature-container .prodCate,
+    .list-container .prodCate {
+        padding: 0 12px !important;
+        margin: 6px 0 0 !important;
+        color: #84929c !important;
+        font-size: 12px !important;
+    }
+
+    /* =====================================
+    SỐ LƯỢNG ĐÃ BÁN
+    ===================================== */
     .feature-container .prodSale,
     .list-container .prodSale {
-        margin: 10px 0 0 0 !important;
-        padding: 0 5px !important;
+        padding: 0 12px !important;
+        margin: 9px 0 13px !important;
+        color: #84929c !important;
+        font-size: 12px !important;
     }
 
-    @*/* Màn hình nhỏ */
-    @media (max-width: 1000px) {
+    /* =====================================
+    LINK TRONG CARD
+    ===================================== */
+    .feature-container .product-item a,
+    .list-container .product-item a {
+        text-decoration: none;
+    }
+
+    /* =====================================
+    RESPONSIVE - TABLET
+    ===================================== */
+    @@media (max-width: 992px) {
         .feature-container,
         .list-container {
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 16px !important;
         }
     }
 
-    @media (max-width: 700px) {
+    /* =====================================
+    RESPONSIVE - MOBILE
+    ===================================== */
+    @@media (max-width: 576px) {
         .feature-container,
         .list-container {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 12px !important;
         }
+
+            .feature-container .product-item,
+            .list-container .product-item {
+                min-height: 320px !important;
+            }
+
+                .feature-container .product-item img,
+                .list-container .product-item img {
+                    height: 175px !important;
+                }
+
+            .feature-container .prodPrice,
+            .list-container .prodPrice {
+                font-size: 16px !important;
+            }
+
+            .feature-container .prodName,
+            .list-container .prodName {
+                font-size: 13px !important;
+            }
     }
 
-    @media (max-width: 450px) {
-        .feature-container,
-        .list-container {
-            grid-template-columns: 1fr !important;
-        }*@
+    /*Banner*/
+    .banner-slider {
+        position: relative;
+        width: 100%;
+        height: 380px;
+        overflow: hidden;
+        border-radius: 10px;
+        margin-bottom: 30px;
     }
+
+    .banner-slide {
+        display: none;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+        .banner-slide.active {
+            display: block;
+        }
+
+        .banner-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Lớp phủ giúp chữ dễ đọc */
+        .banner-slide::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient( 90deg, rgba(0,0,0,0.75), rgba(0,0,0,0.1) );
+        }
+
+    .banner-content {
+        position: absolute;
+        top: 50%;
+        left: 8%;
+        transform: translateY(-50%);
+        color: white;
+        z-index: 2;
+        max-width: 550px;
+    }
+
+        .banner-content h1 {
+            color: #ffcc00;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .banner-content p {
+            font-size: 17px;
+            margin-bottom: 25px;
+        }
+
+    .banner-btn {
+        display: inline-block;
+        background-color: #e31837;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .banner-btn:hover {
+            background-color: #b5122b;
+            color: white;
+            text-decoration: none;
+        }
+
+    /* Hai nút điều hướng */
+    .banner-prev, .banner-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0,0,0,0.5);
+        color: white;
+        border: none;
+        padding: 12px 16px;
+        cursor: pointer;
+        z-index: 3;
+        border-radius: 50%;
+    }
+
+    .banner-prev {
+        left: 15px;
+    }
+
+    .banner-next {
+        right: 15px;
+    }
+
+    /* Các dấu chấm */
+    .banner-dots {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+    }
+
+    .banner-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background: #ccc;
+        border-radius: 50%;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+        .banner-dot.active {
+            background: #e31837;
+        }
 </style>
 
 @section Styles {
@@ -114,12 +307,51 @@
 }
 
 <!-- BANNER QUẢNG CÁO -->
-<div style="background-color: #2b2f38; color: white; padding: 40px 20px; text-align: center; border-radius: 6px; margin-bottom: 30px;">
-    <h1 style="font-size: 28px; margin-bottom: 10px; color: #e31837;">BỘ SƯU TẬP BALO DU LỊCH & LAPTOP 2026</h1>
-    <p style="font-size: 16px;">Giảm giá lên đến 30% cho tất cả các dòng Balo chống nước chính hãng!</p>
+<div class="banner-slider">
+
+    <div class="banner-slide active">
+        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1600&q=80"
+             alt="Balo du lịch">
+
+        <div class="banner-content">
+            <h1>BỘ SƯU TẬP BALO DU LỊCH 2026</h1>
+            <p>Giảm giá lên đến 30% cho các dòng balo chống nước chính hãng!</p>
+            <a href="@Url.Action("Index", "Home")" class="banner-btn">MUA NGAY</a>
+        </div>
+    </div>
+
+    <div class="banner-slide">
+        <img src="https://images.unsplash.com/photo-1622560480654-d96214fdc887?auto=format&fit=crop&w=1600&q=80"
+             alt="Balo laptop">
+
+        <div class="banner-content">
+            <h1>BALO LAPTOP CAO CẤP</h1>
+            <p>Thiết kế hiện đại – Bảo vệ laptop an toàn.</p>
+            <a href="@Url.Action("Index", "Home")" class="banner-btn">KHÁM PHÁ NGAY</a>
+        </div>
+    </div>
+
+    <div class="banner-slide">
+        <img src="https://images.unsplash.com/photo-1581605405669-fcdf81165afa?auto=format&fit=crop&w=1600&q=80"
+             alt="Balo thời trang">
+
+        <div class="banner-content">
+            <h1>PHONG CÁCH CỦA BẠN</h1>
+            <p>Khám phá những mẫu balo thời trang mới nhất.</p>
+            <a href="@Url.Action("Index", "Home")" class="banner-btn">XEM SẢN PHẨM</a>
+        </div>
+    </div>
+
+    <button type="button" class="banner-prev" onclick="changeBanner(-1)">&#10094;</button>
+    <button type="button" class="banner-next" onclick="changeBanner(1)">&#10095;</button>
+
+    <div class="banner-dots">
+        <span class="banner-dot active" onclick="showBanner(0)"></span>
+        <span class="banner-dot" onclick="showBanner(1)"></span>
+        <span class="banner-dot" onclick="showBanner(2)"></span>
+    </div>
+
 </div>
-
-
 <!-- PHẦN TÌM KIẾM SẢN PHẨM -->
 <section class="container-fluid searchProd">
     <h2>Tìm kiếm sản phẩm</h2>
@@ -142,3 +374,47 @@
 
 <!-- PHẦN SẢN PHẨM MỚI -->
 @Html.Partial("_PVNewProduct", Model)
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var currentBanner = 0;
+            var banners = document.querySelectorAll(".banner-slide");
+            var dots = document.querySelectorAll(".banner-dot");
+            var timer;
+
+            if (banners.length === 0) return;
+
+            function showBannerInternal(index) {
+                banners[currentBanner].classList.remove("active");
+                dots[currentBanner].classList.remove("active");
+
+                currentBanner = (index + banners.length) % banners.length;
+
+                banners[currentBanner].classList.add("active");
+                dots[currentBanner].classList.add("active");
+            }
+
+            window.showBanner = function (index) {
+                showBannerInternal(index);
+                resetTimer();
+            };
+
+            window.changeBanner = function (direction) {
+                showBannerInternal(currentBanner + direction);
+                resetTimer();
+            };
+
+            function resetTimer() {
+                clearInterval(timer);
+
+                timer = setInterval(function () {
+                    showBannerInternal(currentBanner + 1);
+                }, 4000);
+            }
+
+            resetTimer();
+        });
+    </script>
+}

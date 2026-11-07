@@ -1,0 +1,127 @@
+﻿
+@model IEnumerable<_25dh110430_MyStore.Models.Order>
+
+@{
+    ViewBag.Title = "Lịch sử mua hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>LỊCH SỬ MUA HÀNG</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            Bạn chưa có đơn hàng nào.
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Thanh toán</th>
+                    <th>Trạng thái đơn hàng</th>
+                    <th>Địa chỉ giao hàng</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>#@order.OrderID</td>
+
+                        <td>
+                            @order.OrderDate.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td>
+                            @order.TotalAmount.ToString(
+                                "#,##0",
+                                new System.Globalization.CultureInfo("vi-VN")
+                            ) VNĐ
+                        </td>
+
+                        <td>
+                            @order.PaymentStatus
+                        </td>
+
+                        <td>
+                            @if (order.OrderStatus == "Chờ xác nhận")
+                            {
+                                <span class="label label-warning">
+                                    Chờ xác nhận
+                                </span>
+                            }
+                            else if (order.OrderStatus == "Đã xác nhận")
+                            {
+                                <span class="label label-info">
+                                    Đã xác nhận
+                                </span>
+                            }
+                            else if (order.OrderStatus == "Đang giao hàng")
+                            {
+                                <span class="label label-primary">
+                                    Đang giao hàng
+                                </span>
+                            }
+                            else if (order.OrderStatus == "Đã giao hàng")
+                            {
+                                <span class="label label-success">
+                                    Đã giao hàng
+                                </span>
+                            }
+                            else if (order.OrderStatus == "Đã hủy")
+                            {
+                                <span class="label label-danger">
+                                    Đã hủy
+                                </span>
+                            }
+                            else
+                            {
+                                @order.OrderStatus
+                            }
+                        </td>
+
+                        <td>
+                            @order.AddressDelivery
+                        </td>
+
+                        <td>
+                            @Html.ActionLink(
+                                "Xem chi tiết",
+                                "OrderSuccess",
+                                "Order",
+                                new { id = order.OrderID },
+                                new { @class = "btn btn-info btn-sm" }
+                            )
+
+                            @if (order.OrderStatus == "Chờ xác nhận")
+                            {
+                                <form action="@Url.Action("CancelOrder", "Order")"
+                                      method="post"
+                                      style="display:inline;">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden" name="id" value="@order.OrderID" />
+
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                        Hủy đơn
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

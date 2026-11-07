@@ -80,16 +80,20 @@ namespace _25dh110430_MyStore.Controllers
         {
             return View();
         }
-        //public ActionResult Details(int id)
+
+        //public ActionResult TestStock()
         //{
-        //    var product = db.Products.Find(id);
+        //    var product = db.Products.FirstOrDefault();
 
         //    if (product == null)
         //    {
-        //        return HttpNotFound();
+        //        return Content("Không có sản phẩm");
         //    }
 
-        //    return View(product);
+        //    return Content(
+        //        "Tên sản phẩm: " + product.ProductName +
+        //        " | Số lượng kho: " + product.StockQuantity
+        //    );
         //}
     }
 }

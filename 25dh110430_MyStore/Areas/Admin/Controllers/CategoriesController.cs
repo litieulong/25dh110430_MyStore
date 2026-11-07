@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using _25dh110430_MyStore.Areas.Admin.Filters;
 using _25dh110430_MyStore.Models;
 
 namespace _25dh110430_MyStore.Areas.Admin.Controllers
@@ -49,13 +50,42 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "CategoryID,CategoryName")] Category category)
         {
+            // Kiểm tra tên danh mục có bị bỏ trống không
+            if (string.IsNullOrWhiteSpace(category.CategoryName))
+            {
+                ModelState.AddModelError(
+                    "CategoryName",
+                    "Vui lòng nhập tên danh mục."
+                );
+            }
+            else
+            {
+                // Xóa khoảng trắng đầu và cuối
+                category.CategoryName = category.CategoryName.Trim();
+
+                // Kiểm tra danh mục đã tồn tại
+                bool isDuplicate = db.Categories.Any(c =>
+                    c.CategoryName.Trim().ToLower() == category.CategoryName.ToLower());
+
+                if (isDuplicate)
+                {
+                    ModelState.AddModelError(
+                        "CategoryName",
+                        "Tên danh mục đã tồn tại. Vui lòng nhập tên khác."
+                    );
+                }
+            }
+
+            // Nếu không có lỗi thì mới thêm vào database
             if (ModelState.IsValid)
             {
                 db.Categories.Add(category);
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
 
+            // Có lỗi thì quay lại form Create
             return View(category);
         }
 

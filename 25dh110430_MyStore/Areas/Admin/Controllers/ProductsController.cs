@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using _25dh110430_MyStore.Models;
 using _25dh110430_MyStore.Models.ViewModel;
+using _25dh110430_MyStore.Areas.Admin.Filters;
 using PagedList;
 
 
@@ -18,13 +19,7 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
     {
         private MyStoreEntities db = new MyStoreEntities();
 
-        // GET: Admin/Products
-
-        //public async Task<ActionResult> Index()
-        //{
-        //    var products = db.Products.Include(p => p.Category);
-        //    return View(await products.ToListAsync());
-        //}
+        
 
         // GET: Admin/Products/Details/5
         public ActionResult Details(int? id)
@@ -64,6 +59,7 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
 
             return View(product);
         }
+
         // GET: Admin/Products/Create
         public ActionResult Create()
         {
@@ -87,19 +83,6 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-        //public async Task<ActionResult> Create([Bind(Include = "ProductID,CategoryID,ProductName,ProductPrice,ProductImage,ProductDescription")] Product product)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Products.Add(product);
-        //        await db.SaveChangesAsync();
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName", product.CategoryID);
-        //    return View(product);
-        //}
 
         public async Task<ActionResult> Create(ProductCreateVM model)
         {
@@ -147,6 +130,7 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
             product.ProductName = model.ProductName;
             product.ProductPrice = model.ProductPrice;
             product.ProductDescription = model.ProductDescription;
+            product.StockQuantity = model.StockQuantity;
 
             // ProductImage là trường bắt buộc
             // Nếu có link ảnh thì lấy link ảnh đầu tiên
@@ -226,11 +210,6 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
     .Where(x => x.ProductID == product.ProductID)
     .ToList();
 
-            return Content(
-                "Số màu đã lưu: " + savedColors.Count +
-                "<br/>" +
-                string.Join("<br/>", savedColors.Select(x => x.ColorName))
-            );
 
             return RedirectToAction("Index");
         }
@@ -264,6 +243,7 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
             model.ProductName = product.ProductName;
             model.ProductPrice = product.ProductPrice;
             model.ProductDescription = product.ProductDescription;
+            model.StockQuantity = product.StockQuantity;
 
             return View(model);
 
@@ -302,6 +282,7 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
             product.ProductName = model.ProductName;
             product.ProductPrice = model.ProductPrice;
             product.ProductDescription = model.ProductDescription;
+            product.StockQuantity = model.StockQuantity;
 
             await db.SaveChangesAsync();
 
@@ -365,7 +346,12 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
             }
             base.Dispose(disposing);
         }
-        public ActionResult Index(string searchTerm, decimal? minPrice, decimal? maxPrice, string sortOrder, int? page)
+        public ActionResult Index(
+    string searchTerm,
+    decimal? minPrice,
+    decimal? maxPrice,
+    string sortOrder,
+    int? page)
         {
             var model = new ProductSearchVM();
             var products = db.Products.AsQueryable();
@@ -373,50 +359,61 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
             // Tìm kiếm sản phẩm theo từ khóa
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                model.SearchTerm = searchTerm; // Gán giá trị tìm kiếm vào ViewModel
-                products = products.Where(p => p.ProductName.Contains(searchTerm) ||
-                               p.ProductPrice.ToString().Contains(searchTerm) || 
-                               p.ProductDescription.Contains(searchTerm));
+                model.SearchTerm = searchTerm;
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductPrice.ToString().Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm));
             }
 
-            // Tìm kiếm sản phẩm dựa trên giá tối thiểu
+            // Giá tối thiểu
             if (minPrice.HasValue)
             {
-                model.MinPrice = minPrice.Value; // Gán giá trị minPrice vào ViewModel
-                products = products.Where(p => p.ProductPrice >= minPrice.Value);   
+                model.MinPrice = minPrice.Value;
+
+                products = products.Where(p =>
+                    p.ProductPrice >= minPrice.Value);
             }
 
-            // Tìm kiếm sản phẩm dựa trên giá tối đa
+            // Giá tối đa
             if (maxPrice.HasValue)
             {
-                model.MaxPrice = maxPrice.Value; // Gán giá trị maxPrice vào ViewModel
-                products = products.Where(p => p.ProductPrice >= minPrice.Value);
+                model.MaxPrice = maxPrice.Value;
+
+                products = products.Where(p =>
+                    p.ProductPrice <= maxPrice.Value);
             }
 
-            // Sắp xếp kết quả dựa trên sortOrder
+            // Sắp xếp
             switch (sortOrder)
             {
                 case "name_asc":
                     products = products.OrderBy(p => p.ProductName);
                     break;
+
                 case "name_desc":
                     products = products.OrderByDescending(p => p.ProductName);
                     break;
+
                 case "price_asc":
                     products = products.OrderBy(p => p.ProductPrice);
                     break;
+
                 case "price_desc":
                     products = products.OrderByDescending(p => p.ProductPrice);
                     break;
-                default: // Mặc định sắp xếp theo tên
+
+                default:
                     products = products.OrderBy(p => p.ProductName);
                     break;
             }
+
             model.SortOrder = sortOrder;
 
-            // Xử lý phân trang
-            //lấy trạng hiện tại của trang từ query string, nếu không có thì mặc định là trang 1
-            int pageNumber = page ?? 1; // Trang hiện tại, mặc định là trang 1
+        // Xử lý phân trang
+        //lấy trạng hiện tại của trang từ query string, nếu không có thì mặc định là trang 1
+        int pageNumber = page ?? 1; // Trang hiện tại, mặc định là trang 1
             int pageSize = 2; // Số lượng sản phẩm hiển thị trên 1 trang (có thể đổi thành 5, 10...)
 
             // Sử dụng ToPagedList để phân trang danh sách sản phẩm

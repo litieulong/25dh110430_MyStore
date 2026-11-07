@@ -37,14 +37,14 @@
     <div class="col-md-10">
 
         @Html.DropDownList(
-                                          "CategoryID",
-                                          null,
-                                          htmlAttributes: new { @class = "form-control" })
+                                                    "CategoryID",
+                                                    null,
+                                                    htmlAttributes: new { @class = "form-control" })
 
         @Html.ValidationMessageFor(
-                                          model => model.CategoryID,
-                                          "",
-                                          new { @class = "text-danger" })
+                                                    model => model.CategoryID,
+                                                    "",
+                                                    new { @class = "text-danger" })
 
     </div>
 
@@ -61,19 +61,19 @@
     <div class="col-md-10">
 
         @Html.EditorFor(
-                                          model => model.ProductName,
-                                          new
-                                          {
-                                              htmlAttributes = new
-                                              {
-                                                  @class = "form-control"
-                                              }
-                                          })
+                                                    model => model.ProductName,
+                                                    new
+                                                    {
+                                                        htmlAttributes = new
+                                                        {
+                                                            @class = "form-control"
+                                                        }
+                                                    })
 
         @Html.ValidationMessageFor(
-                                          model => model.ProductName,
-                                          "",
-                                          new { @class = "text-danger" })
+                                                    model => model.ProductName,
+                                                    "",
+                                                    new { @class = "text-danger" })
 
     </div>
 
@@ -82,30 +82,53 @@
 
 <!-- ĐƠN GIÁ -->
 <div class="form-group">
-
     <div class="control-label col-md-2">
         Đơn giá
     </div>
 
     <div class="col-md-10">
-
-        @Html.EditorFor(
-                                          model => model.ProductPrice,
-                                          new
-                                          {
-                                              htmlAttributes = new
-                                              {
-                                                  @class = "form-control"
-                                              }
-                                          })
+        @Html.TextBoxFor(
+                 model => model.ProductPrice,
+                 new
+                 {
+                     @class = "form-control",
+                     type = "number",
+                     min = "0",
+                     step = "1000",
+                     placeholder = "Nhập giá bằng VNĐ"
+                 })
 
         @Html.ValidationMessageFor(
-                                          model => model.ProductPrice,
-                                          "",
-                                          new { @class = "text-danger" })
+                 model => model.ProductPrice,
+                 "",
+                 new { @class = "text-danger" })
+    </div>
+</div>
 
+<!-- SỐ LƯỢNG TỒN KHO -->
+<div class="form-group">
+
+    <div class="control-label col-md-2">
+        Số lượng tồn kho
     </div>
 
+    <div class="col-md-10">
+
+        @Html.TextBoxFor(
+                      model => model.StockQuantity,
+                      new
+                      {
+                          @class = "form-control",
+                          type = "number",
+                          min = "0"
+                      })
+
+        @Html.ValidationMessageFor(
+                      model => model.StockQuantity,
+                      "",
+                      new { @class = "text-danger" })
+
+    </div>
 </div>
 
 
@@ -119,16 +142,16 @@
     <div class="col-md-10">
 
         @Html.TextAreaFor(
-                                          model => model.ProductDescription,
-                                          new
-                                          {
-                                              @class = "form-control"
-                                          })
+                                                    model => model.ProductDescription,
+                                                    new
+                                                    {
+                                                        @class = "form-control"
+                                                    })
 
         @Html.ValidationMessageFor(
-                                          model => model.ProductDescription,
-                                          "",
-                                          new { @class = "text-danger" })
+                                                    model => model.ProductDescription,
+                                                    "",
+                                                    new { @class = "text-danger" })
 
     </div>
 
@@ -236,45 +259,45 @@
 
             div.innerHTML = `
 
-                <div class="color-title">
-                    Màu ${colorIndex + 1}
-                </div>
-
-                <div class="form-group">
-
-                    <div class="control-label col-md-2">
-                        Tên màu
+                    <div class="color-title">
+                        Màu ${colorIndex + 1}
                     </div>
 
-                    <div class="col-md-10">
+                    <div class="form-group">
 
-                        <input type="text"
-                               name="Colors[${colorIndex}].ColorName"
-                               class="form-control"
-                               placeholder="Ví dụ: Xám" />
+                        <div class="control-label col-md-2">
+                            Tên màu
+                        </div>
 
-                    </div>
+                        <div class="col-md-10">
 
-                </div>
+                            <input type="text"
+                                   name="Colors[${colorIndex}].ColorName"
+                                   class="form-control"
+                                   placeholder="Ví dụ: Xám" />
 
-                <div class="form-group">
-
-                    <div class="control-label col-md-2">
-                        Hình ảnh
-                    </div>
-
-                    <div class="col-md-10">
-
-                        <input type="text"
-                               name="Colors[${colorIndex}].Images[0]"
-                               class="form-control"
-                               placeholder="Nhập link hình ảnh" />
+                        </div>
 
                     </div>
 
-                </div>
+                    <div class="form-group">
 
-            `;
+                        <div class="control-label col-md-2">
+                            Hình ảnh
+                        </div>
+
+                        <div class="col-md-10">
+
+                            <input type="text"
+                                   name="Colors[${colorIndex}].Images[0]"
+                                   class="form-control"
+                                   placeholder="Nhập link hình ảnh" />
+
+                        </div>
+
+                    </div>
+
+                `;
 
             container.appendChild(div);
 

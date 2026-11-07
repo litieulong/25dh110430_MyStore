@@ -1,0 +1,123 @@
+﻿
+@model IEnumerable<_25dh110430_MyStore.Models.User>
+
+@{
+    ViewBag.Title = "Quản lý tài khoản";
+    Layout = "~/Areas/Admin/Views/Shared/Admin_Layout.cshtml";
+}
+
+<h2>QUẢN LÝ TÀI KHOẢN</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["Message"]
+    </div>
+}
+
+@using (Html.BeginForm("Index", "Users", FormMethod.Get))
+{
+    <input type="text"
+           name="searchTerm"
+           value="@ViewBag.SearchTerm"
+           placeholder="Nhập Username..." />
+
+    <select name="role">
+        <option value="">Tất cả vai trò</option>
+        <option value="A" @(ViewBag.Role == "A" ? "selected" : "")>
+            Admin
+        </option>
+        <option value="C" @(ViewBag.Role == "C" ? "selected" : "")>
+            Customer
+        </option>
+    </select>
+
+    <button type="submit" class="btn btn-success">
+        Tìm kiếm
+    </button>
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Vai trò</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Username</td>
+
+                <td>
+                    @(item.UserRole == "A" ? "Admin" : "Customer")
+                </td>
+
+                <td>
+                    @if (item.UserRole == "C")
+                    {
+                        using (Html.BeginForm("ChangeRole", "Users",
+                            new { area = "Admin", id = item.Username, role = "A" },
+                            FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="btn btn-success btn-sm"
+                                    onclick="return confirm('Bạn có chắc muốn trao quyền Admin cho tài khoản này?')">
+                                Trao quyền Admin
+                            </button>
+                        }
+                    }
+                    else if (item.UserRole == "A")
+                    {
+                        using (Html.BeginForm("ChangeRole", "Users",
+                            new { area = "Admin", id = item.Username, role = "C" },
+                            FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="btn btn-warning btn-sm"
+                                    onclick="return confirm('Bạn có chắc muốn chuyển tài khoản này về Customer?')">
+                                Hạ quyền Admin
+                            </button>
+                        }
+                    }
+                </td>
+
+                <td>
+                    @if (item.UserRole == "C")
+                    {
+                        using (Html.BeginForm("ChangeRole", "Users",
+                            new { id = item.Username, role = "A" },
+                            FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit" class="btn btn-success btn-sm">
+                                Trao quyền Admin
+                            </button>
+                        }
+                    }
+                    else
+                    {
+                        using (Html.BeginForm("ChangeRole", "Users",
+                            new { id = item.Username, role = "C" },
+                            FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit" class="btn btn-warning btn-sm">
+                                Hạ quyền Admin
+                            </button>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

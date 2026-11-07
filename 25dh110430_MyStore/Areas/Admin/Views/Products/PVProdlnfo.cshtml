@@ -143,10 +143,52 @@
             @Model.ProductName
         </div>
 
-        <div class="product-price">
-            @String.Format("{0:N0}", Model.ProductPrice) VNĐ
+        <div style="margin: 15px 0;">
+            <strong>Số lượng tồn kho:</strong>
+
+            @if (Model.StockQuantity > 0)
+            {
+                <span style="color: green;">
+                    Còn @Model.StockQuantity sản phẩm
+                </span>
+            }
+            else
+            {
+                <span style="color: red;">
+                    Hết hàng
+                </span>
+            }
         </div>
 
+        <div class="product-name">
+            @Model.ProductName
+        </div>
+
+        <!-- GIÁ SẢN PHẨM -->
+        <div class="product-price">
+            @Model.ProductPrice.ToString(
+                "#,##0",
+                new System.Globalization.CultureInfo("vi-VN")
+            ) VNĐ
+        </div>
+
+        <!-- SỐ LƯỢNG TỒN KHO -->
+        <div style="margin: 15px 0;">
+            <strong>Số lượng tồn kho:</strong>
+
+            @if (Model.StockQuantity > 0)
+            {
+                <span style="color: green;">
+                    Còn @Model.StockQuantity sản phẩm
+                </span>
+            }
+            else
+            {
+                <span style="color: red;">
+                    Hết hàng
+                </span>
+            }
+        </div>
 
         <!-- MÀU SẮC -->
 
@@ -164,18 +206,6 @@
                             onclick="selectColor(this)"
                             data-color="@color.ColorName">
                         @color.ColorName
-                        @*@if (color.ProductImages != null)
-                        {
-                            <span>
-                                - Có @color.ProductImages.Count() ảnh
-                            </span>
-                        }
-                        else
-                        {
-                            <span>
-                                - Không có ảnh
-                            </span>
-                        }*@
                     </button>
                 }
             }

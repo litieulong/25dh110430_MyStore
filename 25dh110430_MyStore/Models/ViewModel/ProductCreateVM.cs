@@ -28,6 +28,8 @@ namespace _25dh110430_MyStore.Models.ViewModel
 
         public List<ProductColorVM> Colors { get; set; }
 
+        public int StockQuantity { get; set; }
+
         public ProductCreateVM()
         {
             Colors = new List<ProductColorVM>();

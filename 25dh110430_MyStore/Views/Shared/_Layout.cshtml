@@ -75,66 +75,66 @@
             gap: 20px;
         }
 
-        .navbar-nav-custom > li {
-            position: relative;
-        }
+            .navbar-nav-custom > li {
+                position: relative;
+            }
 
-        .navbar-nav-custom > li > a,
-        .navbar-nav-custom > li > div > a,
-        .navbar-nav-custom > li > div {
-            color: #fff !important;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 0;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-        }
+                .navbar-nav-custom > li > a,
+                .navbar-nav-custom > li > div > a,
+                .navbar-nav-custom > li > div {
+                    color: #fff !important;
+                    text-decoration: none;
+                    font-size: 14px;
+                    font-weight: 500;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 8px 0;
+                    cursor: pointer;
+                    background: transparent;
+                    border: none;
+                }
 
-        .navbar-nav-custom > li > a:hover,
-        .navbar-nav-custom > li > div > a:hover {
-            color: #ff4d4d !important;
-        }
+                    .navbar-nav-custom > li > a:hover,
+                    .navbar-nav-custom > li > div > a:hover {
+                        color: #ff4d4d !important;
+                    }
 
-        /*  Dropdown menu ẩn mặc định và hiển thị dạng cột khi hover */
-        .navbar-nav-custom .dropdown-content {
-            display: none !important;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: #fff;
-            min-width: 180px;
-            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-            z-index: 1000;
-            list-style: none;
-            padding: 8px 0;
-            border-radius: 4px;
-        }
+            /*  Dropdown menu ẩn mặc định và hiển thị dạng cột khi hover */
+            .navbar-nav-custom .dropdown-content {
+                display: none !important;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: #fff;
+                min-width: 180px;
+                box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+                z-index: 1000;
+                list-style: none;
+                padding: 8px 0;
+                border-radius: 4px;
+            }
 
-        .navbar-nav-custom .dropdown-content a {
-            color: #333 !important;
-            padding: 8px 16px;
-            text-decoration: none;
-            display: block !important;
-            font-size: 13px;
-            white-space: nowrap;
-            background: none !important;
-        }
+                .navbar-nav-custom .dropdown-content a {
+                    color: #333 !important;
+                    padding: 8px 16px;
+                    text-decoration: none;
+                    display: block !important;
+                    font-size: 13px;
+                    white-space: nowrap;
+                    background: none !important;
+                }
 
-        .navbar-nav-custom .dropdown-content a:hover {
-            background-color: #f1f1f1 !important;
-            color: #d0021b !important;
-        }
+                    .navbar-nav-custom .dropdown-content a:hover {
+                        background-color: #f1f1f1 !important;
+                        color: #d0021b !important;
+                    }
 
-        .navbar-nav-custom .dropdown:hover .dropdown-content {
-            display: block !important;
-        }
+            .navbar-nav-custom .dropdown:hover .dropdown-content {
+                display: block !important;
+            }
 
-       /* CSS tuỳ chỉnh Footer mới giống hình mẫu */
+        /* CSS tuỳ chỉnh Footer mới giống hình mẫu */
         .bsg-footer {
             background-color: #000;
             color: #fff;
@@ -169,9 +169,9 @@
             line-height: 1.6;
         }
 
-        .footer-col a:hover {
-            color: #ff4d4d;
-        }
+            .footer-col a:hover {
+                color: #ff4d4d;
+            }
 
         .social-icons {
             display: flex;
@@ -179,21 +179,21 @@
             margin-bottom: 15px;
         }
 
-        .social-icons a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: #222;
-            color: #fff;
-            border-radius: 50%;
-            font-size: 14px;
-        }
+            .social-icons a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 32px;
+                height: 32px;
+                background: #222;
+                color: #fff;
+                border-radius: 50%;
+                font-size: 14px;
+            }
 
-        .social-icons a:hover {
-            background: #ff4d4d;
-        }
+                .social-icons a:hover {
+                    background: #ff4d4d;
+                }
 
         .footer-map {
             width: 100%;
@@ -221,7 +221,6 @@
             padding: 8px 12px;
             border-radius: 4px;
         }
-    }
     </style>
 </head>
 <body>
@@ -281,7 +280,7 @@
                 <li>
                     <a href="#">May Theo Yêu Cầu</a>
                 </li>
-               
+
 
 
 
@@ -384,6 +383,8 @@
             </div>
         </div>
     </footer>
+
+    @RenderSection("Scripts", required: false)
 
 </body>
 </html>

@@ -1,103 +1,505 @@
 ﻿
 @model _25dh110430_MyStore.Models.ViewModel.CheckoutVM
 
-    @{ 
-        ViewBag.Title = "Đặt hàng";
-        Layout = "~/Views/Shared/_Layout.cshtml";
+@{
+    ViewBag.Title = "Đặt hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .checkout-page {
+        background: #fff;
+        padding: 30px 0 60px;
+        color: #222;
+    }
+
+    .checkout-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -15px;
+    }
+
+    /* Cột trái */
+    .checkout-left {
+        width: 58.3333%;
+        padding: 0 30px 0 15px;
+    }
+
+    /* Cột phải */
+    .checkout-right {
+        width: 41.6667%;
+        padding: 25px 25px;
+        border: 2px solid #009fbd;
+        height: fit-content;
+    }
+
+    .checkout-title {
+        font-size: 23px;
+        font-weight: 700;
+        margin: 25px 0;
+        text-transform: uppercase;
+    }
+
+    .coupon-notice {
+        font-size: 17px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 30px;
+    }
+
+        .coupon-notice a {
+            color: #009fbd;
+            text-decoration: none;
         }
+
+            .coupon-notice a:hover {
+                text-decoration: underline;
+            }
+
+    /* Thông tin giao hàng */
+    .address-edit {
+        display: inline-block;
+        color: #168bd2;
+        margin-bottom: 18px;
+        text-decoration: none;
+    }
+
+        .address-edit:hover {
+            text-decoration: underline;
+        }
+
+    .checkout-form-group {
+        margin-bottom: 22px;
+    }
+
+        .checkout-form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+    .checkout-input {
+        width: 100%;
+        height: 49px;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        background: #fff;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+        .checkout-input:focus {
+            outline: none;
+            border-color: #009fbd;
+        }
+
+        .checkout-input[readonly] {
+            background: #f8f8f8;
+        }
+
+    .validation-message {
+        color: #d43f3a;
+        font-size: 13px;
+    }
+
+    /* Bảng sản phẩm */
+    .order-box h3 {
+        font-size: 21px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin: 30px 0 20px;
+    }
+
+    .order-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .order-table th {
+            padding: 12px 0;
+            border-bottom: 2px solid #e5e5e5;
+            text-align: left;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+            .order-table th:last-child,
+            .order-table td:last-child {
+                text-align: right;
+            }
+
+        .order-table td {
+            padding: 14px 0;
+            border-bottom: 1px solid #e5e5e5;
+            font-size: 15px;
+        }
+
+    .order-product-name {
+        color: #666;
+    }
+
+    .order-price {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* Tổng tiền */
+    .order-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 16px;
+    }
+
+        .order-total strong {
+            font-weight: 700;
+        }
+
+    .order-grand-total {
+        border-bottom: 2px solid #e5e5e5;
+    }
+
+    /* Phương thức thanh toán */
+    .payment-option {
+        padding: 15px 0;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 16px;
+    }
+
+        .payment-option label {
+            font-weight: 700;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+    .payment-description {
+        margin: 12px 0 0 25px;
+        line-height: 1.6;
+        color: #444;
+    }
+
+    .payment-option input[type="radio"] {
+        accent-color: #009fbd;
+        width: 15px;
+        height: 15px;
+    }
+
+    /* Phương thức giao hàng */
+    .shipping-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+        .shipping-options label {
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        .shipping-options input {
+            accent-color: #009fbd;
+        }
+
+    /* Ghi chú */
+    .checkout-note {
+        width: 100%;
+        min-height: 110px;
+        padding: 12px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+        font-size: 15px;
+    }
+
+    /* Nút đặt hàng */
+    .place-order-button {
+        width: 100%;
+        padding: 15px;
+        margin-top: 25px;
+        background: #f04b27;
+        border: none;
+        color: white;
+        font-size: 21px;
+        font-weight: 700;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+
+        .place-order-button:hover {
+            background: #d83c1b;
+        }
+
+    .privacy-notice {
+        font-size: 14px;
+        line-height: 1.7;
+        margin-top: 22px;
+        color: #444;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .checkout-left,
+        .checkout-right {
+            width: 100%;
+            padding: 15px;
+        }
+
+        .checkout-right {
+            margin-top: 30px;
+        }
+
+        .checkout-title {
+            font-size: 20px;
+        }
+    }
+</style>
 
 <script>
     function enableAddressEdit() {
-        document.getElementById("shippingAddress").removeAttribute("readonly");
+        document.getElementById("shippingAddress")
+            .removeAttribute("readonly");
+
         document.getElementById("newAddressGroup").style.display = "block";
     }
 
     function updateShippingAddress() {
-        var newAddress = document.getElementById("newShippingAddress").value;
-        if (newAddress) {
-            document.getElementById("shippingAddress").value = newAddress;
+        var newAddress =
+            document.getElementById("newShippingAddress").value;
+
+        if (newAddress && newAddress.trim() !== "") {
+            document.getElementById("shippingAddress").value =
+                newAddress.trim();
         }
-    }</script>
+    }
+</script>
 
-<h2>ĐẶT HÀNG</h2>
+<div class="checkout-page">
+    <div class="container">
 
-@using (Html.BeginForm("Checkout", "Order", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
+        @using (Html.BeginForm(
+            "Checkout",
+            "Order",
+            FormMethod.Post,
+            new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
 
-    <h3>Thông tin đơn hàng</h3>
-    <div class="form-group">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th colspan="2">Sản phẩm</th>
-                    <th>Số lượng</th>
-                    <th>Đơn giá</th>
-                    <th>Thành tiền</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.CartItems)
-                {
-                    <tr>
-                        <td><img src="@item.ProductImage" /></td>
-                        <td>@item.ProductName</td>
-                        <td>@item.Quantity</td>
-                        <td>@item.UnitPrice</td>
-                        <td>@item.TotalPrice</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            @Html.ValidationSummary(
+                false,
+                "",
+                new { @class = "validation-message" })
+
+            <div class="checkout-row">
+
+                <!-- CỘT TRÁI: THÔNG TIN GIAO HÀNG -->
+                <div class="checkout-left">
+
+                    <div class="coupon-notice">
+                        Bạn có mã ưu đãi?
+                        <a href="javascript:void(0)">
+                            Ấn vào đây để nhập mã
+                        </a>
+                    </div>
+
+                    <h2 class="checkout-title">
+                        THÔNG TIN THANH TOÁN
+                    </h2>
+
+                    <a href="javascript:void(0)"
+                       class="address-edit"
+                       onclick="enableAddressEdit()">
+                        + Lấy địa chỉ từ thông tin mua hàng trước đây
+                    </a>
+
+                    <div class="checkout-form-group">
+                        <label>Địa chỉ giao hàng *</label>
+
+                        @Html.TextBoxFor(
+                            m => m.ShippingAddress,
+                            new
+                                 {
+                                @class = "checkout-input",
+                                @readonly = "readonly",
+                                id = "shippingAddress",
+                                placeholder = "Địa chỉ giao hàng"
+                            })
+
+                        @Html.ValidationMessageFor(
+                            m => m.ShippingAddress,
+                            "",
+                            new { @class = "validation-message" })
+                    </div>
+
+                    <div class="checkout-form-group"
+                         id="newAddressGroup"
+                         style="display:none;">
+
+                        <label>Địa chỉ mới</label>
+
+                        <input type="text"
+                               id="newShippingAddress"
+                               class="checkout-input"
+                               placeholder="Nhập địa chỉ giao hàng mới" />
+                    </div>
+
+                    <h2 class="checkout-title">
+                        THÔNG TIN GIAO HÀNG
+                    </h2>
+
+                    <div class="checkout-form-group">
+                        <label>Phương thức giao hàng *</label>
+
+                        <div class="shipping-options">
+                            <label>
+                                @Html.RadioButtonFor(
+                                    m => m.ShippingMethod,
+                                    "Giao hàng nhanh")
+                                Giao hàng nhanh
+                            </label>
+
+                            <label>
+                                @Html.RadioButtonFor(
+                                    m => m.ShippingMethod,
+                                    "Giao hàng tiết kiệm")
+                                Giao hàng tiết kiệm
+                            </label>
+                        </div>
+
+                        @Html.ValidationMessageFor(
+                            m => m.ShippingMethod,
+                            "",
+                            new { @class = "validation-message" })
+                    </div>
+
+                    <h2 class="checkout-title">
+                        THÔNG TIN BỔ SUNG
+                    </h2>
+
+                    <div class="checkout-form-group">
+                        <label>Ghi chú đơn hàng (tùy chọn)</label>
+
+                        <textarea class="checkout-note"
+                                  placeholder="Ghi chú thêm về đơn hàng (nếu có)"></textarea>
+                    </div>
+
+                </div>
+
+                <!-- CỘT PHẢI: ĐƠN HÀNG -->
+                <div class="checkout-right">
+
+                    <div class="order-box">
+
+                        <h3>ĐƠN HÀNG CỦA BẠN</h3>
+
+                        <table class="order-table">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Tạm tính</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item in Model.CartItems)
+                                {
+                                    <tr>
+                                        <td class="order-product-name">
+                                            @item.ProductName
+                                            <strong> × @item.Quantity</strong>
+                                        </td>
+
+                                        <td class="order-price">
+                                            @item.TotalPrice.ToString("N0") VNĐ
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <div class="order-total">
+                            <strong>Tạm tính</strong>
+
+                            <strong>
+                                @Model.TotalAmount.ToString("N0") VNĐ
+                            </strong>
+                        </div>
+
+                        <div class="order-total">
+                            <span>Shipment</span>
+                            <span>Giao hàng sẽ được xác định</span>
+                        </div>
+
+                        <div class="order-total order-grand-total">
+                            <strong>Tổng</strong>
+
+                            <strong>
+                                @Model.TotalAmount.ToString("N0") VNĐ
+                            </strong>
+                        </div>
+
+                        <h3>PHƯƠNG THỨC THANH TOÁN</h3>
+
+                        <div class="payment-option">
+                            @Html.RadioButtonFor(
+                                m => m.PaymentMethod,
+                                "Paypal",
+                                new { id = "paymentPaypal" })
+
+                            <label for="paymentPaypal">
+                                Paypal
+                            </label>
+
+                            <p class="payment-description">
+                                Thanh toán trực tuyến qua Paypal.
+                            </p>
+                        </div>
+
+                        <div class="payment-option">
+                            @Html.RadioButtonFor(
+                                m => m.PaymentMethod,
+                                "Tiền mặt",
+                                new { id = "paymentCash" })
+
+                            <label for="paymentCash">
+                                Tiền mặt khi nhận hàng
+                            </label>
+                        </div>
+
+                        <div class="payment-option">
+                            @Html.RadioButtonFor(
+                                m => m.PaymentMethod,
+                                "Mua trước trả sau",
+                                new { id = "paymentLater" })
+
+                            <label for="paymentLater">
+                                Mua trước trả sau
+                            </label>
+                        </div>
+
+                        @Html.ValidationMessageFor(
+                            m => m.PaymentMethod,
+                            "",
+                            new { @class = "validation-message" })
+
+                        @Html.HiddenFor(m => m.TotalAmount)
+
+                        <button type="submit"
+                                class="place-order-button"
+                                onclick="updateShippingAddress()">
+                            ĐẶT HÀNG
+                        </button>
+
+                        <p class="privacy-notice">
+                            Thông tin cá nhân của bạn sẽ được sử dụng
+                            để xử lý đơn hàng và nâng cao trải nghiệm
+                            sử dụng website.
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+        }
     </div>
-
-    <h3>Thông tin giao hàng</h3>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ShippingAddress, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.ShippingAddress, new { @class = "form-control", @readonly = "readonly", @id = "shippingAddress" })
-            @Html.ValidationMessageFor(m => m.ShippingAddress)
-            <button type="button" class="btn btn-link" onclick="enableAddressEdit()">Chỉnh sửa</button>
-        </div>
-    </div>
-
-    <div class="form-group" id="newAddressGroup" style="display:none;">
-        @Html.LabelFor(m => m.ShippingAddress, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            <input type="text" id="newShippingAddress" class="form-control" />
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.ShippingMethod, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.RadioButtonFor(m => m.ShippingMethod, "Giao hàng nhanh") Giao hàng nhanh<br />
-            @Html.RadioButtonFor(m => m.ShippingMethod, "Giao hàng tiết kiệm") Giao hàng tiết kiệm
-            @Html.ValidationMessageFor(m => m.ShippingMethod)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.PaymentMethod, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.RadioButtonFor(m => m.PaymentMethod, "Tiền mặt") Tiền mặt<br />
-            @Html.RadioButtonFor(m => m.PaymentMethod, "Paypal") Paypal<br />
-            @Html.RadioButtonFor(m => m.PaymentMethod, "Mua trước trả sau") Mua trước trả sau
-            @Html.ValidationMessageFor(m => m.PaymentMethod)
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.TotalAmount, new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.TotalAmount, new { @class = "form-control", @readonly = "readonly" })
-            @Html.ValidationMessageFor(m => m.TotalAmount)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Đặt hàng" class="btn btn-default" onclick="updateShippingAddress()" />
-        </div>
-    </div>
-}
+</div>

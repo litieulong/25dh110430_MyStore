@@ -26,6 +26,8 @@ namespace _25dh110430_MyStore.Models.ViewModel
         [Display(Name = "Phương thức giao hàng")]
         public string ShippingMethod { get; set; }
 
+        [StringLength(50, ErrorMessage = "Địa chỉ không được vượt quá 50 ký tự.")]
+        [RegularExpression(@"^\S+$", ErrorMessage = "Địa chỉ không được chứa khoảng trắng.")]
         [Display(Name = "Địa chỉ giao hàng")]
         public string ShippingAddress { get; set; }
 
