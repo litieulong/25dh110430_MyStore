@@ -1,0 +1,224 @@
+﻿@model IEnumerable<_25dh110430_MyStore.Models.Customer>
+
+@{
+    ViewBag.Title = "Thông tin khách hàng";
+    Layout = "~/Areas/Admin/Views/Shared/Admin_Layout.cshtml";
+}
+
+<style>
+    .customer-container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+        margin: 25px auto;
+    }
+
+    .customer-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #263238;
+        margin-bottom: 25px;
+        border-left: 5px solid #6c757d;
+        padding-left: 15px;
+    }
+
+    .customer-search {
+        margin-bottom: 22px;
+    }
+
+        .customer-search .form-control {
+            height: 40px;
+            border-radius: 7px;
+            box-shadow: none;
+        }
+
+    .btn-search {
+        background: #475467;
+        color: white;
+        border-radius: 7px;
+        padding: 9px 18px;
+        border: none;
+    }
+
+        .btn-search:hover {
+            background: #344054;
+            color: white;
+        }
+
+    .customer-table th {
+        background: #475467;
+        color: white;
+        white-space: nowrap;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .customer-table td {
+        vertical-align: middle !important;
+    }
+
+    .customer-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .customer-table td:last-child {
+        white-space: nowrap;
+    }
+
+    .btn-customer-detail {
+        background: #e9ecef;
+        color: #344054;
+        border: 1px solid #d5d9df;
+        border-radius: 6px;
+        padding: 6px 10px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+    }
+
+        .btn-customer-detail:hover {
+            background: #dfe3e8;
+            color: #263238;
+            text-decoration: none;
+        }
+
+    .btn-customer-order {
+        background: #475467;
+        color: white;
+        border-radius: 6px;
+        padding: 6px 10px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+    }
+
+        .btn-customer-order:hover {
+            background: #344054;
+            color: white;
+            text-decoration: none;
+        }
+
+    .customer-total {
+        margin-top: 15px;
+        color: #667085;
+    }
+</style>
+
+<div class="customer-container">
+
+    <!-- TIÊU ĐỀ -->
+    <h2 class="customer-title">THÔNG TIN KHÁCH HÀNG</h2>
+
+    <!-- TÌM KIẾM -->
+    @using (Html.BeginForm("Index", "Customers",
+        new { area = "Admin" }, FormMethod.Get))
+    {
+        <div class="row customer-search">
+
+            <div class="col-md-4">
+                <input type="text"
+                       name="searchTerm"
+                       value="@ViewBag.SearchTerm"
+                       class="form-control"
+                       placeholder="Nhập tên, username, email hoặc số điện thoại..." />
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-search">
+                    <i class="fa fa-search"></i> Tìm kiếm
+                </button>
+            </div>
+
+        </div>
+    }
+
+    <!-- BẢNG KHÁCH HÀNG -->
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover customer-table">
+
+            <thead>
+                <tr>
+                    <th>Mã khách hàng</th>
+                    <th>Username</th>
+                    <th>Họ tên</th>
+                    <th>Số điện thoại</th>
+                    <th>Email</th>
+                    <th>Địa chỉ</th>
+                    <th>Số lượng đã mua</th>
+                    <th>Chi tiết</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.CustomerID</td>
+                            <td>@item.Username</td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.CustomerPhone</td>
+                            <td>@item.CustomerEmail</td>
+                            <td>@item.CustomerAddress</td>
+
+                            <!-- XEM ĐƠN HÀNG -->
+                            <td class="text-center">
+                                @{
+                                    var quantities = ViewBag.PurchasedQuantities
+                                        as Dictionary<int, int>;
+
+                                    int totalQuantity = 0;
+
+                                    if (quantities != null &&
+                                        quantities.ContainsKey(item.CustomerID))
+                                    {
+                                        totalQuantity = quantities[item.CustomerID];
+                                    }
+                                }
+
+                                <strong>@totalQuantity</strong> sản phẩm
+                            </td>
+
+                            <!-- CHI TIẾT CUSTOMER -->
+                            <td class="text-center">
+                                @Html.ActionLink(
+                                         "Chi tiết",
+                                         "Details",
+                                         "Customers",
+                                         new
+                                         {
+                                             area = "Admin",
+                                             id = item.CustomerID
+                                         },
+                                         new { @class = "btn-customer-detail" }
+                                     )
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            Không tìm thấy khách hàng.
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- TỔNG KHÁCH HÀNG -->
+    <p class="customer-total">
+        Tổng số khách hàng:
+        <strong>@(Model == null ? 0 : Model.Count())</strong>
+    </p>
+
+</div>

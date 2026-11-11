@@ -105,5 +105,221 @@ namespace _25dh110430_MyStore.Controllers
 
             return View(model);
         }
+
+
+
+        // GET: Products/Camera
+        public ActionResult Camera(string searchTerm, string sortOrder)
+        {
+            // Lấy tất cả sản phẩm, chưa lọc danh mục
+            IQueryable<Product> products = db.Products
+                .Include("Category")
+                .Where(p => p.CategoryID == 1006);
+
+            // TÌM KIẾM THEO TÊN, MÔ TẢ HOẶC DANH MỤC
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm) ||
+                    p.Category.CategoryName.Contains(searchTerm)
+                );
+            }
+
+            // SẮP XẾP SẢN PHẨM
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products
+                        .OrderBy(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "price_desc":
+                    products = products
+                        .OrderByDescending(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "name_asc":
+                    products = products
+                        .OrderBy(p => p.ProductName)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                default:
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            var result = products.ToList();
+
+            ViewBag.CategoryName = "Balo Máy Ảnh";
+            ViewBag.Count = result.Count;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
+
+            return View("~/Views/Products/Camera.cshtml", result);
+        }
+
+        // GET: Products/Laptop
+
+        public ActionResult Laptop(string searchTerm, string sortOrder)
+        {
+            IQueryable<Product> products = db.Products
+                .Include("Category")
+                .Where(p => p.CategoryID == 1004);
+
+            // TÌM KIẾM
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm) ||
+                    p.Category.CategoryName.Contains(searchTerm)
+                );
+            }
+
+            // SẮP XẾP
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                default:
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            var result = products.ToList();
+
+            ViewBag.CategoryName = "Balo Dựng Laptop";
+            ViewBag.Count = result.Count;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
+
+            return View("~/Views/Products/Laptop.cshtml", result);
+        }
+
+
+        // GET: Products/Travel
+        public ActionResult Travel(string searchTerm, string sortOrder)
+        {
+            IQueryable<Product> products = db.Products
+                .Include("Category")
+                .Where(p => p.CategoryID == 1003);
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm) ||
+                    p.Category.CategoryName.Contains(searchTerm)
+                );
+            }
+
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice)
+                                       .ThenBy(p => p.ProductID);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice)
+                                       .ThenBy(p => p.ProductID);
+                    break;
+
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName)
+                                       .ThenBy(p => p.ProductID);
+                    break;
+
+                default:
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            var result = products.ToList();
+
+            ViewBag.CategoryName = "Balo Du Lịch";
+            ViewBag.Count = result.Count;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
+
+            return View("~/Views/Products/Travel.cshtml", result);
+        }
+
+
+
+        // GET: Products/Soldier
+        public ActionResult Soldier(string searchTerm, string sortOrder)
+        {
+            IQueryable<Product> products = db.Products
+                .Include("Category")
+                .Where(p => p.CategoryID == 1005);
+
+            // TÌM KIẾM
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm) ||
+                    p.Category.CategoryName.Contains(searchTerm)
+                );
+            }
+
+            // SẮP XẾP
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                default:
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            var result = products.ToList();
+
+            ViewBag.CategoryName = "Balo Quân Đội";
+            ViewBag.Count = result.Count;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
+
+            return View("~/Views/Products/Soldier.cshtml", result);
+        }
     }
 }

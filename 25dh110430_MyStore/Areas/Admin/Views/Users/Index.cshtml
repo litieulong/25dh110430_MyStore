@@ -6,118 +6,388 @@
     Layout = "~/Areas/Admin/Views/Shared/Admin_Layout.cshtml";
 }
 
-<h2>QUẢN LÝ TÀI KHOẢN</h2>
+<style>
+    /*.user-page {
+        padding: 25px;
+        background: #f5f7fb;
+        min-height: 80vh;
+    }*/
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-info">
-        @TempData["Message"]
+    /* TIÊU ĐỀ */
+    .user-page-title {
+        font-size: 25px;
+        font-weight: 700;
+        color: #263f53;
+        margin: 0 0 8px;
+    }
+
+    .user-page-subtitle {
+        color: #8993a4;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    /* THÔNG BÁO */
+    .user-alert {
+        border-radius: 8px;
+        padding: 13px 18px;
+        margin-bottom: 20px;
+    }
+
+    /* KHUNG TÌM KIẾM */
+    .user-search-card {
+        background: white;
+        padding: 22px;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+        margin-bottom: 22px;
+    }
+
+    .user-search-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #263f53;
+        margin: 0 0 18px;
+    }
+
+    .user-search-form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-search-input,
+    .user-role-select {
+        height: 42px;
+        border: 1px solid #dfe4ea;
+        border-radius: 7px;
+        padding: 8px 12px;
+        outline: none;
+        background: white;
+        color: #444;
+    }
+
+    .user-search-input {
+        width: 280px;
+    }
+
+    .user-role-select {
+        width: 180px;
+    }
+
+        .user-search-input:focus,
+        .user-role-select:focus {
+            border-color: #426b9e;
+            box-shadow: 0 0 0 2px rgba(66,107,158,0.1);
+        }
+
+    .user-btn-search {
+        height: 42px;
+        padding: 0 20px;
+        border: none;
+        border-radius: 7px;
+        background: #263f53;
+        color: white;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .user-btn-search:hover {
+            background: #385b75;
+        }
+
+    .user-btn-reset {
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 18px;
+        border-radius: 7px;
+        background: #eef1f5;
+        color: #536176;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+        .user-btn-reset:hover {
+            background: #dfe4ea;
+            color: #263f53;
+            text-decoration: none;
+        }
+
+    /* KHUNG BẢNG */
+    .user-table-card {
+        background: white;
+        border-radius: 12px;
+        padding: 22px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    }
+
+    .user-table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .user-table-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #263f53;
+        margin: 0;
+    }
+
+    .user-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .user-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0;
+    }
+
+        .user-table thead {
+            background: #f3f6fa;
+        }
+
+        .user-table th {
+            color: #536176;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 15px;
+            border-bottom: 1px solid #e8edf3;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .user-table td {
+            padding: 15px;
+            color: #4b5563;
+            font-size: 14px;
+            border-bottom: 1px solid #edf0f4;
+            vertical-align: middle;
+        }
+
+        .user-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .user-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .user-stt {
+        color: #8993a4;
+        width: 70px;
+    }
+
+    .user-name {
+        font-weight: 600;
+        color: #263f53 !important;
+    }
+
+    /* NHÃN VAI TRÒ */
+    .user-role {
+        display: inline-block;
+        padding: 6px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .user-role-admin {
+        color: #c0392b;
+        background: #fdecea;
+    }
+
+    .user-role-customer {
+        color: #2874a6;
+        background: #eaf3fb;
+    }
+
+    .user-empty {
+        text-align: center;
+        padding: 35px !important;
+        color: #999 !important;
+    }
+
+    /* RESPONSIVE */
+    @@media (max-width: 768px) {
+        .user-page {
+            padding: 15px;
+        }
+
+        .user-search-form {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .user-search-input,
+        .user-role-select,
+        .user-btn-search,
+        .user-btn-reset {
+            width: 100%;
+        }
+
+        .user-table-card,
+        .user-search-card {
+            padding: 15px;
+        }
+    }
+</style>
+
+<div class="user-page">
+
+    <!-- TIÊU ĐỀ -->
+    <div class="user-page-heading">
+        <h2 class="user-page-title">QUẢN LÝ TÀI KHOẢN</h2>
+        <p class="user-page-subtitle">
+            Quản lý danh sách tài khoản và phân loại vai trò người dùng.
+        </p>
     </div>
-}
 
-@using (Html.BeginForm("Index", "Users", FormMethod.Get))
-{
-    <input type="text"
-           name="searchTerm"
-           value="@ViewBag.SearchTerm"
-           placeholder="Nhập Username..." />
+    <!-- THÔNG BÁO -->
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info user-alert">
+            <i class="glyphicon glyphicon-info-sign"></i>
+            @TempData["Message"]
+        </div>
+    }
 
-    <select name="role">
-        <option value="">Tất cả vai trò</option>
-        <option value="A" @(ViewBag.Role == "A" ? "selected" : "")>
-            Admin
-        </option>
-        <option value="C" @(ViewBag.Role == "C" ? "selected" : "")>
-            Customer
-        </option>
-    </select>
+    <!-- TÌM KIẾM -->
+    <div class="user-search-card">
 
-    <button type="submit" class="btn btn-success">
-        Tìm kiếm
-    </button>
-}
+        <h4 class="user-search-title">
+            <i class="glyphicon glyphicon-search"></i>
+            Tìm kiếm tài khoản
+        </h4>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Vai trò</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in Model)
+        @using (Html.BeginForm("Index", "Users",
+            new { area = "Admin" }, FormMethod.Get))
         {
-            <tr>
-                <td>@item.Username</td>
+            <div class="user-search-form">
 
-                <td>
-                    @(item.UserRole == "A" ? "Admin" : "Customer")
-                </td>
+                <input type="text"
+                       name="searchTerm"
+                       value="@ViewBag.SearchTerm"
+                       placeholder="Nhập Username..."
+                       class="user-search-input" />
 
-                <td>
-                    @if (item.UserRole == "C")
+                <select name="role" class="user-role-select">
+
+                    <option value="">Tất cả vai trò</option>
+
+                    <option value="A"
+                            @(ViewBag.Role == "A" ? "selected" : "")>
+                        Admin
+                    </option>
+
+                    <option value="C"
+                            @(ViewBag.Role == "C" ? "selected" : "")>
+                        Customer
+                    </option>
+
+                </select>
+
+                <button type="submit" class="user-btn-search">
+                    <i class="glyphicon glyphicon-search"></i>
+                    Tìm kiếm
+                </button>
+
+                <a href="@Url.Action("Index", "Users", new { area = "Admin" })"
+                   class="user-btn-reset">
+                    <i class="glyphicon glyphicon-refresh"></i>
+                    Làm mới
+                </a>
+
+            </div>
+        }
+
+    </div>
+
+    <!-- DANH SÁCH TÀI KHOẢN -->
+    <div class="user-table-card">
+
+        <div class="user-table-header">
+            <h4 class="user-table-title">
+                <i class="glyphicon glyphicon-user"></i>
+                Danh sách tài khoản
+            </h4>
+        </div>
+
+        <div class="user-table-wrapper">
+
+            <table class="user-table">
+
+                <thead>
+                    <tr>
+                        <th class="user-stt">STT</th>
+                        <th>USERNAME</th>
+                        <th>VAI TRÒ</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
                     {
-                        using (Html.BeginForm("ChangeRole", "Users",
-                            new { area = "Admin", id = item.Username, role = "A" },
-                            FormMethod.Post))
+                        int stt = 1;
+
+                        foreach (var item in Model)
                         {
-                            @Html.AntiForgeryToken()
+                            <tr>
 
-                            <button type="submit"
-                                    class="btn btn-success btn-sm"
-                                    onclick="return confirm('Bạn có chắc muốn trao quyền Admin cho tài khoản này?')">
-                                Trao quyền Admin
-                            </button>
-                        }
-                    }
-                    else if (item.UserRole == "A")
-                    {
-                        using (Html.BeginForm("ChangeRole", "Users",
-                            new { area = "Admin", id = item.Username, role = "C" },
-                            FormMethod.Post))
-                        {
-                            @Html.AntiForgeryToken()
+                                <td class="user-stt">
+                                    @stt
+                                </td>
 
-                            <button type="submit"
-                                    class="btn btn-warning btn-sm"
-                                    onclick="return confirm('Bạn có chắc muốn chuyển tài khoản này về Customer?')">
-                                Hạ quyền Admin
-                            </button>
-                        }
-                    }
-                </td>
+                                <td class="user-name">
+                                    @item.Username
+                                </td>
 
-                <td>
-                    @if (item.UserRole == "C")
-                    {
-                        using (Html.BeginForm("ChangeRole", "Users",
-                            new { id = item.Username, role = "A" },
-                            FormMethod.Post))
-                        {
-                            @Html.AntiForgeryToken()
+                                <td>
+                                    @if (item.UserRole == "A")
+                                    {
+                                        <span class="user-role user-role-admin">
+                                            Admin
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="user-role user-role-customer">
+                                            Customer
+                                        </span>
+                                    }
+                                </td>
 
-                            <button type="submit" class="btn btn-success btn-sm">
-                                Trao quyền Admin
-                            </button>
+                            </tr>
+
+                            stt++;
                         }
                     }
                     else
                     {
-                        using (Html.BeginForm("ChangeRole", "Users",
-                            new { id = item.Username, role = "C" },
-                            FormMethod.Post))
-                        {
-                            @Html.AntiForgeryToken()
+                        <tr>
+                            <td colspan="3" class="user-empty">
+                                <i class="glyphicon glyphicon-search"
+                                   style="font-size:28px;"></i>
 
-                            <button type="submit" class="btn btn-warning btn-sm">
-                                Hạ quyền Admin
-                            </button>
-                        }
+                                <h4>Không tìm thấy tài khoản</h4>
+
+                                <p>Vui lòng thử lại với từ khóa khác.</p>
+                            </td>
+                        </tr>
                     }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

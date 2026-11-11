@@ -87,10 +87,24 @@ namespace _25dh110430_MyStore.Controllers
                 return Content("Không tìm thấy thông tin khách hàng: " + username);
             }
 
+            // KIỂM TRA ĐỊA CHỈ GIAO HÀNG
+            if (string.IsNullOrWhiteSpace(model.ShippingAddress))
+            {
+                // Nếu form không gửi địa chỉ thì lấy địa chỉ đã lưu của khách hàng
+                model.ShippingAddress = customer.CustomerAddress;
+            }
+
+            if (string.IsNullOrWhiteSpace(model.ShippingAddress))
+            {
+                ModelState.AddModelError(
+                    "ShippingAddress",
+                    "Vui lòng nhập địa chỉ giao hàng!"
+                );
+            }
+
             // KIỂM TRA THÔNG TIN FORM
             if (!ModelState.IsValid)
             {
-                // Nạp lại dữ liệu giỏ hàng để hiển thị Checkout
                 model.CartItems = cart.Items.ToList();
                 model.TotalAmount = cart.TotalValue();
 
@@ -110,7 +124,11 @@ namespace _25dh110430_MyStore.Controllers
 
                     PaymentStatus = "Chưa thanh toán",
                     OrderStatus = "Chờ xác nhận",
-                    AddressDelivery = model.ShippingAddress,
+
+                    // Lưu địa chỉ giao hàng
+                    AddressDelivery = model.ShippingAddress.Trim(),
+
+
                 };
 
                 db.Orders.Add(order);
@@ -126,10 +144,35 @@ namespace _25dh110430_MyStore.Controllers
                     return Content("LỖI: Giỏ hàng không có sản phẩm.");
                 }
 
-                int soSanPham = 0;
-
+                // KIỂM TRA TỒN KHO TRƯỚC KHI TRỪ
                 foreach (var item in cartItems)
                 {
+                    var product = db.Products.Find(item.ProductID);
+
+                    if (product == null)
+                    {
+                        return Content("Không tìm thấy sản phẩm ID: " + item.ProductID);
+                    }
+
+                    if (product.StockQuantity < item.Quantity)
+                    {
+                        return Content(
+                            "Sản phẩm " + product.ProductName +
+                            " không đủ hàng trong kho. Số lượng còn lại: " +
+                            product.StockQuantity
+                        );
+                    }
+                }
+
+                // TẠO ORDER DETAIL VÀ TRỪ TỒN KHO
+                foreach (var item in cartItems)
+                {
+                    var product = db.Products.Find(item.ProductID);
+
+                    // Trừ số lượng tồn kho
+                    product.StockQuantity -= item.Quantity;
+
+                    // Tạo chi tiết đơn hàng
                     var orderDetail = new OrderDetail
                     {
                         OrderID = order.OrderID,
@@ -139,9 +182,10 @@ namespace _25dh110430_MyStore.Controllers
                     };
 
                     db.OrderDetails.Add(orderDetail);
-
-                    soSanPham++;
                 }
+
+                // Lưu OrderDetail và số lượng tồn kho mới
+                db.SaveChanges();
 
                 // Lưu OrderDetail
                 int soDongDaLuu = db.SaveChanges();
@@ -195,29 +239,37 @@ namespace _25dh110430_MyStore.Controllers
         }
 
         // GET: Order/OrderHistory
-        public ActionResult OrderHistory()
+        public ActionResult OrderHistory(string status)
         {
             var username = User.Identity.Name;
 
             if (string.IsNullOrEmpty(username))
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
             var customer = db.Customers
                 .FirstOrDefault(c => c.Username == username);
 
             if (customer == null)
-            {
                 return Content("Không tìm thấy thông tin khách hàng.");
+
+            // Lấy đơn hàng của khách hàng hiện tại
+            var orders = db.Orders
+                .Where(o => o.CustomerID == customer.CustomerID);
+
+            // Lọc theo trạng thái đơn hàng
+            if (!string.IsNullOrWhiteSpace(status) && status != "TatCa")
+            {
+                orders = orders.Where(o => o.OrderStatus == status);
             }
 
-            var orders = db.Orders
-                .Where(o => o.CustomerID == customer.CustomerID)
+            // Sắp xếp đơn hàng mới nhất lên đầu
+            var result = orders
                 .OrderByDescending(o => o.OrderDate)
                 .ToList();
 
-            return View(orders);
+            ViewBag.Status = status ?? "TatCa";
+
+            return View(result);
         }
 
         // POST: Order/CancelOrder
@@ -237,7 +289,7 @@ namespace _25dh110430_MyStore.Controllers
 
             if (customer == null)
             {
-                return Content("Không tìm thấy Customer: " + username);
+                return RedirectToAction("OrderHistory");
             }
 
             var order = db.Orders.FirstOrDefault(o =>
@@ -247,21 +299,22 @@ namespace _25dh110430_MyStore.Controllers
 
             if (order == null)
             {
-                return Content(
-                    "Không tìm thấy đơn hàng ID: " + id +
-                    " hoặc đơn hàng không thuộc Customer này."
-                );
+                return HttpNotFound();
             }
 
-            if (order.OrderStatus != "Chờ xác nhận")
+            // Chỉ cho phép hủy đơn đang chờ xác nhận
+            if (order.OrderStatus == null ||
+                order.OrderStatus.Trim() != "Chờ xác nhận")
             {
-                return Content("Không thể hủy đơn. Trạng thái hiện tại: " + order.OrderStatus);
+                return RedirectToAction("OrderHistory");
             }
 
+            // Cập nhật trạng thái đơn hàng
             order.OrderStatus = "Đã hủy";
             order.CancelledAt = DateTime.Now;
 
-            var check = db.Orders.FirstOrDefault(o => o.OrderID == id);
+            // LƯU THAY ĐỔI VÀO DATABASE
+            db.SaveChanges();
 
             return RedirectToAction("OrderHistory");
         }

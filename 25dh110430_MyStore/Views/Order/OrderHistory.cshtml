@@ -6,122 +6,355 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    /*.history-page {
+        background: #f5f7fb;
+        min-height: 100vh;
+        padding: 35px 25px;
+        border-radius: 14px;
+    }*/
+
+    .history-header {
+        margin-bottom: 28px;
+    }
+
+        .history-header h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #253858;
+            margin: 0 0 8px;
+        }
+
+        .history-header p {
+            color: #8492a6;
+            font-size: 14px;
+            margin: 0;
+        }
+
+    .filter-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 22px;
+    }
+
+        .filter-list a {
+            display: inline-block;
+            padding: 10px 17px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            background: #fff;
+            color: #52627a;
+            transition: .2s;
+        }
+
+            .filter-list a:hover {
+                background: #e9efff;
+                color: #3563d9;
+            }
+
+            .filter-list a.active {
+                background: #3563d9;
+                color: white;
+            }
+
+    .history-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 22px;
+        box-shadow: 0 4px 18px rgba(30, 50, 80, .05);
+        overflow-x: auto;
+    }
+
+    .history-table {
+        width: 100%;
+        min-width: 950px;
+        border-collapse: collapse;
+        margin: 0;
+        border: none;
+    }
+
+        .history-table thead th {
+            background: #f5f7fb;
+            color: #667085;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 15px 12px;
+            border: none;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .history-table tbody td {
+            padding: 17px 12px;
+            border: none;
+            border-bottom: 1px solid #f1f3f7;
+            color: #475467;
+            font-size: 13px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .history-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .history-table tbody tr:hover {
+            background: #fafbff;
+        }
+
+    .order-code {
+        color: #3563d9;
+        font-weight: 700;
+    }
+
+    .order-price {
+        color: #16a36a;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #fff4db;
+        color: #c58a13;
+    }
+
+    .status-confirmed {
+        background: #e5f3ff;
+        color: #2580c7;
+    }
+
+    .status-shipping {
+        background: #e9eaff;
+        color: #5559c9;
+    }
+
+    .status-delivered {
+        background: #e2f7ec;
+        color: #168653;
+    }
+
+    .status-cancelled {
+        background: #ffe8e8;
+        color: #d64545;
+    }
+
+    .btn-detail {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 7px;
+        background: #eaf1ff;
+        color: #3563d9;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        margin: 2px;
+    }
+
+        .btn-detail:hover {
+            background: #3563d9;
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .btn-cancel {
+        padding: 8px 12px;
+        border-radius: 7px;
+        background: #fff0f0;
+        color: #dc4545;
+        font-size: 12px;
+        font-weight: 600;
+        border: none;
+        margin: 2px;
+        transition: .2s;
+    }
+
+        .btn-cancel:hover {
+            background: #dc4545;
+            color: white;
+        }
+
+    .empty-history {
+        text-align: center;
+        padding: 45px 20px;
+        color: #8492a6;
+    }
+
+        .empty-history i {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+    @@media (max-width: 768px) {
+        .history-page {
+            padding: 20px 10px;
+        }
+
+        .history-card {
+            padding: 12px;
+        }
+
+        .history-header h2 {
+            font-size: 22px;
+        }
+    }
+</style>
+
 <div class="container">
-    <h2>LỊCH SỬ MUA HÀNG</h2>
+    <div class="history-page">
 
-    @if (Model == null || !Model.Any())
-    {
-        <div class="alert alert-info">
-            Bạn chưa có đơn hàng nào.
+        <div class="history-header">
+            <h2>LỊCH SỬ MUA HÀNG</h2>
+            <p>Theo dõi và quản lý các đơn hàng của bạn</p>
         </div>
-    }
-    else
-    {
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Ngày đặt</th>
-                    <th>Tổng tiền</th>
-                    <th>Thanh toán</th>
-                    <th>Trạng thái đơn hàng</th>
-                    <th>Địa chỉ giao hàng</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
 
-            <tbody>
-                @foreach (var order in Model)
-                {
-                    <tr>
-                        <td>#@order.OrderID</td>
+        <div class="filter-list">
+            <a href="@Url.Action("OrderHistory", new { status = "TatCa", searchTerm = ViewBag.SearchTerm })">Tất cả</a>
+            <a href="@Url.Action("OrderHistory", new { status = "Chờ xác nhận", searchTerm = ViewBag.SearchTerm })">Chờ xác nhận</a>
+            <a href="@Url.Action("OrderHistory", new { status = "Đã xác nhận", searchTerm = ViewBag.SearchTerm })">Đã xác nhận</a>
+            <a href="@Url.Action("OrderHistory", new { status = "Đang giao hàng", searchTerm = ViewBag.SearchTerm })">Đang giao hàng</a>
+            <a href="@Url.Action("OrderHistory", new { status = "Đã giao hàng", searchTerm = ViewBag.SearchTerm })">Đã giao hàng</a>
+            <a href="@Url.Action("OrderHistory", new { status = "Đã hủy", searchTerm = ViewBag.SearchTerm })">Đã hủy</a>
+        </div>
 
-                        <td>
-                            @order.OrderDate.ToString("dd/MM/yyyy")
-                        </td>
+        <div class="history-card">
 
-                        <td>
-                            @order.TotalAmount.ToString(
-                                "#,##0",
-                                new System.Globalization.CultureInfo("vi-VN")
-                            ) VNĐ
-                        </td>
+            @if (Model == null || !Model.Any())
+            {
+                <div class="empty-history">
+                    <i class="glyphicon glyphicon-shopping-cart"></i>
+                    <h4>Chưa có đơn hàng</h4>
+                    <p>Không tìm thấy đơn hàng phù hợp.</p>
+                </div>
+            }
+            else
+            {
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Thanh toán</th>
+                            <th>Trạng thái</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
 
-                        <td>
-                            @order.PaymentStatus
-                        </td>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="order-code">#@order.OrderID</span>
+                                </td>
 
-                        <td>
-                            @if (order.OrderStatus == "Chờ xác nhận")
-                            {
-                                <span class="label label-warning">
-                                    Chờ xác nhận
-                                </span>
-                            }
-                            else if (order.OrderStatus == "Đã xác nhận")
-                            {
-                                <span class="label label-info">
-                                    Đã xác nhận
-                                </span>
-                            }
-                            else if (order.OrderStatus == "Đang giao hàng")
-                            {
-                                <span class="label label-primary">
-                                    Đang giao hàng
-                                </span>
-                            }
-                            else if (order.OrderStatus == "Đã giao hàng")
-                            {
-                                <span class="label label-success">
-                                    Đã giao hàng
-                                </span>
-                            }
-                            else if (order.OrderStatus == "Đã hủy")
-                            {
-                                <span class="label label-danger">
-                                    Đã hủy
-                                </span>
-                            }
-                            else
-                            {
-                                @order.OrderStatus
-                            }
-                        </td>
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
 
-                        <td>
-                            @order.AddressDelivery
-                        </td>
+                                <td>
+                                    <span class="order-price">
+                                        @order.TotalAmount.ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) VNĐ
+                                    </span>
+                                </td>
 
-                        <td>
-                            @Html.ActionLink(
-                                "Xem chi tiết",
-                                "OrderSuccess",
-                                "Order",
-                                new { id = order.OrderID },
-                                new { @class = "btn btn-info btn-sm" }
-                            )
+                                <td>@order.PaymentStatus</td>
 
-                            @if (order.OrderStatus == "Chờ xác nhận")
-                            {
-                                <form action="@Url.Action("CancelOrder", "Order")"
-                                      method="post"
-                                      style="display:inline;">
+                                <td>
+                                    @if (order.OrderStatus == "Chờ xác nhận")
+                                    {
+                                        <span class="status-badge status-pending">Chờ xác nhận</span>
+                                    }
+                                    else if (order.OrderStatus == "Đã xác nhận")
+                                    {
+                                        <span class="status-badge status-confirmed">Đã xác nhận</span>
+                                    }
+                                    else if (order.OrderStatus == "Đang giao hàng")
+                                    {
+                                        <span class="status-badge status-shipping">Đang giao hàng</span>
+                                    }
+                                    else if (order.OrderStatus == "Đã giao hàng")
+                                    {
+                                        <span class="status-badge status-delivered">Đã giao hàng</span>
+                                    }
+                                    else if (order.OrderStatus == "Đã hủy")
+                                    {
+                                        <span class="status-badge status-cancelled">Đã hủy</span>
+                                    }
+                                    
+                                    else
+                                    {
+                                        @order.OrderStatus
+                                    }
+                                </td>
 
-                                    @Html.AntiForgeryToken()
+                                <td>@order.AddressDelivery</td>
 
-                                    <input type="hidden" name="id" value="@order.OrderID" />
+                                <td>
+                                    @Html.ActionLink(
+                                                  "Xem chi tiết",
+                                                  "OrderSuccess",
+                                                  "Order",
+                                                  new { id = order.OrderID },
+                                                  new { @class = "btn-detail" }
+                                              )
 
-                                    <button type="submit"
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
-                                        Hủy đơn
-                                    </button>
-                                </form>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+                                    @if (order.OrderStatus == "Chờ xác nhận")
+                                    {
+                                        <form action="@Url.Action("CancelOrder", "Order")"
+                                              method="post"
+                                              style="display:inline;">
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@order.OrderID" />
+
+                                            <button type="submit"
+                                                    class="btn-cancel"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                                Hủy đơn
+                                            </button>
+                                        </form>
+                                    }
+
+                                    <!--nút đặt lại-->
+                                    @if (order.OrderStatus == "Đã hủy")
+                                    {
+                                        <form action="@Url.Action("Reorder", "Order")"
+                                              method="post"
+                                              style="display:inline;">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden" name="id" value="@order.OrderID" />
+
+                                            <button type="submit" class="btn-detail"
+                                                    onclick="return confirm('Bạn muốn đặt lại đơn hàng này?');">
+                                                <i class="glyphicon glyphicon-repeat"></i>
+                                                Đặt lại
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        </div>
+    </div>
 </div>

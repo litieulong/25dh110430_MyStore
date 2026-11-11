@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,17 +14,42 @@ namespace _25dh110430_MyStore
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            // ROUTE CAMERA
             routes.MapRoute(
-            name: "Default",
-            url: "{controller}/{action}/{id}",
-            defaults: new
-     {
-        controller = "Home",
-        action = "Index",
-        id = UrlParameter.Optional
-    },
-    namespaces: new[] { "_25dh110430_MyStore.Controllers" }
-);
+                name: "CameraRoute",
+                url: "Products/Camera",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Camera"
+                },
+                namespaces: new[] { "_25dh110430_MyStore.Controllers" }
+            );
+
+            // ROUTE LAPTOP
+            routes.MapRoute(
+                name: "LaptopRoute",
+                url: "Products/Laptop",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Laptop"
+                },
+                namespaces: new[] { "_25dh110430_MyStore.Controllers" }
+            );
+
+            // ROUTE MẶC ĐỊNH
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Index",
+                    id = UrlParameter.Optional
+                },
+                namespaces: new[] { "_25dh110430_MyStore.Controllers" }
+            );
         }
     }
 }

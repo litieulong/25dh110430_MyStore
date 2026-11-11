@@ -1,58 +1,182 @@
-﻿@model _25dh110430_MyStore.Models.Customer
+﻿
+@model _25dh110430_MyStore.Models.Customer
 
 @{
     ViewBag.Title = "Thông tin tài khoản";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <h2>THÔNG TIN TÀI KHOẢN</h2>
+<style>
+    .account-page {
+        min-height: 75vh;
+        padding: 50px 15px;
+        background: #f5f7fb;
+    }
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <strong>Thông tin khách hàng</strong>
+    .account-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .account-title {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+        .account-title h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #26354a;
+            margin-bottom: 10px;
+        }
+
+        .account-title p {
+            color: #8993a4;
+            font-size: 14px;
+        }
+
+    .account-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+        border: 1px solid #edf0f5;
+    }
+
+    .account-card-header {
+        padding: 25px 30px;
+        background: linear-gradient(135deg, #263f63, #426b9e);
+        color: white;
+    }
+
+        .account-card-header h4 {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .account-card-header p {
+            margin: 8px 0 0;
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+    .account-card-body {
+        padding: 30px;
+    }
+
+    .account-field {
+        margin-bottom: 23px;
+    }
+
+        .account-field:last-child {
+            margin-bottom: 0;
+        }
+
+        .account-field label {
+            display: block;
+            color: #536176;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .account-field .form-control {
+            height: 46px;
+            border: 1px solid #e1e7ef;
+            border-radius: 9px;
+            background: #f8fafd;
+            color: #26354a;
+            font-size: 14px;
+            padding: 10px 15px;
+            box-shadow: none;
+            cursor: default;
+        }
+
+            .account-field .form-control:focus {
+                border-color: #426b9e;
+                box-shadow: none;
+            }
+
+    .account-footer {
+        padding: 18px 30px;
+        background: #fafbfd;
+        border-top: 1px solid #edf0f5;
+        color: #8993a4;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    @@media (max-width: 576px) {
+        .account-page {
+            padding: 30px 10px;
+        }
+
+        .account-card-body {
+            padding: 22px 18px;
+        }
+
+        .account-card-header {
+            padding: 22px 18px;
+        }
+
+        .account-title h2 {
+            font-size: 23px;
+        }
+    }
+</style>
+
+<div class="account-page">
+    <div class="account-container">
+
+        <div class="account-title">
+            <h2>THÔNG TIN TÀI KHOẢN</h2>
+            <p>Quản lý và xem thông tin cá nhân của bạn</p>
         </div>
 
-        <div class="panel-body">
+        <div class="account-card">
 
-            <div class="form-group">
-                <label>Tên đăng nhập</label>
-                <input type="text"
-                       class="form-control"
-                       value="@Model.Username"
-                       readonly />
+            <div class="account-card-header">
+                <h4>Thông tin khách hàng</h4>
+                <p>Thông tin tài khoản đang đăng nhập</p>
             </div>
 
-            <div class="form-group">
-                <label>Họ tên</label>
-                <input type="text"
-                       class="form-control"
-                       value="@Model.CustomerName"
-                       readonly />
+            <div class="account-card-body">
+
+                <div class="account-field">
+                    <label>Tên đăng nhập</label>
+                    <input type="text" class="form-control"
+                           value="@Model.Username" readonly />
+                </div>
+
+                <div class="account-field">
+                    <label>Họ tên</label>
+                    <input type="text" class="form-control"
+                           value="@Model.CustomerName" readonly />
+                </div>
+
+                <div class="account-field">
+                    <label>Email</label>
+                    <input type="text" class="form-control"
+                           value="@Model.CustomerEmail" readonly />
+                </div>
+
+                <div class="account-field">
+                    <label>Số điện thoại</label>
+                    <input type="text" class="form-control"
+                           value="@Model.CustomerPhone" readonly />
+                </div>
+
+                <div class="account-field">
+                    <label>Địa chỉ</label>
+                    <input type="text" class="form-control"
+                           value="@Model.CustomerAddress" readonly />
+                </div>
+
             </div>
 
-            <div class="form-group">
-                <label>Email</label>
-                <input type="text"
-                       class="form-control"
-                       value="@Model.CustomerEmail"
-                       readonly />
-            </div>
-
-            <div class="form-group">
-                <label>Số điện thoại</label>
-                <input type="text"
-                       class="form-control"
-                       value="@Model.CustomerPhone"
-                       readonly />
-            </div>
-
-            <div class="form-group">
-                <label>Địa chỉ</label>
-                <input type="text"
-                       class="form-control"
-                       value="@Model.CustomerAddress"
-                       readonly />
+            <div class="account-footer">
+                Thông tin cá nhân của bạn được hiển thị tại đây.
             </div>
 
         </div>

@@ -7,6 +7,7 @@ using _25dh110430_MyStore.Models;
 
 namespace _25dh110430_MyStore.Areas.Admin.Controllers
 {
+
     public class OrdersController : Controller
     {
         private MyStoreEntities db = new MyStoreEntities();
@@ -16,7 +17,11 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         {
             var orders = db.Orders
                 .Include("Customer")
-                .OrderByDescending(o => o.OrderDate)
+                .ToList()
+                .OrderBy(o =>
+                    o.OrderStatus == "Chờ xác nhận" ? 0 :
+                    o.OrderStatus == "Đã hủy" ? 2 : 1)
+                .ThenByDescending(o => o.OrderDate)
                 .ToList();
 
             return View(orders);

@@ -11,6 +11,7 @@ using _25dh110430_MyStore.Models;
 
 namespace _25dh110430_MyStore.Areas.Admin.Controllers
 {
+
     public class CategoriesController : Controller
     {
         private MyStoreEntities db = new MyStoreEntities();
@@ -46,6 +47,7 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         // POST: Admin/Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Admin/Categories/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "CategoryID,CategoryName")] Category category)

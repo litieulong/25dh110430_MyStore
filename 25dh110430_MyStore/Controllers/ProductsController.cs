@@ -80,20 +80,5 @@ namespace _25dh110430_MyStore.Controllers
         {
             return View();
         }
-
-        //public ActionResult TestStock()
-        //{
-        //    var product = db.Products.FirstOrDefault();
-
-        //    if (product == null)
-        //    {
-        //        return Content("Không có sản phẩm");
-        //    }
-
-        //    return Content(
-        //        "Tên sản phẩm: " + product.ProductName +
-        //        " | Số lượng kho: " + product.StockQuantity
-        //    );
-        //}
     }
 }

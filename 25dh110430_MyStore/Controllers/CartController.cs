@@ -29,15 +29,57 @@ namespace _25dh110430_MyStore.Controllers
             return View(cart); // Phải chắc chắn trả về đối tượng cart có kiểu Cart
         }
 
-        // Thêm sản phẩm vào giỏ
+        // Thêm sản phẩm vào giỏ hàng
         public ActionResult AddToCart(int id, int quantity = 1)
         {
             var product = db.Products.Find(id);
-            if (product != null)
+
+            // Kiểm tra sản phẩm có tồn tại không
+            if (product == null)
             {
-                var cartService = GetCartService();
-                cartService.GetCart().AddItem(product.ProductID, product.ProductImage, product.ProductName, product.ProductPrice, quantity, product.Category.CategoryName);
+                TempData["Error"] = "Không tìm thấy sản phẩm!";
+                return RedirectToAction("Index", "Home");
             }
+
+            // Kiểm tra số lượng nhập
+            if (quantity <= 0)
+            {
+                TempData["Error"] = "Số lượng sản phẩm không hợp lệ!";
+                return RedirectToAction("ProductDetails", "Home",
+                    new { id = id });
+            }
+
+            // Kiểm tra tồn kho
+            if (product.StockQuantity <= 0)
+            {
+                TempData["Error"] = "Sản phẩm đã hết hàng!";
+                return RedirectToAction("ProductDetails", "Home",
+                    new { id = id });
+            }
+
+            // Không cho thêm vượt quá tồn kho
+            if (quantity > product.StockQuantity)
+            {
+                TempData["Error"] = "Số lượng sản phẩm vượt quá tồn kho! Hiện chỉ còn "
+                                    + product.StockQuantity + " sản phẩm.";
+                return RedirectToAction("ProductDetails", "Home",
+                    new { id = id });
+            }
+
+            // Thêm vào giỏ hàng
+            var cartService = GetCartService();
+
+            cartService.GetCart().AddItem(
+                product.ProductID,
+                product.ProductImage,
+                product.ProductName,
+                product.ProductPrice,
+                quantity,
+                product.Category.CategoryName
+            );
+
+            TempData["Success"] = "Đã thêm sản phẩm vào giỏ hàng!";
+
             return RedirectToAction("Index");
         }
 

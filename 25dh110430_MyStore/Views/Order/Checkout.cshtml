@@ -161,30 +161,18 @@
         border-bottom: 2px solid #e5e5e5;
     }
 
-    /* Phương thức thanh toán */
-    .payment-option {
-        padding: 15px 0;
-        border-bottom: 1px solid #e5e5e5;
-        font-size: 16px;
+    .note-counter {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 6px;
+        font-size: 13px;
+        color: #777;
     }
 
-        .payment-option label {
-            font-weight: 700;
-            margin-left: 8px;
-            cursor: pointer;
+        .note-counter.limit-reached {
+            color: #dc3545;
+            font-weight: bold;
         }
-
-    .payment-description {
-        margin: 12px 0 0 25px;
-        line-height: 1.6;
-        color: #444;
-    }
-
-    .payment-option input[type="radio"] {
-        accent-color: #009fbd;
-        width: 15px;
-        height: 15px;
-    }
 
     /* Phương thức giao hàng */
     .shipping-options {
@@ -257,20 +245,26 @@
 
 <script>
     function enableAddressEdit() {
-        document.getElementById("shippingAddress")
-            .removeAttribute("readonly");
-
         document.getElementById("newAddressGroup").style.display = "block";
+
+        document.getElementById("newShippingAddress").focus();
     }
 
     function updateShippingAddress() {
-        var newAddress =
-            document.getElementById("newShippingAddress").value;
+        var newAddress = document
+            .getElementById("newShippingAddress").value.trim();
 
-        if (newAddress && newAddress.trim() !== "") {
-            document.getElementById("shippingAddress").value =
-                newAddress.trim();
+        if (newAddress === "") {
+            alert("Vui lòng nhập địa chỉ giao hàng mới!");
+            return;
         }
+
+        document.getElementById("shippingAddress").value = newAddress;
+
+        // Ẩn phần nhập địa chỉ mới
+        document.getElementById("newAddressGroup").style.display = "none";
+
+        alert("Đã cập nhật địa chỉ giao hàng!");
     }
 </script>
 
@@ -312,23 +306,22 @@
                         + Lấy địa chỉ từ thông tin mua hàng trước đây
                     </a>
 
-                    <div class="checkout-form-group">
-                        <label>Địa chỉ giao hàng *</label>
+                    <div class="checkout-form-group"
+                         id="newAddressGroup"
+                         style="display:none;">
 
-                        @Html.TextBoxFor(
-                            m => m.ShippingAddress,
-                            new
-                                 {
-                                @class = "checkout-input",
-                                @readonly = "readonly",
-                                id = "shippingAddress",
-                                placeholder = "Địa chỉ giao hàng"
-                            })
+                        <label>Địa chỉ mới</label>
 
-                        @Html.ValidationMessageFor(
-                            m => m.ShippingAddress,
-                            "",
-                            new { @class = "validation-message" })
+                        <input type="text"
+                               id="newShippingAddress"
+                               class="checkout-input"
+                               placeholder="Nhập địa chỉ giao hàng mới" />
+
+                        <button type="button"
+                                class="btn btn-success"
+                                onclick="updateShippingAddress()">
+                            Xác nhận địa chỉ
+                        </button>
                     </div>
 
                     <div class="checkout-form-group"
@@ -366,10 +359,10 @@
                             </label>
                         </div>
 
-                        @Html.ValidationMessageFor(
+                        @*@Html.ValidationMessageFor(
                             m => m.ShippingMethod,
                             "",
-                            new { @class = "validation-message" })
+                            new { @class = "validation-message" })*@
                     </div>
 
                     <h2 class="checkout-title">
@@ -379,8 +372,17 @@
                     <div class="checkout-form-group">
                         <label>Ghi chú đơn hàng (tùy chọn)</label>
 
-                        <textarea class="checkout-note"
-                                  placeholder="Ghi chú thêm về đơn hàng (nếu có)"></textarea>
+                        <textarea id="checkoutNote"
+                                  name="Note"
+                                  class="checkout-note"
+                                  maxlength="250"
+                                  placeholder="Ghi chú thêm về đơn hàng (tối đa 250 ký tự)"
+                                  oninput="updateNoteCount()"></textarea>
+
+                        <div class="note-counter">
+                            <span id="noteMessage">Bạn có thể nhập tối đa 250 ký tự.</span>
+                            <span id="noteCount">0/250</span>
+                        </div>
                     </div>
 
                 </div>
@@ -438,7 +440,7 @@
                             </strong>
                         </div>
 
-                        <h3>PHƯƠNG THỨC THANH TOÁN</h3>
+                        @*<h3>PHƯƠNG THỨC THANH TOÁN</h3>
 
                         <div class="payment-option">
                             @Html.RadioButtonFor(
@@ -475,20 +477,18 @@
                             <label for="paymentLater">
                                 Mua trước trả sau
                             </label>
-                        </div>
+                        </div>*@
 
-                        @Html.ValidationMessageFor(
+                        @*@Html.ValidationMessageFor(
                             m => m.PaymentMethod,
                             "",
                             new { @class = "validation-message" })
 
-                        @Html.HiddenFor(m => m.TotalAmount)
+                        @Html.HiddenFor(m => m.TotalAmount)*@
 
-                        <button type="submit"
-                                class="place-order-button"
-                                onclick="updateShippingAddress()">
-                            ĐẶT HÀNG
-                        </button>
+                    <button type="submit" class="place-order-button">
+                        ĐẶT HÀNG
+                    </button>
 
                         <p class="privacy-notice">
                             Thông tin cá nhân của bạn sẽ được sử dụng

@@ -142,6 +142,26 @@
                 margin: 15px 0;
             }
 
+        .stock-info {
+            margin: 15px 0;
+            font-size: 16px;
+        }
+
+        .stock-available {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .stock-low {
+            color: #e69500;
+            font-weight: bold;
+        }
+
+        .stock-out {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 17px;
+        }
 
             /* =========================
            PHÂN LOẠI MÀU
@@ -447,6 +467,31 @@
 
             </div>
 
+            <!-- SỐ LƯỢNG TỒN KHO -->
+            <div class="stock-info">
+
+                <strong>Tình trạng kho:</strong>
+
+                @if (Model.product.StockQuantity > 5)
+                {
+                    <span class="stock-available">
+                        Còn @Model.product.StockQuantity sản phẩm
+                    </span>
+                }
+                else if (Model.product.StockQuantity > 0)
+                {
+                    <span class="stock-low">
+                        Chỉ còn @Model.product.StockQuantity sản phẩm!
+                    </span>
+                }
+                else
+                {
+                    <span class="stock-out">
+                        Hết hàng
+                    </span>
+                }
+
+            </div>
 
             <hr />
 
@@ -530,8 +575,6 @@
             <!-- ================= GIỎ HÀNG ================= -->
 
             <div class="cart-box">
-
-
 
                 @Html.ActionLink(
                     "Thêm vào giỏ hàng",

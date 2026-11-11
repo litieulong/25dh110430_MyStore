@@ -1,0 +1,287 @@
+﻿
+@model _25dh110430_MyStore.Models.ViewModel.ProductStatisticsVM
+
+@{
+    ViewBag.Title = "Thống kê sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/Admin_Layout.cshtml";
+}
+
+<style>
+    /*.statistics-container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        margin: 25px auto;
+    }*/
+
+    .statistics-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        border-left: 5px solid #198754;
+        padding-left: 15px;
+    }
+
+    .statistics-card {
+        padding: 22px;
+        border-radius: 10px;
+        background: #f8f9fa;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 25px;
+    }
+
+        .statistics-card h3 {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0 0 20px;
+        }
+
+    .chart-container {
+        position: relative;
+        width: 100%;
+        height: 350px;
+    }
+
+    .statistics-table {
+        margin-top: 20px;
+    }
+
+        .statistics-table th {
+            background: #343a40;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .statistics-table td {
+            vertical-align: middle !important;
+        }
+</style>
+
+<div class="statistics-container">
+
+    <h2 class="statistics-title">THỐNG KÊ SẢN PHẨM</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <!-- BIỂU ĐỒ TOP 5 SẢN PHẨM BÁN CHẠY -->
+    <div class="statistics-card">
+        <h3>TOP 5 SẢN PHẨM BÁN CHẠY NHẤT</h3>
+
+        <div class="chart-container">
+            <canvas id="bestSellingChart"></canvas>
+        </div>
+
+        @if (Model.BestSellingProductNames == null ||
+             !Model.BestSellingProductNames.Any())
+        {
+            <p class="text-center text-muted">
+                Chưa có dữ liệu bán hàng.
+            </p>
+        }
+    </div>
+
+    <!-- DANH SÁCH SẢN PHẨM -->
+    <h3>DANH SÁCH SẢN PHẨM</h3>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover statistics-table">
+            <thead>
+                <tr>
+                    <th>Mã sản phẩm</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng tồn kho</th>
+                    <th>Tình trạng</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <td>@item.ProductID</td>
+
+                        <td>@item.ProductName</td>
+
+                        <td>
+                            @(item.Category != null
+                                ? item.Category.CategoryName
+                                : "Chưa phân loại")
+                        </td>
+
+                        <td>
+                            @item.ProductPrice.ToString(
+                                     "#,##0",
+                                     new System.Globalization.CultureInfo("vi-VN")
+                                 ) VNĐ
+                        </td>
+
+                        <td>@item.StockQuantity</td>
+
+                        <td>
+                            @if (item.StockQuantity == 0)
+                            {
+                                <span class="label label-danger">Hết hàng</span>
+                            }
+                            else if (item.StockQuantity <= 5)
+                            {
+                                <span class="label label-warning">Sắp hết hàng</span>
+                            }
+                            else
+                            {
+                                <span class="label label-success">Còn hàng</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (item.StockQuantity == 0)
+                            {
+                                using (Html.BeginForm(
+                                    "RestockProduct",
+                                    "Statistics",
+                                    new { area = "Admin", id = item.ProductID },
+                                    FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <div style="display:flex; gap:5px; min-width:180px;">
+                                        <input type="number"
+                                               name="quantity"
+                                               class="form-control"
+                                               min="1"
+                                               required
+                                               placeholder="Số lượng"
+                                               style="width:100px;" />
+
+                                        <button type="submit"
+                                                class="btn btn-success"
+                                                onclick="return confirm('Bạn có chắc muốn nhập thêm hàng?');">
+                                            Nhập hàng
+                                        </button>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không cần nhập</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (Model.HasMore)
+        {
+            <div class="text-center" style="margin: 25px 0;">
+                <a href="@Url.Action("Index", "Statistics", new {
+                    area = "Admin",
+                    pageSize = Model.PageSize + 5
+                })"
+                   class="btn btn-primary btn-lg">
+                    <i class="fa fa-plus"></i>
+                    Tải thêm sản phẩm
+                </a>
+            </div>
+        }
+        else
+        {
+            <p class="text-center text-muted" style="margin: 25px 0;">
+                Đã hiển thị tất cả sản phẩm.
+            </p>
+        }
+    </div>
+</div>
+
+<!-- THƯ VIỆN CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const productNames = @Html.Raw(
+            Newtonsoft.Json.JsonConvert.SerializeObject(
+                Model.BestSellingProductNames ?? new List<string>()
+            )
+        );
+
+        const productQuantities = @Html.Raw(
+            Newtonsoft.Json.JsonConvert.SerializeObject(
+                Model.BestSellingQuantities ?? new List<int>()
+            )
+        );
+
+        const canvas = document.getElementById('bestSellingChart');
+
+        if (canvas && productNames.length > 0) {
+            new Chart(canvas, {
+                type: 'bar',
+
+                data: {
+                    labels: productNames,
+
+                    datasets: [{
+                        label: 'Số lượng đã bán',
+                        data: productQuantities,
+
+                        backgroundColor: [
+                            '#4e79a7',
+                            '#f28e2b',
+                            '#e15759',
+                            '#76b7b2',
+                            '#59a14f'
+                        ],
+
+                        borderRadius: 6
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            },
+                            title: {
+                                display: true,
+                                text: 'Số lượng đã bán'
+                            }
+                        },
+
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Tên sản phẩm'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
