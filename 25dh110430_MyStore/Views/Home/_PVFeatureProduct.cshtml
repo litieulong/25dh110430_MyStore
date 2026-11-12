@@ -1,35 +1,273 @@
-﻿@model _25dh110430_MyStore.Models.HomeProductVM
+﻿
+@model _25dh110430_MyStore.Models.HomeProductVM
 
 <link rel="stylesheet" type="text/css" href="~/Content/myStyle/CustomerHome.css" />
 
-<!-- Hiển thị danh sách sản phẩm -->
+<style>
+
+    .featured-carousel {
+        position: relative;
+        padding: 0 45px;
+    }
+
+    .featured-viewport {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        scroll-behavior: smooth;
+    }
+
+        .featured-viewport::-webkit-scrollbar {
+            display: none;
+        }
+
+    /* Dàn sản phẩm theo hàng ngang */
+    .featured-track {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        transition: transform 0.4s ease;
+    }
+
+        /* Kích thước thẻ sản phẩm */
+        .featured-track .product-item {
+            flex: 0 0 calc((100% - 48px) / 5) !important;
+            width: calc((100% - 48px) / 5) !important;
+            min-width: 0 !important;
+            min-height: 375px !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            border: 1px solid #e8edf0 !important;
+            border-radius: 12px !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+            .featured-track .product-item:hover {
+                transform: translateY(-6px);
+                border-color: #b5dfe0 !important;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+            }
+
+            /* Hình ảnh sản phẩm */
+            .featured-track .product-item img {
+                display: block !important;
+                width: 100% !important;
+                height: 220px !important;
+                max-height: none !important;
+                padding: 15px !important;
+                margin: 0 !important;
+                object-fit: contain !important;
+                background: #f7f9fa !important;
+                box-sizing: border-box !important;
+            }
+
+        /* Giá */
+        .featured-track .prodPrice {
+            padding: 0 12px !important;
+            margin: 5px 0 0 !important;
+            color: #e05252 !important;
+            font-size: 18px !important;
+            font-weight: 800 !important;
+        }
+
+        /* Tên sản phẩm */
+        .featured-track .prodName {
+            padding: 0 12px !important;
+            margin: 13px 0 5px !important;
+            min-height: 42px !important;
+            color: #263f53 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            line-height: 1.5 !important;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Danh mục */
+        .featured-track .prodCate {
+            padding: 0 12px !important;
+            margin: 6px 0 0 !important;
+            color: #84929c !important;
+            font-size: 12px !important;
+        }
+
+        /* Đã bán và tồn kho */
+        .featured-track .prodSale,
+        .featured-track .prodStock {
+            padding: 0 12px !important;
+            margin: 9px 0 5px !important;
+            color: #84929c !important;
+            font-size: 12px !important;
+        }
+
+    /* Nút trái phải */
+    .featured-arrow {
+        position: absolute;
+        top: 45%;
+        transform: translateY(-50%);
+        width: 38px;
+        height: 38px;
+        border: none;
+        border-radius: 50%;
+        background: #263f53;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+        .featured-arrow:hover {
+            background: #e05252;
+        }
+
+    .featured-prev {
+        left: 0;
+    }
+
+    .featured-next {
+        right: 0;
+    }
+
+    .featured-arrow:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    /* Tablet */
+    @@media (max-width: 992px) {
+        .featured-track .product-item {
+            flex-basis: calc((100% - 24px) / 3) !important;
+            width: calc((100% - 24px) / 3) !important;
+        }
+    }
+
+    /* Điện thoại */
+    @@media (max-width: 576px) {
+        .featured-carousel {
+            padding: 0 35px;
+        }
+
+        .featured-track .product-item {
+            flex-basis: calc((100% - 12px) / 2) !important;
+            width: calc((100% - 12px) / 2) !important;
+        }
+
+            .featured-track .product-item img {
+                height: 175px !important;
+            }
+
+        .featured-track .prodPrice {
+            font-size: 16px !important;
+        }
+
+        .featured-track .prodName {
+            font-size: 13px !important;
+        }
+    }
+
+</style>
+
 @if (Model.FeaturedProducts != null && Model.FeaturedProducts.Any())
 {
     <section class="container-fluid featureProd">
         <h2>Sản phẩm nổi bật</h2>
-        <div class="feature-container">
-            @foreach (var product in Model.FeaturedProducts)
-            {
-                <div class="product-item">
-                    <div>
-                       <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductID })">
-                           <img src="@product.ProductImage" />
-                       </a>
-                       <p class="prodPrice">
-                           @String.Format("{0:N0}", product.ProductPrice) VNĐ
-                       </p>
-                        <p class="prodName">
-                            @Html.DisplayFor(modelItem => product.ProductName)
-                        </p>
-                        <p class="prodCate">
-                            @Html.DisplayFor(modelItem => product.Category.CategoryName)
-                        </p>
-                        <p class="prodSale">
-                            Đã bán:&nbsp;@Html.DisplayFor(modelItem => product.OrderDetails.Count)
-                        </p>
-                    </div>
+
+        <div class="featured-carousel">
+            <button type="button"
+                    class="featured-arrow featured-prev"
+                    onclick="moveFeatured(this, -1)">
+                &#10094;
+            </button>
+
+            <div class="featured-viewport">
+                <div class="featured-track">
+                    @foreach (var product in Model.FeaturedProducts)
+                    {
+                        <div class="product-item">
+                            <div>
+                                <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductID })">
+                                    <img src="@product.ProductImage" />
+                                </a>
+
+                                <p class="prodPrice">
+                                    @String.Format("{0:N0}", product.ProductPrice) VNĐ
+                                </p>
+
+                                <p class="prodName">
+                                    @product.ProductName
+                                </p>
+
+                                <p class="prodCate">
+                                    @product.Category.CategoryName
+                                </p>
+
+                                <p class="prodSale">
+                                    Đã bán: @product.OrderDetails.Count
+                                </p>
+
+                                <p class="prodStock">
+                                    Tồn kho: @product.StockQuantity sản phẩm
+                                </p>
+                                @* Sẽ thêm số lượng tồn kho tại đây sau khi xác định tên thuộc tính *@
+                            </div>
+                        </div>
+                    }
                 </div>
-            }
+            </div>
+
+            <button type="button"
+                    class="featured-arrow featured-next"
+                    onclick="moveFeatured(this, 1)">
+                &#10095;
+            </button>
         </div>
     </section>
 }
+
+<script>function moveFeatured(button, direction) {
+        var carousel = button.closest(".featured-carousel");
+        var viewport = carousel.querySelector(".featured-viewport");
+        var track = carousel.querySelector(".featured-track");
+
+        var maxScroll = track.scrollWidth - viewport.clientWidth;
+        var currentScroll = viewport.scrollLeft;
+
+        viewport.scrollBy({
+            left: direction * viewport.clientWidth,
+            behavior: "smooth"
+        });
+
+        setTimeout(function () {
+            carousel.querySelector(".featured-prev").disabled =
+                viewport.scrollLeft <= 0;
+
+            carousel.querySelector(".featured-next").disabled =
+                viewport.scrollLeft >= maxScroll - 5;
+        }, 450);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".featured-carousel").forEach(function (carousel) {
+            var viewport = carousel.querySelector(".featured-viewport");
+
+            carousel.querySelector(".featured-prev").disabled = true;
+
+            viewport.addEventListener("scroll", function () {
+                var maxScroll = viewport.scrollWidth - viewport.clientWidth;
+
+                carousel.querySelector(".featured-prev").disabled =
+                    viewport.scrollLeft <= 0;
+
+                carousel.querySelector(".featured-next").disabled =
+                    viewport.scrollLeft >= maxScroll - 5;
+            });
+        });
+    });</script>

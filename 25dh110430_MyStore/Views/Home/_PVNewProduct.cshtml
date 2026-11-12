@@ -1,27 +1,109 @@
-﻿@model _25dh110430_MyStore.Models.HomeProductVM
+﻿
+@model _25dh110430_MyStore.Models.HomeProductVM
 @using PagedList.Mvc
 
 <link rel="stylesheet" type="text/css" href="~/Content/myStyle/CustomerHome.css" />
 
-<!-- Hiển thị danh sách sản phẩm -->
+<style>
+    /* CĂN GIỮA PHÂN TRANG */
+    .pagination-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100%;
+        margin: 30px auto !important;
+        padding: 10px 0;
+    }
+
+        .pagination-container ul.pagination {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0 auto !important;
+            padding: 0;
+            list-style: none;
+        }
+
+            /* TỪNG NÚT PHÂN TRANG */
+            .pagination-container ul.pagination li a,
+            .pagination-container ul.pagination li span {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-width: 38px;
+                height: 38px;
+                padding: 0 12px;
+                border: 1px solid #e0e5e9;
+                border-radius: 7px;
+                background: white;
+                color: #263f53;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 600;
+                box-sizing: border-box;
+            }
+
+                /* HOVER */
+                .pagination-container ul.pagination li a:hover {
+                    background: #263f53;
+                    color: white;
+                    border-color: #263f53;
+                }
+
+            /* TRANG ĐANG CHỌN */
+            .pagination-container ul.pagination li.active span {
+                background: #e05252;
+                color: white;
+                border-color: #e05252;
+            }
+
+            /* NÚT BỊ VÔ HIỆU HÓA */
+            .pagination-container ul.pagination li.disabled span {
+                color: #aaa;
+                background: #f5f5f5;
+                cursor: not-allowed;
+            }
+
+    /* SỐ LƯỢNG TỒN KHO */
+    .list-container .prodStock {
+        padding: 0 12px !important;
+        margin: 5px 0 13px !important;
+        color: #84929c !important;
+        font-size: 12px !important;
+    }
+</style>
+
+<!-- HIỂN THỊ DANH SÁCH SẢN PHẨM -->
 @if (Model.NewProducts != null && Model.NewProducts.Any())
 {
     <section class="container-fluid listProduct">
         <h2>Sản phẩm mới</h2>
+
         <ul class="list-container">
             @foreach (var product in Model.NewProducts)
             {
                 <li class="product-item">
                     <div>
-                       <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductID })">
-                           <img src="@product.ProductImage" />
-                       </a>
-                       <p class="prodPrice">
-                           @String.Format("{0:N0}", product.ProductPrice) VNĐ
-                       </p>
-                        <p class="prodName">@Html.DisplayFor(modelItem => product.ProductName)</p>
+                        <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductID })">
+                            <img src="@product.ProductImage" />
+                        </a>
+
+                        <p class="prodPrice">
+                            @String.Format("{0:N0}", product.ProductPrice) VNĐ
+                        </p>
+
+                        <p class="prodName">
+                            @product.ProductName
+                        </p>
+
                         <p class="prodSale">
-                            Đã bán:&nbsp;@Html.DisplayFor(modelItem => product.OrderDetails.Count)
+                            Đã bán: @product.OrderDetails.Count
+                        </p>
+
+                        <p class="prodStock">
+                            Tồn kho: @product.StockQuantity sản phẩm
                         </p>
                     </div>
                 </li>
@@ -29,7 +111,7 @@
         </ul>
     </section>
 
-    <!-- Hiển thị phân trang -->
+    <!-- PHÂN TRANG -->
     <div class="pagination-container">
         @Html.PagedListPager(Model.NewProducts, page => Url.Action("Index", new
         {

@@ -51,63 +51,72 @@ namespace _25dh110430_MyStore.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(RegisterVM model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // kiểm tra xem tên đăng nhập đã tồn tại chưa
-                var existingUser = db.Users.SingleOrDefault(u => u.Username == model.Username);
-                if (existingUser != null)
-                {
-                    ModelState.AddModelError("Username", "Tên đăng nhập này đã tồn tại!");
-                    return View(model);
-                }
-
-                // nếu chưa tồn tại thì tạo bản ghi thông tin tài khoản trong bảng User
-                var user = new User
-                {
-                    Username = model.Username,
-                    Password = model.Password, // Lưu ý: Nên mã hóa mật khẩu trước khi lưu
-                    UserRole = "C"
-                };
-                db.Users.Add(user);
-
-                // và tạo bản ghi thông tin khách hàng trong bảng Customer
-                var customer = new Customer
-                {
-                    CustomerName = model.CustomerName,
-                    CustomerEmail = model.CustomerEmail,
-                    CustomerPhone = model.CustomerPhone,
-                    CustomerAddress = model.CustomerAddress,
-                    Username = model.Username,
-                };
-                db.Customers.Add(customer);
-
-                // lưu thông tin tài khoản và thông tin khách hàng vào CSDL
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch (System.Data.Entity.Validation.DbEntityValidationException ex)
-                {
-                    string errorMessage = "";
-
-                    foreach (var entityValidationErrors in ex.EntityValidationErrors)
-                    {
-                        foreach (var validationError in entityValidationErrors.ValidationErrors)
-                        {
-                            errorMessage +=
-                                "Trường: " + validationError.PropertyName +
-                                " - Lỗi: " + validationError.ErrorMessage +
-                                "<br/>";
-                        }
-                    }
-
-                    return Content(errorMessage);
-                }
-
-                return RedirectToAction("Index", "Home");
+                return View(model);
             }
 
-            return View(model);
+            // Kiểm tra tài khoản đã tồn tại
+            var existingUser = db.Users
+                .FirstOrDefault(u => u.Username == model.Username);
+
+            if (existingUser != null)
+            {
+                ModelState.AddModelError(
+                    "Username",
+                    "Tên đăng nhập này đã tồn tại!"
+                );
+
+                return View(model);
+            }
+
+            // Tạo tài khoản
+            var user = new User
+            {
+                Username = model.Username,
+                Password = model.Password,
+                UserRole = "C"
+            };
+
+            // Tạo thông tin khách hàng
+            var customer = new Customer
+            {
+                Username = model.Username,
+                CustomerName = model.CustomerName,
+                CustomerEmail = model.CustomerEmail,
+                CustomerPhone = model.CustomerPhone,
+                CustomerAddress = model.CustomerAddress
+            };
+
+            try
+            {
+                // Lưu vào database
+                db.Users.Add(user);
+                db.Customers.Add(customer);
+
+                db.SaveChanges();
+
+                // Đăng nhập ngay sau khi đăng ký
+                Session["Username"] = user.Username;
+                Session["UserRole"] = user.UserRole;
+
+                FormsAuthentication.SetAuthCookie(user.Username, false);
+
+                // Chuyển về trang Home
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                db.Entry(user).State = System.Data.Entity.EntityState.Detached;
+                db.Entry(customer).State = System.Data.Entity.EntityState.Detached;
+
+                ModelState.AddModelError(
+                    "",
+                    "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin."
+                );
+
+                return View(model);
+            }
         }
 
         // GET: Account/Login

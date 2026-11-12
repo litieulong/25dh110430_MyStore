@@ -1,23 +1,21 @@
-﻿@{
+﻿<!DOCTYPE html>
+
+@{
     // Lấy thông tin giỏ hàng
     var cart = Session["Cart"] as _25dh110430_MyStore.Models.ViewModel.Cart;
 
-    // Tạo đối tượng ViewBag.pmmodel dạng PersonalMenuVM, và lưu trong ViewBag,
-    // khởi tạo giá trị dựa trên thông tin tài khoản đăng nhập
+    // Lấy thông tin người dùng đang đăng nhập
+    var isLoggedIn = User.Identity.IsAuthenticated;
+    var username = isLoggedIn ? User.Identity.Name : "";
+
+    // Khởi tạo PersonalMenuVM
     ViewBag.pmmodel = new _25dh110430_MyStore.Models.ViewModel.PersonalMenuVM
     {
-        IsLoggedIn = User.Identity.IsAuthenticated,
-        Username = User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty
+        IsLoggedIn = isLoggedIn,
+        Username = username,
+        CartCount = cart != null ? cart.Items.Count() : 0
     };
-
-    // Nếu giỏ hàng không rỗng thì gán số lượng mặt hàng trong giỏ cho CartCount
-    if (cart != null && cart.Items.Any())
-    {
-        ViewBag.pmmodel.CartCount = cart.Items.Count();
-    }
 }
-
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -351,10 +349,10 @@
                 <div class="footer-col">
                     <h4>DANH MỤC SẢN PHẨM</h4>
                     <ul class="footer-links">
-                        <li><a href="#">Balo Laptop Chống Nước</a></li>
-                        <li><a href="#">Balo Du Lịch / Phượt</a></li>
-                        <li><a href="#">Túi Bao Tử / Crossbody</a></li>
-                        <li><a href="#">Vali Kéo Du Lịch</a></li>
+                        <li><a href="@Url.Action("LapTop", "Products")">Balo Laptop Chống Nước</a></li>
+                        <li> <a href="@Url.Action("TravelBag", "Products")">Balo Du Lịch / Phượt</a></li>
+                        <li> <a href="@Url.Action("CrossBodyBag", "Products")">Túi Bao Tử / Crossbody</a></li>
+                        <li><a href="@Url.Action("Travel", "Products")">Vali Kéo Du Lịch</a></li>
                     </ul>
                 </div>
 
