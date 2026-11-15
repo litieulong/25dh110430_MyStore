@@ -61,6 +61,7 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
                     TotalSold = g.Sum(od => od.Quantity)
                 })
                 .OrderByDescending(x => x.TotalSold)
+                .ThenBy(x => x.ProductName)
                 .Take(5)
                 .ToList();
 

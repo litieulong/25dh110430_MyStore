@@ -1,8 +1,9 @@
-﻿@model IEnumerable<_25dh110430_MyStore.Models.Product>
+﻿
+@model IEnumerable<_25dh110430_MyStore.Models.Product>
 @using System.Linq
 
 @{
-    ViewBag.Title = ViewBag.CategoryName ?? "Balo Dựng Laptop";
+    ViewBag.Title = ViewBag.CategoryName;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -215,13 +216,14 @@
 
     <div class="camera-layout">
 
+
         <!-- SIDEBAR BÊN TRÁI -->
         <aside class="camera-sidebar">
 
+            <!-- TÌM KIẾM -->
             <h3>TÌM KIẾM SẢN PHẨM</h3>
 
-            <form action="@Url.Content("~/Products/Laptop")" method="get">
-
+            <form action="@Url.Action("Travel", "Products")" method="get">
                 <input type="text"
                        name="searchTerm"
                        value="@Request.QueryString["searchTerm"]"
@@ -237,8 +239,8 @@
                 </button>
             </form>
 
-            <!-- ĐẶT LẠI -->
-            <a href="@Url.Content("~/Products/Laptop")"
+            <!-- NÚT ĐẶT LẠI -->
+            <a href="@Url.Content("~/Products/Travel")"
                class="camera-reset-button">
                 <i class="fa fa-refresh"></i>
                 Đặt lại
@@ -249,34 +251,35 @@
             <!-- SẮP XẾP -->
             <h3>SẮP XẾP SẢN PHẨM</h3>
 
-            <form action="@Url.Content("~/Products/Laptop")" method="get">
+            <form action="@Url.Content("~/Products/travel")" method="get">
 
                 <input type="hidden"
                        name="searchTerm"
                        value="@Request.QueryString["searchTerm"]" />
 
-                <button type="submit" name="sortOrder"
-                        value="price_asc" class="camera-sort-button">
+                <button type="submit" name="sortOrder" value="price_asc"
+                        class="camera-sort-button">
                     Giá thấp đến cao
                 </button>
 
-                <button type="submit" name="sortOrder"
-                        value="price_desc" class="camera-sort-button">
+                <button type="submit" name="sortOrder" value="price_desc"
+                        class="camera-sort-button">
                     Giá cao đến thấp
                 </button>
 
-                <button type="submit" name="sortOrder"
-                        value="name_asc" class="camera-sort-button">
+                <button type="submit" name="sortOrder" value="name_asc"
+                        class="camera-sort-button">
                     Tên A - Z
                 </button>
 
-                <button type="submit" name="sortOrder"
-                        value="" class="camera-sort-button">
+                <button type="submit" name="sortOrder" value=""
+                        class="camera-sort-button">
                     Mặc định
                 </button>
             </form>
 
         </aside>
+
 
         <!-- DANH SÁCH SẢN PHẨM -->
         <main class="camera-main">
@@ -318,14 +321,14 @@
                                 <div class="product-quantity-info">
 
                                     <span class="stock">
-                                      
+
                                         Tồn kho: @product.StockQuantity
                                     </span>
 
                                     <br />
 
                                     <span class="sold">
-                                       
+
                                         Đã bán: @(product.OrderDetails?.Sum(x => x.Quantity) ?? 0)
                                     </span>
 

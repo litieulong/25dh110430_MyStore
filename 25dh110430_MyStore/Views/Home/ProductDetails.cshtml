@@ -450,12 +450,9 @@
 
 
             <!-- Đã bán -->
-
             <p class="pro-sale">
-
                 Đã bán:
-                @Model.product.OrderDetails.Count
-
+                @(Model.product.OrderDetails.Sum(x => x.Quantity))
             </p>
 
 

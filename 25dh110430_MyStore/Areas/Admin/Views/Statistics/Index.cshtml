@@ -126,9 +126,9 @@
 
                         <td>
                             @item.ProductPrice.ToString(
-                                     "#,##0",
-                                     new System.Globalization.CultureInfo("vi-VN")
-                                 ) VNĐ
+                                          "#,##0",
+                                          new System.Globalization.CultureInfo("vi-VN")
+                                      ) VNĐ
                         </td>
 
                         <td>@item.StockQuantity</td>
@@ -208,12 +208,14 @@
     </div>
 </div>
 
+
 <!-- THƯ VIỆN CHART.JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
+        // Lấy dữ liệu từ Controller
         const productNames = @Html.Raw(
             Newtonsoft.Json.JsonConvert.SerializeObject(
                 Model.BestSellingProductNames ?? new List<string>()
@@ -228,16 +230,34 @@
 
         const canvas = document.getElementById('bestSellingChart');
 
-        if (canvas && productNames.length > 0) {
+        // Ghép tên sản phẩm và số lượng thành từng cặp
+        const bestSellingData = productNames.map(function (name, index) {
+            return {
+                name: name,
+                quantity: Number(productQuantities[index]) || 0
+            };
+        });
+
+        // Sắp xếp số lượng bán từ cao xuống thấp
+        bestSellingData.sort(function (a, b) {
+            return b.quantity - a.quantity;
+        });
+
+        // Tách dữ liệu sau khi sắp xếp
+        const sortedNames = bestSellingData.map(x => x.name);
+        const sortedQuantities = bestSellingData.map(x => x.quantity);
+
+        if (canvas && bestSellingData.length > 0) {
+
             new Chart(canvas, {
-                type: 'bar',
+                type: 'pie',
 
                 data: {
-                    labels: productNames,
+                    labels: sortedNames,
 
                     datasets: [{
                         label: 'Số lượng đã bán',
-                        data: productQuantities,
+                        data: sortedQuantities,
 
                         backgroundColor: [
                             '#4e79a7',
@@ -247,7 +267,8 @@
                             '#59a14f'
                         ],
 
-                        borderRadius: 6
+                        borderColor: '#ffffff',
+                        borderWidth: 2
                     }]
                 },
 
@@ -257,26 +278,21 @@
 
                     plugins: {
                         legend: {
-                            display: true
-                        }
-                    },
-
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            },
-                            title: {
-                                display: true,
-                                text: 'Số lượng đã bán'
-                            }
+                            display: true,
+                            position: 'right'
                         },
 
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Tên sản phẩm'
+                        title: {
+                            display: true,
+                            text: 'TOP 5 SẢN PHẨM BÁN CHẠY NHẤT'
+                        },
+
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.label + ': ' +
+                                        context.parsed + ' sản phẩm';
+                                }
                             }
                         }
                     }

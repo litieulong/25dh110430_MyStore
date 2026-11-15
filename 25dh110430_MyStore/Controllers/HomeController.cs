@@ -223,8 +223,9 @@ namespace _25dh110430_MyStore.Controllers
         {
             IQueryable<Product> products = db.Products
                 .Include("Category")
-                .Where(p => p.CategoryID == 1003);
+                .Where(p => p.CategoryID == 1004);
 
+            // TÌM KIẾM
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 searchTerm = searchTerm.Trim();
@@ -236,21 +237,22 @@ namespace _25dh110430_MyStore.Controllers
                 );
             }
 
+            // SẮP XẾP
             switch (sortOrder)
             {
                 case "price_asc":
                     products = products.OrderBy(p => p.ProductPrice)
-                                       .ThenBy(p => p.ProductID);
+                        .ThenBy(p => p.ProductID);
                     break;
 
                 case "price_desc":
                     products = products.OrderByDescending(p => p.ProductPrice)
-                                       .ThenBy(p => p.ProductID);
+                        .ThenBy(p => p.ProductID);
                     break;
 
                 case "name_asc":
                     products = products.OrderBy(p => p.ProductName)
-                                       .ThenBy(p => p.ProductID);
+                        .ThenBy(p => p.ProductID);
                     break;
 
                 default:
