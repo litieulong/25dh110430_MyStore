@@ -35,6 +35,25 @@ namespace _25dh110430_MyStore.Controllers
         {
             var product = db.Products.Find(id);
 
+            if (product == null)
+            {
+                TempData["Error"] = "Không tìm thấy sản phẩm!";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // KIỂM TRA SỐ LƯỢNG TỒN KHO TẠI ĐÂY
+            if (product.StockQuantity <= 0)
+            {
+                TempData["Error"] = "Số lượng sản phẩm đã hết!";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (quantity <= 0)
+            {
+                TempData["Error"] = "Số lượng không hợp lệ!";
+                return RedirectToAction("Index", "Home");
+            }
+
             // Kiểm tra sản phẩm
             if (product == null)
             {
@@ -43,9 +62,15 @@ namespace _25dh110430_MyStore.Controllers
             }
 
             // Kiểm tra số lượng
-            if (quantity <= 0)
+            if (product.StockQuantity <= 0)
             {
-                TempData["Error"] = "Số lượng sản phẩm không hợp lệ!";
+                TempData["Error"] = "Sản phẩm đã hết hàng!";
+                return RedirectToAction("ProductDetails", "Home", new { id = id });
+            }
+
+            if (quantity > product.StockQuantity)
+            {
+                TempData["Error"] = "Số lượng vượt quá tồn kho!";
                 return RedirectToAction("ProductDetails", "Home", new { id = id });
             }
 

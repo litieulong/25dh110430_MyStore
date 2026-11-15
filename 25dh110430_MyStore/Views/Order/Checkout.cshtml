@@ -359,10 +359,7 @@
                             </label>
                         </div>
 
-                        @*@Html.ValidationMessageFor(
-                            m => m.ShippingMethod,
-                            "",
-                            new { @class = "validation-message" })*@
+                      
                     </div>
 
                     <h2 class="checkout-title">
@@ -440,51 +437,7 @@
                             </strong>
                         </div>
 
-                        @*<h3>PHƯƠNG THỨC THANH TOÁN</h3>
-
-                        <div class="payment-option">
-                            @Html.RadioButtonFor(
-                                m => m.PaymentMethod,
-                                "Paypal",
-                                new { id = "paymentPaypal" })
-
-                            <label for="paymentPaypal">
-                                Paypal
-                            </label>
-
-                            <p class="payment-description">
-                                Thanh toán trực tuyến qua Paypal.
-                            </p>
-                        </div>
-
-                        <div class="payment-option">
-                            @Html.RadioButtonFor(
-                                m => m.PaymentMethod,
-                                "Tiền mặt",
-                                new { id = "paymentCash" })
-
-                            <label for="paymentCash">
-                                Tiền mặt khi nhận hàng
-                            </label>
-                        </div>
-
-                        <div class="payment-option">
-                            @Html.RadioButtonFor(
-                                m => m.PaymentMethod,
-                                "Mua trước trả sau",
-                                new { id = "paymentLater" })
-
-                            <label for="paymentLater">
-                                Mua trước trả sau
-                            </label>
-                        </div>*@
-
-                        @*@Html.ValidationMessageFor(
-                            m => m.PaymentMethod,
-                            "",
-                            new { @class = "validation-message" })
-
-                        @Html.HiddenFor(m => m.TotalAmount)*@
+                     
 
                     <button type="submit" class="place-order-button">
                         ĐẶT HÀNG

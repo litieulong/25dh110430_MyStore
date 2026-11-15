@@ -467,6 +467,8 @@
 
             </div>
 
+
+
             <!-- SỐ LƯỢNG TỒN KHO -->
             <div class="stock-info">
 
@@ -487,7 +489,7 @@
                 else
                 {
                     <span class="stock-out">
-                        Hết hàng
+                        Số lượng sản phẩm đã hết!
                     </span>
                 }
 
@@ -573,7 +575,7 @@
 
 
             <!-- ================= GIỎ HÀNG ================= -->
-
+            <!-- GIỎ HÀNG -->
             <div class="cart-box">
 
                 @using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post,
@@ -581,16 +583,37 @@
                 {
                     @Html.Hidden("id", Model.product.ProductID)
 
-                    @Html.Hidden("quantity", Model.quantity)
-
                     @Html.Hidden("productColorId", "",
                         new { id = "selectedProductColorId" })
 
-                    <button type="submit" class="btn btn-info btn-cart">
+                    <div class="quantity-box">
+                        <label for="quantityInput"><strong>Số lượng:</strong></label>
+
+                        <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+
+                            <input type="number"
+                                   id="quantityInput"
+                                   name="quantity"
+                                   value="1"
+                                   min="1"
+                                   max="@Model.product.StockQuantity"
+                                   class="form-control quantity-input"
+                                   style="width:80px; text-align:center;"
+                                   @(Model.product.StockQuantity <= 0 ? "disabled" : "") />
+
+
+                        </div>
+
+                        <small id="quantityMessage" style="color:#dc3545;"></small>
+                    </div>
+
+                    <button type="submit"
+                            id="btnAddToCart"
+                            class="btn btn-info btn-cart"
+                            @(Model.product.StockQuantity <= 0 ? "disabled" : "")>
                         Thêm vào giỏ hàng
                     </button>
                 }
-
             </div>
 
         </div>
@@ -640,6 +663,86 @@ var colorImages = {};
         </text>
     }
 }
+
+        // Xử lý chọn số lượng sản phẩm
+        var quantityInput = document.getElementById("quantityInput");
+        var btnIncrease = document.getElementById("btnIncrease");
+        var btnDecrease = document.getElementById("btnDecrease");
+        var quantityMessage = document.getElementById("quantityMessage");
+
+        var maxStock = parseInt(quantityInput.max) || 0;
+
+        function updateQuantityButtons() {
+            var quantity = parseInt(quantityInput.value) || 1;
+
+            btnDecrease.disabled = quantity <= 1;
+            btnIncrease.disabled = quantity >= maxStock;
+
+            if (quantity >= maxStock && maxStock > 0) {
+                quantityMessage.textContent = "Bạn đã chọn số lượng tối đa trong kho.";
+            } else {
+                quantityMessage.textContent = "";
+            }
+        }
+
+        btnIncrease.addEventListener("click", function () {
+            var quantity = parseInt(quantityInput.value) || 1;
+
+            if (quantity < maxStock) {
+                quantityInput.value = quantity + 1;
+            }
+
+            updateQuantityButtons();
+        });
+
+        btnDecrease.addEventListener("click", function () {
+            var quantity = parseInt(quantityInput.value) || 1;
+
+            if (quantity > 1) {
+                quantityInput.value = quantity - 1;
+            }
+
+            updateQuantityButtons();
+        });
+
+        // Không cho nhập số lượng vượt tồn kho
+        quantityInput.addEventListener("input", function () {
+            var quantity = parseInt(this.value);
+
+            if (quantity > maxStock) {
+                this.value = maxStock;
+            }
+
+            updateQuantityButtons();
+        });
+
+        // Kiểm tra khi rời khỏi ô nhập
+        quantityInput.addEventListener("change", function () {
+            var quantity = parseInt(this.value);
+
+            if (isNaN(quantity) || quantity < 1) {
+                this.value = 1;
+            }
+
+            if (quantity > maxStock) {
+                this.value = maxStock;
+            }
+
+            updateQuantityButtons();
+        });
+
+        updateQuantityButtons();
+
+        document.getElementById("cartForm").addEventListener("submit", function (e) {
+
+            var quantity = parseInt(quantityInput.value);
+
+            if (isNaN(quantity) || quantity < 1 || quantity > maxStock) {
+                e.preventDefault();
+                alert("Số lượng không hợp lệ hoặc vượt quá số lượng tồn kho!");
+                return false;
+            }
+
 
 // Khi bấm vào màu
 function selectColor(element) {
