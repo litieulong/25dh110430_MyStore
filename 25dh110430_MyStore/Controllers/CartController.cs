@@ -30,58 +30,89 @@ namespace _25dh110430_MyStore.Controllers
         }
 
         // Thêm sản phẩm vào giỏ hàng
-        public ActionResult AddToCart(int id, int quantity = 1)
+        [HttpPost]
+        public ActionResult AddToCart(int id, int quantity = 1, int? productColorId = null)
         {
             var product = db.Products.Find(id);
 
-            // Kiểm tra sản phẩm có tồn tại không
+            // Kiểm tra sản phẩm
             if (product == null)
             {
                 TempData["Error"] = "Không tìm thấy sản phẩm!";
                 return RedirectToAction("Index", "Home");
             }
 
-            // Kiểm tra số lượng nhập
+            // Kiểm tra số lượng
             if (quantity <= 0)
             {
                 TempData["Error"] = "Số lượng sản phẩm không hợp lệ!";
-                return RedirectToAction("ProductDetails", "Home",
-                    new { id = id });
+                return RedirectToAction("ProductDetails", "Home", new { id = id });
             }
 
             // Kiểm tra tồn kho
-            if (product.StockQuantity <= 0)
+            if (product.StockQuantity <= 0 || quantity > product.StockQuantity)
             {
-                TempData["Error"] = "Sản phẩm đã hết hàng!";
-                return RedirectToAction("ProductDetails", "Home",
-                    new { id = id });
+                TempData["Error"] = "Số lượng sản phẩm không hợp lệ hoặc vượt quá tồn kho!";
+                return RedirectToAction("ProductDetails", "Home", new { id = id });
             }
 
-            // Không cho thêm vượt quá tồn kho
-            if (quantity > product.StockQuantity)
+            // Khởi tạo thông tin màu
+            string colorName = null;
+            string productImage = product.ProductImage;
+
+            // Kiểm tra màu được chọn
+            if (productColorId.HasValue)
             {
-                TempData["Error"] = "Số lượng sản phẩm vượt quá tồn kho! Hiện chỉ còn "
-                                    + product.StockQuantity + " sản phẩm.";
-                return RedirectToAction("ProductDetails", "Home",
-                    new { id = id });
+                var selectedColor = db.ProductColors
+                    .Include("ProductImages")
+                    .FirstOrDefault(c =>
+                        c.ProductColorID == productColorId.Value &&
+                        c.ProductID == product.ProductID);
+
+                if (selectedColor == null)
+                {
+                    TempData["Error"] = "Màu sắc không hợp lệ!";
+                    return RedirectToAction("ProductDetails", "Home", new { id = id });
+                }
+
+                colorName = selectedColor.ColorName;
+
+                // Lấy hình ảnh đầu tiên của màu được chọn
+                var colorImage = selectedColor.ProductImages
+                    .FirstOrDefault();
+
+                if (colorImage != null &&
+                    !String.IsNullOrEmpty(colorImage.ImagePath))
+                {
+                    productImage = colorImage.ImagePath;
+                }
+            }
+            else if (db.ProductColors.Any(c => c.ProductID == product.ProductID))
+            {
+                TempData["Error"] = "Vui lòng chọn màu sắc!";
+                return RedirectToAction("ProductDetails", "Home", new { id = id });
             }
 
-            // Thêm vào giỏ hàng
+            // Thêm sản phẩm vào giỏ hàng
             var cartService = GetCartService();
 
             cartService.GetCart().AddItem(
                 product.ProductID,
-                product.ProductImage,
+                productImage,
                 product.ProductName,
                 product.ProductPrice,
                 quantity,
-                product.Category.CategoryName
+                product.Category.CategoryName,
+                productColorId,
+                colorName
             );
 
             TempData["Success"] = "Đã thêm sản phẩm vào giỏ hàng!";
 
             return RedirectToAction("Index");
         }
+
+
 
         // Xóa sản phẩm khỏi giỏ
         public ActionResult RemoveFromCart(int id)

@@ -270,6 +270,7 @@
                 <thead>
                     <tr>
                         <th>Sản phẩm</th>
+                        <th>Màu sắc</th>
                         <th>Số lượng</th>
                         <th>Đơn giá</th>
                         <th>Tổng giá</th>
@@ -281,9 +282,20 @@
                     {
                         <tr>
                             <td>@item.Product.ProductName</td>
+
+                            <td>
+                                @(item.ProductColor != null
+                    ? item.ProductColor.ColorName
+                    : "Chưa chọn")
+                            </td>
+
                             <td>@item.Quantity</td>
+
                             <td>@item.UnitPrice.ToString("N0") VNĐ</td>
-                            <td>@((item.Quantity * item.UnitPrice).ToString("N0")) VNĐ</td>
+
+                            <td>
+                                @((item.Quantity * item.UnitPrice).ToString("N0")) VNĐ
+                            </td>
                         </tr>
                     }
                 </tbody>

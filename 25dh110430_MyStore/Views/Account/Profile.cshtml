@@ -7,64 +7,126 @@
 }
 
 <style>
+
+    /* CĂN GIỮA TOÀN BỘ TRANG */
     .account-page {
         min-height: 75vh;
-        padding: 50px 15px;
-        background: #f5f7fb;
+        padding: 40px 15px;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .account-container {
-        max-width: 850px;
+        width: 100%;
+        max-width: 650px;
         margin: 0 auto;
     }
 
+    /* TIÊU ĐỀ */
     .account-title {
         text-align: center;
-        margin-bottom: 35px;
+        margin-bottom: 30px;
+    }
+
+    /* HEADER */
+    .account-card-header {
+        text-align: center;
+    }
+
+    /* NỘI DUNG THÔNG TIN */
+    .account-card-body {
+        padding: 30px;
+        text-align: center;
+    }
+
+    /* CĂN GIỮA TỪNG TRƯỜNG */
+    .account-field {
+        max-width: 400px;
+        margin: 0 auto 23px;
+    }
+
+        .account-field label {
+            display: block;
+            text-align: center;
+        }
+
+        .account-field .form-control {
+            width: 100%;
+            height: 46px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+    .account-card .account-footer {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center !important;
+        padding: 18px 30px;
+        background: #fff;
+        border-top: 1px solid #ddd;
+        color: #777;
+        font-size: 13px;
+        box-sizing: border-box;
+    }
+
+    /* TIÊU ĐỀ */
+    .account-title {
+        text-align: left;
+        margin-bottom: 25px;
     }
 
         .account-title h2 {
             font-size: 28px;
             font-weight: 700;
-            color: #26354a;
-            margin-bottom: 10px;
+            color: #222;
+            margin: 0 0 10px;
         }
 
         .account-title p {
-            color: #8993a4;
-            font-size: 14px;
+            color: #777;
+            font-size: 15px;
+            margin: 0;
         }
 
+    /* KHUNG THÔNG TIN */
     .account-card {
         background: #fff;
-        border-radius: 16px;
+        border: 1px solid #00a6c7;
+        border-radius: 0;
         overflow: hidden;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
-        border: 1px solid #edf0f5;
+        box-shadow: none;
     }
 
+    /* HEADER */
     .account-card-header {
-        padding: 25px 30px;
-        background: linear-gradient(135deg, #263f63, #426b9e);
-        color: white;
+        padding: 22px 30px;
+        background: #fff;
+        color: #222;
+        border-bottom: 1px solid #ddd;
     }
 
         .account-card-header h4 {
             margin: 0;
-            font-size: 19px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: 700;
         }
 
         .account-card-header p {
             margin: 8px 0 0;
-            font-size: 13px;
-            opacity: 0.85;
+            font-size: 14px;
+            color: #777;
         }
 
+    /* NỘI DUNG */
     .account-card-body {
         padding: 30px;
     }
 
+    /* TỪNG TRƯỜNG THÔNG TIN */
     .account-field {
         margin-bottom: 23px;
     }
@@ -75,18 +137,18 @@
 
         .account-field label {
             display: block;
-            color: #536176;
+            color: #222;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 9px;
         }
 
         .account-field .form-control {
             height: 46px;
-            border: 1px solid #e1e7ef;
-            border-radius: 9px;
-            background: #f8fafd;
-            color: #26354a;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fafafa;
+            color: #333;
             font-size: 14px;
             padding: 10px 15px;
             box-shadow: none;
@@ -94,22 +156,25 @@
         }
 
             .account-field .form-control:focus {
-                border-color: #426b9e;
+                border-color: #00a6c7;
                 box-shadow: none;
+                outline: none;
             }
 
+    /* FOOTER */
     .account-footer {
         padding: 18px 30px;
-        background: #fafbfd;
-        border-top: 1px solid #edf0f5;
-        color: #8993a4;
+        background: #fff;
+        border-top: 1px solid #ddd;
+        color: #777;
         font-size: 13px;
-        text-align: center;
+        text-align: left;
     }
 
+    /* RESPONSIVE */
     @@media (max-width: 576px) {
         .account-page {
-            padding: 30px 10px;
+            padding: 25px 10px;
         }
 
         .account-card-body {
@@ -117,13 +182,14 @@
         }
 
         .account-card-header {
-            padding: 22px 18px;
+            padding: 20px 18px;
         }
 
         .account-title h2 {
             font-size: 23px;
         }
     }
+
 </style>
 
 <div class="account-page">

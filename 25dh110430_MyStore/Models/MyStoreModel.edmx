@@ -45,6 +45,7 @@
           <Property Name="OrderID" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="UnitPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="ProductColorID" Type="int" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -128,6 +129,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_OrderDetail_ProductColor">
+          <End Role="ProductColor" Type="Self.ProductColor" Multiplicity="0..1" />
+          <End Role="OrderDetail" Type="Self.OrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductColor">
+              <PropertyRef Name="ProductColorID" />
+            </Principal>
+            <Dependent Role="OrderDetail">
+              <PropertyRef Name="ProductColorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Pro_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
@@ -198,6 +211,10 @@
             <End Role="Product" EntitySet="Product" />
             <End Role="OrderDetail" EntitySet="OrderDetail" />
           </AssociationSet>
+          <AssociationSet Name="FK_OrderDetail_ProductColor" Association="Self.FK_OrderDetail_ProductColor">
+            <End Role="ProductColor" EntitySet="ProductColor" />
+            <End Role="OrderDetail" EntitySet="OrderDetail" />
+          </AssociationSet>
           <AssociationSet Name="FK_Pro_Category" Association="Self.FK_Pro_Category">
             <End Role="Category" EntitySet="Category" />
             <End Role="Product" EntitySet="Product" />
@@ -266,6 +283,8 @@
           <Property Name="UnitPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <NavigationProperty Name="Order" Relationship="Self.FK__OrderDeta__Order__5812160E" FromRole="OrderDetail" ToRole="Order" />
           <NavigationProperty Name="Product" Relationship="Self.FK__OrderDeta__Produ__571DF1D5" FromRole="OrderDetail" ToRole="Product" />
+          <Property Name="ProductColorID" Type="Int32" />
+          <NavigationProperty Name="ProductColor" Relationship="MyStoreModel.FK_OrderDetail_ProductColor" FromRole="OrderDetail" ToRole="ProductColor" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -399,6 +418,10 @@
             <End Role="ProductColor" EntitySet="ProductColors" />
             <End Role="ProductImage" EntitySet="ProductImages" />
           </AssociationSet>
+          <AssociationSet Name="FK_OrderDetail_ProductColor" Association="MyStoreModel.FK_OrderDetail_ProductColor">
+            <End Role="ProductColor" EntitySet="ProductColors" />
+            <End Role="OrderDetail" EntitySet="OrderDetails" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="ProductColor">
           <Key>
@@ -409,6 +432,7 @@
           <Property Name="ColorName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Product" Relationship="MyStoreModel.FK_ProductColor_Product" FromRole="ProductColor" ToRole="Product" />
           <NavigationProperty Name="ProductImages" Relationship="MyStoreModel.FK_ProductImage_ProductColor" FromRole="ProductColor" ToRole="ProductImage" />
+          <NavigationProperty Name="OrderDetails" Relationship="MyStoreModel.FK_OrderDetail_ProductColor" FromRole="ProductColor" ToRole="OrderDetail" />
         </EntityType>
         <EntityType Name="ProductImage">
           <Key>
@@ -439,6 +463,18 @@
               <PropertyRef Name="ProductColorID" />
             </Principal>
             <Dependent Role="ProductImage">
+              <PropertyRef Name="ProductColorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetail_ProductColor">
+          <End Type="MyStoreModel.ProductColor" Role="ProductColor" Multiplicity="0..1" />
+          <End Type="MyStoreModel.OrderDetail" Role="OrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductColor">
+              <PropertyRef Name="ProductColorID" />
+            </Principal>
+            <Dependent Role="OrderDetail">
               <PropertyRef Name="ProductColorID" />
             </Dependent>
           </ReferentialConstraint>
@@ -486,6 +522,7 @@
           <EntitySetMapping Name="OrderDetails">
             <EntityTypeMapping TypeName="MyStoreModel.OrderDetail">
               <MappingFragment StoreEntitySet="OrderDetail">
+                <ScalarProperty Name="ProductColorID" ColumnName="ProductColorID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />
                 <ScalarProperty Name="OrderID" ColumnName="OrderID" />

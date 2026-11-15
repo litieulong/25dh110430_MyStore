@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
+using System.Linq;
 using _25dh110430_MyStore.Models; // Namespace chứa Model của bạn
 using _25dh110430_MyStore.Models.ViewModel; // Namespace chứa ViewModel của bạn
 
@@ -144,6 +146,16 @@ namespace _25dh110430_MyStore.Controllers
                     return Content("LỖI: Giỏ hàng không có sản phẩm.");
                 }
 
+                // KIỂM TRA DỮ LIỆU MÀU SẮC TRONG CART
+                foreach (var item in cartItems)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "ProductID: " + item.ProductID +
+                        " | ProductColorID: " + item.ProductColorID +
+                        " | ColorName: " + item.ColorName
+                    );
+                }
+
                 // KIỂM TRA TỒN KHO TRƯỚC KHI TRỪ
                 foreach (var item in cartItems)
                 {
@@ -178,7 +190,10 @@ namespace _25dh110430_MyStore.Controllers
                         OrderID = order.OrderID,
                         ProductID = item.ProductID,
                         Quantity = item.Quantity,
-                        UnitPrice = item.UnitPrice
+                        UnitPrice = item.UnitPrice,
+
+                        // LƯU MÀU SẮC ĐÃ CHỌN
+                        ProductColorID = item.ProductColorID
                     };
 
                     db.OrderDetails.Add(orderDetail);
@@ -187,8 +202,8 @@ namespace _25dh110430_MyStore.Controllers
                 // Lưu OrderDetail và số lượng tồn kho mới
                 db.SaveChanges();
 
-                // Lưu OrderDetail
-                int soDongDaLuu = db.SaveChanges();
+                //// Lưu OrderDetail
+                //int soDongDaLuu = db.SaveChanges();
 
                 // Kiểm tra dữ liệu trong database qua EF
                 int soDongTrongDB = db.OrderDetails
@@ -227,7 +242,8 @@ namespace _25dh110430_MyStore.Controllers
         public ActionResult OrderSuccess(int id)
         {
             var order = db.Orders
-                .Include("OrderDetails.Product")
+                .Include(o => o.OrderDetails.Select(d => d.Product))
+                .Include(o => o.OrderDetails.Select(d => d.ProductColor))
                 .FirstOrDefault(o => o.OrderID == id);
 
             if (order == null)
@@ -272,6 +288,7 @@ namespace _25dh110430_MyStore.Controllers
             return View(result);
         }
 
+
         // POST: Order/CancelOrder
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -292,6 +309,7 @@ namespace _25dh110430_MyStore.Controllers
                 return RedirectToAction("OrderHistory");
             }
 
+            // Tìm đơn hàng thuộc khách hàng đang đăng nhập
             var order = db.Orders.FirstOrDefault(o =>
                 o.OrderID == id &&
                 o.CustomerID == customer.CustomerID
@@ -306,17 +324,57 @@ namespace _25dh110430_MyStore.Controllers
             if (order.OrderStatus == null ||
                 order.OrderStatus.Trim() != "Chờ xác nhận")
             {
+                TempData["Error"] = "Đơn hàng không thể hủy!";
                 return RedirectToAction("OrderHistory");
             }
 
-            // Cập nhật trạng thái đơn hàng
-            order.OrderStatus = "Đã hủy";
-            order.CancelledAt = DateTime.Now;
+            // Bắt đầu transaction để cập nhật kho và trạng thái cùng lúc
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Lấy danh sách chi tiết đơn hàng
+                    var orderDetails = db.OrderDetails
+                        .Where(od => od.OrderID == order.OrderID)
+                        .ToList();
 
-            // LƯU THAY ĐỔI VÀO DATABASE
-            db.SaveChanges();
+                    // Trả lại số lượng từng sản phẩm vào kho
+                    foreach (var detail in orderDetails)
+                    {
+                        var product = db.Products.Find(detail.ProductID);
 
-            return RedirectToAction("OrderHistory");
+                        if (product != null)
+                        {
+                            product.StockQuantity += detail.Quantity;
+                        }
+                    }
+
+                    // Cập nhật trạng thái đơn hàng
+                    order.OrderStatus = "Đã hủy";
+                    order.CancelledAt = DateTime.Now;
+
+                    // Lưu số lượng tồn kho và trạng thái đơn hàng
+                    db.SaveChanges();
+
+                    // Xác nhận transaction
+                    transaction.Commit();
+
+                    TempData["Success"] =
+                        "Hủy đơn hàng thành công! Số lượng sản phẩm đã được hoàn lại kho.";
+
+                    return RedirectToAction("OrderHistory");
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+
+                    TempData["Error"] =
+                        "Có lỗi xảy ra khi hủy đơn hàng. Vui lòng thử lại.";
+
+                    return RedirectToAction("OrderHistory");
+                }
+            }
         }
+
     }
 }

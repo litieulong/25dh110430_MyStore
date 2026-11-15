@@ -28,6 +28,7 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         }
 
         // POST: Admin/Orders/UpdateStatus
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult UpdateStatus(int id, string orderStatus)
@@ -37,23 +38,36 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
             if (order == null)
                 return HttpNotFound();
 
+            // Không cho phép thay đổi đơn hàng đã giao
+            if (order.OrderStatus == "Đã giao hàng")
+            {
+                TempData["Error"] =
+                    "Đơn hàng đã giao thành công, không thể thay đổi trạng thái nữa!";
+
+                return RedirectToAction("Index");
+            }
+
             string[] validStatuses =
             {
-                "Chờ xác nhận",
-                "Đã xác nhận",
-                "Đang giao hàng",
-                "Đã giao hàng",
-                "Đã hủy"
-            };
+        "Chờ xác nhận",
+        "Đã xác nhận",
+        "Đang giao hàng",
+        "Đã giao hàng",
+        "Đã hủy"
+    };
 
             if (!validStatuses.Contains(orderStatus))
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             order.OrderStatus = orderStatus;
+
             db.SaveChanges();
+
+            TempData["Success"] = "Cập nhật trạng thái đơn hàng thành công!";
 
             return RedirectToAction("Index");
         }
+
 
         protected override void Dispose(bool disposing)
         {

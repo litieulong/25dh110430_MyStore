@@ -305,6 +305,7 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
         }
 
         // POST: Admin/Products/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
@@ -316,10 +317,24 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
                 return HttpNotFound();
             }
 
+            // KIỂM TRA SẢN PHẨM ĐÃ CÓ TRONG ĐƠN HÀNG CHƯA
+            bool hasOrder = db.OrderDetails
+                .Any(x => x.ProductID == id);
+
+            if (hasOrder)
+            {
+                TempData["Error"] =
+                    "Không thể xóa sản phẩm này vì sản phẩm đã tồn tại trong đơn hàng. Hãy giữ lại để bảo toàn lịch sử mua hàng.";
+
+                return RedirectToAction("Index");
+            }
+
+            // Lấy danh sách màu sắc của sản phẩm
             var productColors = db.ProductColors
                 .Where(x => x.ProductID == id)
                 .ToList();
 
+            // Xóa hình ảnh thuộc từng màu
             foreach (var color in productColors)
             {
                 var productImages = db.ProductImages
@@ -329,14 +344,19 @@ namespace _25dh110430_MyStore.Areas.Admin.Controllers
                 db.ProductImages.RemoveRange(productImages);
             }
 
+            // Xóa màu sắc
             db.ProductColors.RemoveRange(productColors);
 
+            // Xóa sản phẩm
             db.Products.Remove(product);
 
             await db.SaveChangesAsync();
 
+            TempData["Success"] = "Xóa sản phẩm thành công!";
+
             return RedirectToAction("Index");
         }
+
 
         protected override void Dispose(bool disposing)
         {

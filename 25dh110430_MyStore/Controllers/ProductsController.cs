@@ -63,22 +63,46 @@ namespace _25dh110430_MyStore.Controllers
 
         public ActionResult TravelBag()
         {
-            return View();
+            int categoryId = 1009;
+
+            var products = db.Products
+                .Where(p => p.CategoryID == categoryId)
+                .ToList();
+
+            return View(products);
         }
 
         public ActionResult CrossBodyBag()
         {
-            return View();
+            int categoryId = 1010;
+
+            var products = db.Products
+                .Where(p => p.CategoryID == categoryId)
+                .ToList();
+
+            return View(products);
         }
 
         public ActionResult LaptopBag()
         {
-            return View();
+            int categoryId = 1011;
+
+            var products = db.Products
+                .Where(p => p.CategoryID == categoryId)
+                .ToList();
+
+            return View(products);
         }
 
         public ActionResult CameraBag()
         {
-            return View();
+            int categoryId = 1012;
+
+            var products = db.Products
+                .Where(p => p.CategoryID == categoryId)
+                .ToList();
+
+            return View(products);
         }
     }
 }

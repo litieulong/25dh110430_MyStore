@@ -5,7 +5,6 @@ using _25dh110430_MyStore.Areas.Admin.Filters;
 
 namespace _25dh110430_MyStore.Areas.Admin.Controllers
 {
-    [AdminAuthorize]
     public class UsersController : Controller
     {
         private MyStoreEntities db = new MyStoreEntities();

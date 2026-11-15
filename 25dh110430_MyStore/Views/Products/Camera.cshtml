@@ -283,6 +283,7 @@
 
         <!-- DANH SÁCH SẢN PHẨM -->
         <main class="camera-main">
+
             @if (Model != null && Model.Any())
             {
                 <div class="camera-product-grid">
@@ -292,8 +293,8 @@
                         <div class="camera-product-item">
 
                             <a href="@Url.Action(
-                                "ProductDetails", "Home",
-                                new { id = product.ProductID })">
+                        "ProductDetails", "Home",
+                        new { id = product.ProductID })">
 
                                 <div class="camera-product-image">
 
@@ -316,8 +317,21 @@
                                     @product.ProductPrice.ToString("N0") VNĐ
                                 </div>
 
-                                <div class="camera-product-category">
-                                    Danh mục: @ViewBag.CategoryName
+                                <!-- SỐ LƯỢNG TỒN VÀ ĐÃ BÁN -->
+                                <div class="product-quantity-info">
+
+                                    <span class="stock">
+                                      
+                                        Tồn kho: @product.StockQuantity
+                                    </span>
+
+                                    <br />  
+
+                                    <span class="sold">
+                                       
+                                        Đã bán: @(product.OrderDetails?.Sum(x => x.Quantity) ?? 0)
+                                    </span>
+
                                 </div>
 
                             </div>

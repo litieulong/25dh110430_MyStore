@@ -299,7 +299,13 @@
                             </td>
 
                             <td>
-                                @if (order.OrderStatus == "Đã hủy")
+                                @if (order.OrderStatus == "Đã giao hàng")
+                                {
+                                    <span class="status-badge status-delivered">
+                                        Đơn hàng đã giao
+                                    </span>
+                                }
+                                else if (order.OrderStatus == "Đã hủy")
                                 {
                                     <span class="cancel-label">
                                         Đơn hàng đã hủy
@@ -315,8 +321,7 @@
                                     {
                                         @Html.AntiForgeryToken()
 
-                                        <select name="orderStatus"
-                                                class="status-select">
+                                        <select name="orderStatus" class="status-select">
                                             <option value="Chờ xác nhận"
                                                     @(order.OrderStatus == "Chờ xác nhận" ? "selected" : "")>
                                                 Chờ xác nhận

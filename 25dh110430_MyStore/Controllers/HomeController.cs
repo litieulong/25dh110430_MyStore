@@ -39,7 +39,7 @@ namespace _25dh110430_MyStore.Controllers
             // Đoạn code liên quan tới phân trang
             // Lấy số trang hiện tại (mặc định là trang 1 nếu không có giá trị)
             int pageNumber = page ?? 1;
-            int pageSize = 6; // Số sản phẩm mỗi trang
+            int pageSize = 10; // Số sản phẩm mỗi trang
 
             // Lấy top 10 sản phẩm bán chạy nhất
             model.FeaturedProducts = products.OrderByDescending(p => p.OrderDetails.Count()).Take(10).ToList();
@@ -320,6 +320,216 @@ namespace _25dh110430_MyStore.Controllers
             ViewBag.SortOrder = sortOrder;
 
             return View("~/Views/Products/Soldier.cshtml", result);
+        }
+
+        // GET: Products/LaptopBag
+        public ActionResult LaptopBag(string searchTerm, string sortOrder)
+        {
+            IQueryable<Product> products = db.Products
+                .Include("Category")
+                .Where(p => p.CategoryID == 1011);
+
+
+            // TÌM KIẾM
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm) ||
+                    p.Category.CategoryName.Contains(searchTerm)
+                );
+            }
+
+            // SẮP XẾP
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                default:
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            var result = products.ToList();
+
+            ViewBag.CategoryName = "Túi Dựng Laptop";
+            ViewBag.Count = result.Count;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
+
+            return View("~/Views/Products/LaptopBag.cshtml", result);
+        }
+
+        // GET: Products/TravelBag
+        public ActionResult TravelBag(string searchTerm, string sortOrder)
+        {
+            IQueryable<Product> products = db.Products
+                .Include("Category")
+                .Where(p => p.CategoryID == 1009);
+
+            // TÌM KIẾM
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm) ||
+                    p.Category.CategoryName.Contains(searchTerm)
+                );
+            }
+
+            // SẮP XẾP
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                default:
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            var result = products.ToList();
+
+            ViewBag.CategoryName = "Túi Du lịch";
+            ViewBag.Count = result.Count;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
+
+            return View("~/Views/Products/TravelBag.cshtml", result);
+        }
+
+        // GET: Products/CrossbodyBag
+        public ActionResult CrossBodyBag(string searchTerm, string sortOrder)
+        {
+            IQueryable<Product> products = db.Products
+                .Include("Category")
+                .Where(p => p.CategoryID == 1010);
+
+            // TÌM KIẾM
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm) ||
+                    p.Category.CategoryName.Contains(searchTerm)
+                );
+            }
+
+            // SẮP XẾP
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                default:
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            var result = products.ToList();
+
+            ViewBag.CategoryName = "Túi Đeo Chéo";
+            ViewBag.Count = result.Count;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
+
+            return View("~/Views/Products/CrossBodyBag.cshtml", result);
+        }
+
+
+        // GET: Products/CameraBag
+        public ActionResult CameraBag(string searchTerm, string sortOrder)
+        {
+            IQueryable<Product> products = db.Products
+                .Include("Category")
+                .Where(p => p.CategoryID == 1012);
+
+            // TÌM KIẾM
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm) ||
+                    p.Category.CategoryName.Contains(searchTerm)
+                );
+            }
+
+            // SẮP XẾP
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                default:
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            var result = products.ToList();
+
+            ViewBag.CategoryName = "Túi Đựng Máy Ảnh";
+            ViewBag.Count = result.Count;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
+
+            return View("~/Views/Products/CameraBag.cshtml", result);
         }
     }
 }

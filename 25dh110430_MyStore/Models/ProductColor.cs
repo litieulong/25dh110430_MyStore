@@ -18,6 +18,7 @@ namespace _25dh110430_MyStore.Models
         public ProductColor()
         {
             this.ProductImages = new HashSet<ProductImage>();
+            this.OrderDetails = new HashSet<OrderDetail>();
         }
     
         public int ProductColorID { get; set; }
@@ -27,5 +28,7 @@ namespace _25dh110430_MyStore.Models
         public virtual Product Product { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductImage> ProductImages { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

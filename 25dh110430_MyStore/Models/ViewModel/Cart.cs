@@ -1,48 +1,72 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI.WebControls;
-using _25dh110430_MyStore.Models.ViewModel;
 
 namespace _25dh110430_MyStore.Models.ViewModel
 {
     public class Cart
     {
         private List<CartItem> items = new List<CartItem>();
+
         public IEnumerable<CartItem> Items => items;
 
-        // Danh sách các sản phẩm trong giỏ hàng đã được nhóm theo Category[cite: 10]
-        public List<IGrouping<string, CartItem>> GroupedItems => items.GroupBy(i => i.Category).ToList();
+        public List<IGrouping<string, CartItem>> GroupedItems =>
+            items.GroupBy(i => i.Category).ToList();
 
-        // Các thuộc tính hỗ trợ tính phân trang[cite: 10]
         public int PageNumber { get; set; }
-        public int PageSize { get; set; } = 6; // Số sản phẩm mỗi trang[cite: 10]
+        public int PageSize { get; set; } = 6;
 
-        // Danh sách các sản phẩm cùng danh mục với các sản phẩm trong giỏ[cite: 10]
         public PagedList.IPagedList<Product> SimilarProducts { get; set; }
 
-        // Thêm sản phẩm vào giỏ
-        public void AddItem(int productId, string productImg, string productName, decimal unitPrice, int quantity, string category)
+        // Thêm sản phẩm vào giỏ hàng
+        public void AddItem(
+            int productId,
+            string productImg,
+            string productName,
+            decimal unitPrice,
+            int quantity,
+            string category,
+            int? productColorId = null,
+            string colorName = null)
         {
-            var existingItem = items.FirstOrDefault(i => i.ProductID == productId);
+            // Tìm sản phẩm cùng mã và cùng màu
+            var existingItem = items.FirstOrDefault(i =>
+                i.ProductID == productId &&
+                i.ProductColorID == productColorId);
+
             if (existingItem == null)
             {
-                items.Add(new CartItem { ProductID = productId, ProductImage = productImg, ProductName = productName, UnitPrice = unitPrice, Quantity = quantity, Category = category });
+                items.Add(new CartItem
+                {
+                    ProductID = productId,
+                    ProductImage = productImg,
+                    ProductName = productName,
+                    UnitPrice = unitPrice,
+                    Quantity = quantity,
+                    Category = category,
+
+                    // Lưu thông tin màu
+                    ProductColorID = productColorId,
+                    ColorName = colorName
+                });
             }
             else
             {
+                // Nếu cùng sản phẩm và cùng màu thì tăng số lượng
                 existingItem.Quantity += quantity;
             }
         }
 
-        // Xóa sản phẩm khỏi giỏ
-        public void RemoveItem(int productId)
+        // Xóa sản phẩm theo mã sản phẩm và mã màu
+        public void RemoveItem(int productId, int? productColorId = null)
         {
-            items.RemoveAll(i => i.ProductID == productId);
+            items.RemoveAll(i =>
+                i.ProductID == productId &&
+                i.ProductColorID == productColorId);
         }
 
-        // Tính tổng giá trị giỏ hàng
+        // Tính tổng tiền
         public decimal TotalValue()
         {
             return items.Sum(i => i.TotalPrice);
@@ -54,10 +78,16 @@ namespace _25dh110430_MyStore.Models.ViewModel
             items.Clear();
         }
 
-        // Cập nhật số lượng của sản phẩm đã chọn
-        public void UpdateQuantity(int productId, int quantity)
+        // Cập nhật số lượng theo sản phẩm và màu
+        public void UpdateQuantity(
+            int productId,
+            int quantity,
+            int? productColorId = null)
         {
-            var item = items.FirstOrDefault(i => i.ProductID == productId);
+            var item = items.FirstOrDefault(i =>
+                i.ProductID == productId &&
+                i.ProductColorID == productColorId);
+
             if (item != null)
             {
                 item.Quantity = quantity;
