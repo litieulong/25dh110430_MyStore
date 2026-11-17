@@ -293,20 +293,27 @@
 </style>
 
 <script>
-    function cartUpdateQuantity(id, newQuantity) {
+    function cartUpdateQuantity(id, productColorId, newQuantity) {
+
         if (newQuantity < 1) return;
 
-        const form = document.createElement('form');
+        var form = document.createElement('form');
         form.method = 'post';
         form.action = '@Url.Action("UpdateQuantity", "Cart")';
 
-        const idInput = document.createElement('input');
+        var idInput = document.createElement('input');
         idInput.type = 'hidden';
         idInput.name = 'id';
         idInput.value = id;
         form.appendChild(idInput);
 
-        const quantityInput = document.createElement('input');
+        var colorInput = document.createElement('input');
+        colorInput.type = 'hidden';
+        colorInput.name = 'productColorId';
+        colorInput.value = productColorId == null ? '' : productColorId;
+        form.appendChild(colorInput);
+
+        var quantityInput = document.createElement('input');
         quantityInput.type = 'hidden';
         quantityInput.name = 'quantity';
         quantityInput.value = newQuantity;
@@ -362,12 +369,18 @@
                                         <td>
                                             <div class="cart-product">
 
-                                                <a href="@Url.Action(
-                                                    "RemoveFromCart",
-                                                    "Cart",
-                                                    new { id = item.ProductID })"
-                                                   class="remove-product"
-                                                   title="Xóa sản phẩm">×</a>
+                                               <a href="@Url.Action(
+                                               "RemoveFromCart",
+                                               "Cart",
+                                               new {
+                                               id = item.ProductID,
+                                               productColorId = item.ProductColorID
+                                               })"
+                                                  class="remove-product"
+                                                  title="Xóa sản phẩm"
+                                                  onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
+                                                   ×
+                                               </a>
 
                                                 <img src="@item.ProductImage"
                                                      alt="@item.ProductName" />
@@ -387,19 +400,26 @@
 
                                                 <button type="button"
                                                         onclick="cartUpdateQuantity(
-                                                            @item.ProductID,
-                                                            @item.Quantity - 1)">
+                                                        @item.ProductID,
+                                                        @(item.ProductColorID.HasValue
+                                                        ? item.ProductColorID.Value.ToString()
+                                                        : "null"),
+                                                        @(item.Quantity - 1))">
                                                     -
                                                 </button>
 
                                                 <input type="number"
                                                        value="@item.Quantity"
+                                                       min="1"
                                                        readonly />
 
                                                 <button type="button"
                                                         onclick="cartUpdateQuantity(
-                                                            @item.ProductID,
-                                                            @item.Quantity + 1)">
+                                                        @item.ProductID,
+                                                        @(item.ProductColorID.HasValue
+                                                        ? item.ProductColorID.Value.ToString()
+                                                        : "null"),
+                                                        @(item.Quantity + 1))">
                                                     +
                                                 </button>
 

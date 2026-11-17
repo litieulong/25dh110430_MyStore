@@ -140,10 +140,12 @@ namespace _25dh110430_MyStore.Controllers
 
 
         // Xóa sản phẩm khỏi giỏ
-        public ActionResult RemoveFromCart(int id)
+        public ActionResult RemoveFromCart(int id, int? productColorId = null)
         {
             var cartService = GetCartService();
-            cartService.GetCart().RemoveItem(id);
+
+            cartService.GetCart().RemoveItem(id, productColorId);
+
             return RedirectToAction("Index");
         }
 
@@ -155,10 +157,17 @@ namespace _25dh110430_MyStore.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateQuantity(int id, int quantity)
+        public ActionResult UpdateQuantity(int id, int quantity, int? productColorId = null)
         {
+            if (quantity < 1)
+            {
+                return RedirectToAction("Index");
+            }
+
             var cartService = GetCartService();
-            cartService.GetCart().UpdateQuantity(id, quantity);
+
+            cartService.GetCart().UpdateQuantity(id, quantity, productColorId);
+
             return RedirectToAction("Index");
         }
 

@@ -281,80 +281,80 @@
         </aside>
 
 
-         DANH SÁCH SẢN PHẨM 
+        <!-- DANH SÁCH SẢN PHẨM -->
         <main class="camera-main">
 
             @if (Model != null && Model.Any())
-    {
-        <div class="camera-product-grid">
-
-            @foreach (var product in Model)
             {
-                <div class="camera-product-item">
+                <div class="camera-product-grid">
 
-                    <a href="@Url.Action(
-                "ProductDetails", "Home",
-                new { id = product.ProductID })">
+                    @foreach (var product in Model)
+                    {
+                        <div class="camera-product-item">
 
-                        <div class="camera-product-image">
+                            <a href="@Url.Action(
+                        "ProductDetails", "Home",
+                        new { id = product.ProductID })">
 
-                            @if (!string.IsNullOrEmpty(product.ProductImage))
-                            {
-                                <img src="@product.ProductImage"
-                                     alt="@product.ProductName" />
-                            }
+                                <div class="camera-product-image">
+
+                                    @if (!string.IsNullOrEmpty(product.ProductImage))
+                                    {
+                                        <img src="@product.ProductImage"
+                                             alt="@product.ProductName" />
+                                    }
+
+                                </div>
+                            </a>
+
+                            <div class="camera-product-info">
+
+                                <div class="camera-product-name">
+                                    @product.ProductName
+                                </div>
+
+                                <div class="camera-product-price">
+                                    @product.ProductPrice.ToString("N0") VNĐ
+                                </div>
+
+                                <!-- SỐ LƯỢNG TỒN VÀ ĐÃ BÁN -->
+                                <div class="product-quantity-info">
+
+                                    <span class="stock">
+
+                                        Tồn kho: @product.StockQuantity
+                                    </span>
+
+                                    <br />
+
+                                    <span class="sold">
+
+                                        Đã bán: @(product.OrderDetails?.Sum(x => x.Quantity) ?? 0)
+                                    </span>
+
+                                </div>
+
+                            </div>
 
                         </div>
-                    </a>
+                    }
 
-                    <div class="camera-product-info">
+                </div>
+            }
+            else
+            {
+                <div class="camera-empty">
 
-                        <div class="camera-product-name">
-                            @product.ProductName
-                        </div>
+                    <i class="glyphicon glyphicon-search"
+                       style="font-size:30px;"></i>
 
-                        <div class="camera-product-price">
-                            @product.ProductPrice.ToString("N0") VNĐ
-                        </div>
-             SỐ LƯỢNG TỒN VÀ ĐÃ BÁN 
-            <div class="product-quantity-info">
+                    <h4>Không tìm thấy sản phẩm</h4>
 
-                            <span class="stock">
-
-                                Tồn kho: @product.StockQuantity
-                            </span>
-
-                            <br />
-
-                            <span class="sold">
-
-                                Đã bán: @(product.OrderDetails?.Sum(x => x.Quantity) ?? 0)
-                            </span>
-
-                        </div>
-
-                    </div>
+                    <p>Vui lòng thử từ khóa tìm kiếm khác.</p>
 
                 </div>
             }
 
-        </div>
-    }
-    else
-    {
-        <div class="camera-empty">
-
-            <i class="glyphicon glyphicon-search"
-               style="font-size:30px;"></i>
-
-            <h4>Không tìm thấy sản phẩm</h4>
-
-            <p>Vui lòng thử từ khóa tìm kiếm khác.</p>
-
-        </div>
-    }
-
-           
         </main>
 
     </div>

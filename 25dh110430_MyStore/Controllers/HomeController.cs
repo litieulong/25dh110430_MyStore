@@ -533,5 +533,59 @@ namespace _25dh110430_MyStore.Controllers
 
             return View("~/Views/Products/CameraBag.cshtml", result);
         }
+
+        // GET: Products/Items
+        public ActionResult Items(string searchTerm, string sortOrder)
+        {
+            IQueryable<Product> products = db.Products
+                .Include("Category")
+                .Where(p => p.CategoryID == 1013);
+
+
+            // TÌM KIẾM
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm) ||
+                    p.Category.CategoryName.Contains(searchTerm)
+                );
+            }
+
+            // SẮP XẾP
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName)
+                        .ThenBy(p => p.ProductID);
+                    break;
+
+                default:
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            var result = products.ToList();
+
+            ViewBag.CategoryName = "Túi Dựng Laptop";
+            ViewBag.Count = result.Count;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortOrder = sortOrder;
+
+            return View("~/Views/Products/LaptopBag.cshtml", result);
+        }
+
     }
 }

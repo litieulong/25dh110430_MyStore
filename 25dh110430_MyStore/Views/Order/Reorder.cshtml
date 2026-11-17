@@ -1,0 +1,108 @@
+﻿
+@model IEnumerable<_25dh110430_MyStore.Models.Order>
+
+@{
+    Layout = null;
+    ViewBag.Title = "Đặt hàng lại";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Đặt hàng lại - MyStore</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" />
+
+   
+</head>
+
+<body>
+    <div class="reorder-container">
+
+        <div class="reorder-header">
+            <h2>ĐẶT HÀNG LẠI</h2>
+            <p>Xem lại các đơn hàng trước đây và nhanh chóng mua lại sản phẩm yêu thích.</p>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            foreach (var order in Model)
+            {
+                <div class="order-card">
+
+                    <div class="order-top">
+                        <div>
+                            <span class="order-code">Mã đơn hàng: #@order.OrderID</span>
+                            <br />
+                            <small>Đơn hàng của bạn</small>
+                        </div>
+
+                        <div class="order-status">
+                            Đơn hàng đã đặt
+                        </div>
+                    </div>
+
+                    @if (order.OrderDetails != null)
+                    {
+                        foreach (var detail in order.OrderDetails)
+                        {
+                            <div class="product-item">
+
+                                <div class="product-info">
+                                    <div class="product-name">
+                                        @(detail.Product != null ? detail.Product.ProductName : "Sản phẩm")
+                                    </div>
+
+                                    <div class="product-quantity">
+                                        Số lượng: @detail.Quantity
+                                    </div>
+                                </div>
+
+                                <div class="product-price">
+                                    @if (detail.Product != null)
+                                    {
+                                        @String.Format("{0:N0} ₫", detail.Product.ProductPrice)
+                                    }
+                                </div>
+
+                            </div>
+                        }
+                    }
+
+                    <div class="order-bottom">
+                        <div>
+                            <span>Tổng đơn hàng: </span>
+                            <span class="total-price">
+                                @String.Format("{0:N0} ₫", order.OrderDetails.Sum(x => x.Quantity * x.Product.ProductPrice))
+                            </span>
+                        </div>
+
+                        <div>
+                            <a href="@Url.Action("Reorder", "Order", new { id = order.OrderID })"
+                               class="btn btn-reorder">
+                                <i class="glyphicon glyphicon-shopping-cart"></i>
+                                Mua lại
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-order">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+                <h3>Bạn chưa có đơn hàng nào</h3>
+                <p>Hãy khám phá các sản phẩm tại MyStore và trải nghiệm mua sắm nhé!</p>
+
+                <a href="@Url.Action("Index", "Home")">
+                    Tiếp tục mua sắm
+                </a>
+            </div>
+        }
+
+    </div>
+</body>
+</html>

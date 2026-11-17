@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using _25dh110430_MyStore.Models;
 
@@ -9,100 +8,109 @@ namespace _25dh110430_MyStore.Controllers
 {
     public class ProductsController : Controller
     {
-
         private MyStoreEntities db = new MyStoreEntities();
-        // GET: Products
+
+        // Hàm dùng chung cho tìm kiếm và sắp xếp
+        private ActionResult GetProductsByCategory(
+            int categoryId,
+            string viewName,
+            string categoryName,
+            string searchTerm,
+            string sortOrder)
+        {
+            var products = db.Products
+                .Where(p => p.CategoryID == categoryId);
+
+            // Tìm kiếm
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                products = products.Where(p =>
+                    p.ProductName.Contains(searchTerm) ||
+                    p.ProductDescription.Contains(searchTerm));
+            }
+
+            // Sắp xếp
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    products = products.OrderBy(p => p.ProductPrice);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.ProductPrice);
+                    break;
+
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName);
+                    break;
+
+                default:
+                    products = products.OrderByDescending(p => p.ProductID);
+                    break;
+            }
+
+            ViewBag.CategoryName = categoryName;
+
+            return View(viewName, products.ToList());
+        }
+
         public ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult Travel()
+        public ActionResult Travel(string searchTerm, string sortOrder)
         {
-            int categoryId = 1003;
-
-            var products = db.Products
-                .Where(p => p.CategoryID == categoryId)
-                .ToList();
-
-            return View(products);
+            return GetProductsByCategory(
+                1003, "Travel", "Du lịch", searchTerm, sortOrder);
         }
 
-        public ActionResult LapTop()
+        public ActionResult LapTop(string searchTerm, string sortOrder)
         {
-            int categoryId = 1004;
-
-            var products = db.Products
-                .Where(p => p.CategoryID == categoryId)
-                .ToList();
-
-            return View(products);
+            return GetProductsByCategory(
+                1004, "LapTop", "Laptop", searchTerm, sortOrder);
         }
 
-        public ActionResult Camera()
+        public ActionResult Camera(string searchTerm, string sortOrder)
         {
-            int categoryId = 1006;
-
-            var products = db.Products
-                .Where(p => p.CategoryID == categoryId)
-                .ToList();
-
-            return View(products);
+            return GetProductsByCategory(
+                1006, "Camera", "Máy ảnh", searchTerm, sortOrder);
         }
 
-        public ActionResult Soldier()
+        public ActionResult Soldier(string searchTerm, string sortOrder)
         {
-            int categoryId = 1005;
-
-            var products = db.Products
-                .Where(p => p.CategoryID == categoryId)
-                .ToList();
-
-            return View(products);
+            return GetProductsByCategory(
+                1005, "Soldier", "Quân đội", searchTerm, sortOrder);
         }
 
-        public ActionResult TravelBag()
+        public ActionResult TravelBag(string searchTerm, string sortOrder)
         {
-            int categoryId = 1009;
-
-            var products = db.Products
-                .Where(p => p.CategoryID == categoryId)
-                .ToList();
-
-            return View(products);
+            return GetProductsByCategory(
+                1009, "TravelBag", "Balo du lịch", searchTerm, sortOrder);
         }
 
-        public ActionResult CrossBodyBag()
+        public ActionResult CrossBodyBag(string searchTerm, string sortOrder)
         {
-            int categoryId = 1010;
-
-            var products = db.Products
-                .Where(p => p.CategoryID == categoryId)
-                .ToList();
-
-            return View(products);
+            return GetProductsByCategory(
+                1010, "CrossBodyBag", "Túi đeo chéo", searchTerm, sortOrder);
         }
 
-        public ActionResult LaptopBag()
+        public ActionResult LaptopBag(string searchTerm, string sortOrder)
         {
-            int categoryId = 1011;
-
-            var products = db.Products
-                .Where(p => p.CategoryID == categoryId)
-                .ToList();
-
-            return View(products);
+            return GetProductsByCategory(
+                1011, "LaptopBag", "Balo đựng laptop", searchTerm, sortOrder);
         }
 
-        public ActionResult CameraBag()
+        public ActionResult CameraBag(string searchTerm, string sortOrder)
         {
-            int categoryId = 1012;
+            return GetProductsByCategory(
+                1012, "CameraBag", "Túi máy ảnh", searchTerm, sortOrder);
+        }
 
-            var products = db.Products
-                .Where(p => p.CategoryID == categoryId)
-                .ToList();
-
-            return View(products);
+        public ActionResult Items(string searchTerm, string sortOrder)
+        {
+            return GetProductsByCategory(
+                1013, "Items", "Phụ Kiện", searchTerm, sortOrder);
         }
     }
 }

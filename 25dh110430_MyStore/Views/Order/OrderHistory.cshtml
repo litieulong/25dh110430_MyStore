@@ -234,6 +234,36 @@
         }
     }
 
+    /* =========================
+   NÚT XEM THÊM
+   ========================= */
+    .history-more {
+        text-align: center;
+        padding: 25px 0 5px;
+    }
+
+    .btn-show-more {
+        display: inline-block;
+        padding: 11px 35px;
+        background: white;
+        color: #009fbd;
+        border: 1px solid #00a6c7;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;    
+        transition: .2s;
+    }
+
+        .btn-show-more:hover {
+            background: #009fbd;
+            color: white;
+        }
+
+        .btn-show-more i {
+            margin-left: 5px;
+        }
+
 </style>
 
 <div class="container">
@@ -300,7 +330,8 @@
                         <tbody>
                             @foreach (var order in Model)
                             {
-                                <tr>
+                                
+                                <tr class="order-row">
                                     <td>
                                         <span class="order-code">#@order.OrderID</span>
                                     </td>
@@ -347,12 +378,12 @@
 
                                     <td>
                                         @Html.ActionLink(
-                                                           "Xem chi tiết",
-                                                           "OrderSuccess",
-                                                           "Order",
-                                                           new { id = order.OrderID },
-                                                           new { @class = "btn-detail" }
-                                                       )
+                                                                "Xem chi tiết",
+                                                                "OrderSuccess",
+                                                                "Order",
+                                                                new { id = order.OrderID },
+                                                                new { @class = "btn-detail" }
+                                                            )
 
                                         @if (order.OrderStatus == "Chờ xác nhận")
                                         {
@@ -374,7 +405,9 @@
                                         }
 
                                         <!--nút đặt lại-->
-                                        @if (order.OrderStatus == "Đã hủy")
+
+                                        @if (order.OrderStatus == "Đã hủy" ||
+                                             order.OrderStatus == "Đã giao hàng")
                                         {
                                             <form action="@Url.Action("Reorder", "Order")"
                                                   method="post"
@@ -382,10 +415,14 @@
 
                                                 @Html.AntiForgeryToken()
 
-                                                <input type="hidden" name="id" value="@order.OrderID" />
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@order.OrderID" />
 
-                                                <button type="submit" class="btn-detail"
+                                                <button type="submit"
+                                                        class="btn-detail"
                                                         onclick="return confirm('Bạn muốn đặt lại đơn hàng này?');">
+
                                                     <i class="glyphicon glyphicon-repeat"></i>
                                                     Đặt lại
                                                 </button>
@@ -393,11 +430,77 @@
                                         }
                                     </td>
                                 </tr>
-                            }
-                        </tbody>
+                                }
+                            </tbody>
                     </table>
+
+                    @* NÚT XEM THÊM / THU GỌN *@
+
+                    if (Model != null && Model.Count() > 2)
+                    {
+                        <div class="history-more">
+
+
+                            <button type="button"
+                                    class="btn-show-more"
+                                    id="btnShowMore"
+                                    onclick="toggleOrderHistory()">
+
+                                Xem thêm
+
+                                <i class="glyphicon glyphicon-chevron-down"></i>
+
+                            </button>
+
+                        </div>
+                    }
                 }
 
             </div>
         </div>
     </div>
+
+    <script>
+        var isExpanded = false;
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var rows = document.querySelectorAll(".order-row");
+            var button = document.getElementById("btnShowMore");
+
+            if (rows.length <= 2) {
+                return;
+            }
+
+            // Ban đầu chỉ hiển thị 2 đơn hàng
+            rows.forEach(function (row, index) {
+                if (index >= 2) {
+                    row.style.display = "none";
+                }
+            });
+
+        });
+
+        function toggleOrderHistory() {
+
+            var rows = document.querySelectorAll(".order-row");
+            var button = document.getElementById("btnShowMore");
+
+            if (!button || rows.length <= 2) {
+                return;
+            }
+
+            isExpanded = !isExpanded;
+
+            rows.forEach(function (row, index) {
+
+                row.style.display =
+                    (isExpanded || index < 2) ? "" : "none";
+
+            });
+
+            button.innerHTML = isExpanded
+                ? 'Thu gọn <i class="glyphicon glyphicon-chevron-up"></i>'
+                : 'Xem thêm <i class="glyphicon glyphicon-chevron-down"></i>';
+        }
+    </script>
