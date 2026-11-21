@@ -143,27 +143,6 @@
             @Model.ProductName
         </div>
 
-        <div style="margin: 15px 0;">
-            <strong>Số lượng tồn kho:</strong>
-
-            @if (Model.StockQuantity > 0)
-            {
-                <span style="color: green;">
-                    Còn @Model.StockQuantity sản phẩm
-                </span>
-            }
-            else
-            {
-                <span style="color: red;">
-                    Hết hàng
-                </span>
-            }
-        </div>
-
-        <div class="product-name">
-            @Model.ProductName
-        </div>
-
         <!-- GIÁ SẢN PHẨM -->
         <div class="product-price">
             @Model.ProductPrice.ToString(

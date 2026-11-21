@@ -160,7 +160,61 @@
                 box-shadow: none;
                 outline: none;
             }
+    /* KHU VỰC NÚT CHỈNH SỬA */
+    .account-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
 
+    .btn-edit-account,
+    .btn-save-account,
+    .btn-cancel-account {
+        padding: 12px 25px;
+        border: 1px solid #00a6c7;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .btn-edit-account,
+    .btn-save-account {
+        background: #00a6c7;
+        color: white;
+    }
+
+        .btn-edit-account:hover,
+        .btn-save-account:hover {
+            background: #0089a5;
+            color: white;
+        }
+
+    .btn-cancel-account {
+        background: white;
+        color: #d64545;
+        border-color: #d64545;
+    }
+
+        .btn-cancel-account:hover {
+            background: #d64545;
+            color: white;
+        }
+
+    .account-field .form-control.editing {
+        background: white;
+        border-color: #00a6c7;
+        cursor: text;
+    }
+
+    .account-message {
+        margin-bottom: 20px;
+        padding: 12px;
+        text-align: center;
+    }
     /* FOOTER */
     .account-footer {
         padding: 18px 30px;
@@ -209,42 +263,131 @@
 
             <div class="account-card-body">
 
-                <div class="account-field">
-                    <label>Tên đăng nhập</label>
-                    <input type="text" class="form-control"
-                           value="@Model.Username" readonly />
-                </div>
 
-                <div class="account-field">
-                    <label>Họ tên</label>
-                    <input type="text" class="form-control"
-                           value="@Model.CustomerName" readonly />
-                </div>
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success account-message">
+                        @TempData["Success"]
+                    </div>
+                }
 
-                <div class="account-field">
-                    <label>Email</label>
-                    <input type="text" class="form-control"
-                           value="@Model.CustomerEmail" readonly />
-                </div>
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger account-message">
+                        @ViewBag.Error
+                    </div>
+                }
 
-                <div class="account-field">
-                    <label>Số điện thoại</label>
-                    <input type="text" class="form-control"
-                           value="@Model.CustomerPhone" readonly />
-                </div>
+                <form action="@Url.Action("UpdateProfile", "Account")"
+                      method="post"
+                      id="profileForm">
 
-                <div class="account-field">
-                    <label>Địa chỉ</label>
-                    <input type="text" class="form-control"
-                           value="@Model.CustomerAddress" readonly />
-                </div>
+                    @Html.AntiForgeryToken()
 
-            </div>
+                    <div class="account-card-body">
 
-            <div class="account-footer">
-                Thông tin cá nhân của bạn được hiển thị tại đây.
-            </div>
+                        <div class="account-field">
+                            <label>Tên đăng nhập</label>
+                            <input type="text" class="form-control"
+                                   value="@Model.Username" readonly />
+                        </div>
 
-        </div>
-    </div>
-</div>
+                        <div class="account-field">
+                            <label>Họ tên</label>
+                            <input type="text" name="customerName"
+                                   class="form-control editable-field"
+                                   value="@Model.CustomerName" readonly required />
+                        </div>
+
+                        <div class="account-field">
+                            <label>Email</label>
+                            <input type="email" name="customerEmail"
+                                   class="form-control editable-field"
+                                   value="@Model.CustomerEmail" readonly required />
+                        </div>
+
+                        <div class="account-field">
+                            <label>Số điện thoại</label>
+                            <input type="text" name="customerPhone"
+                                   class="form-control editable-field"
+                                   value="@Model.CustomerPhone" readonly required />
+                        </div>
+
+                        <div class="account-field">
+                            <label>Địa chỉ</label>
+                            <input type="text" name="customerAddress"
+                                   class="form-control editable-field"
+                                   value="@Model.CustomerAddress" readonly required />
+                        </div>
+
+                        <div class="account-actions">
+
+                            <button type="button"
+                                    class="btn-edit-account"
+                                    id="btnEdit"
+                                    onclick="enableEdit()">
+                                <i class="glyphicon glyphicon-pencil"></i>
+                                Chỉnh sửa thông tin
+                            </button>
+
+                            <button type="submit"
+                                    class="btn-save-account"
+                                    id="btnSave"
+                                    style="display:none;">
+                                <i class="glyphicon glyphicon-floppy-disk"></i>
+                                Lưu thay đổi
+                            </button>
+
+                            <button type="button"
+                                    class="btn-cancel-account"
+                                    id="btnCancel"
+                                    style="display:none;"
+                                    onclick="cancelEdit()">
+                                Hủy
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="account-footer">
+                        Thông tin cá nhân của bạn được bảo mật.
+                    </div>
+
+                </form>
+
+                <script>var originalValues = [];
+
+    function enableEdit() {
+
+        var fields = document.querySelectorAll(".editable-field");
+
+        originalValues = [];
+
+        fields.forEach(function (field) {
+            originalValues.push(field.value);
+
+            field.readOnly = false;
+            field.classList.add("editing");
+        });
+
+        document.getElementById("btnEdit").style.display = "none";
+        document.getElementById("btnSave").style.display = "inline-block";
+        document.getElementById("btnCancel").style.display = "inline-block";
+    }
+
+    function cancelEdit() {
+
+        var fields = document.querySelectorAll(".editable-field");
+
+        fields.forEach(function (field, index) {
+            field.value = originalValues[index];
+
+            field.readOnly = true;
+            field.classList.remove("editing");
+        });
+
+        document.getElementById("btnEdit").style.display = "inline-block";
+        document.getElementById("btnSave").style.display = "none";
+        document.getElementById("btnCancel").style.display = "none";
+    }</script>

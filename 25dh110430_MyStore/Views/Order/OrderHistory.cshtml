@@ -344,7 +344,18 @@
                                         </span>
                                     </td>
 
-                                    <td>@order.PaymentStatus</td>
+                                    <td>
+                                        @if (order.OrderStatus == "Đã giao hàng")
+                                        {
+                                            <span class="status-badge status-delivered">
+                                                Đã thanh toán
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>@order.PaymentStatus</span>
+                                        }
+                                    </td>
 
                                     <td>
                                         @if (order.OrderStatus == "Chờ xác nhận")
