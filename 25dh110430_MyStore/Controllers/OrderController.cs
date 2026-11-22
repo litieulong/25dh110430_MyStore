@@ -501,66 +501,25 @@ namespace _25dh110430_MyStore.Controllers
                 }
             }
 
-            // 8. TẤT CẢ SẢN PHẨM ĐỀU ĐỦ HÀNG
-            // Bây giờ mới xóa toàn bộ giỏ hàng cũ
-            cart.Clear();
 
-            // 9. Thêm lại sản phẩm từ đơn hàng cũ
-            foreach (var detail in oldDetails)
+            // 8. Lấy sản phẩm đầu tiên trong đơn hàng cũ
+            var firstDetail = oldDetails.FirstOrDefault();
+
+            if (firstDetail == null)
             {
-                var product = db.Products
-                    .Include(p => p.Category)
-                    .FirstOrDefault(p => p.ProductID == detail.ProductID);
-
-                string colorName = null;
-                string productImage = product.ProductImage;
-
-                // Lấy màu sắc và hình ảnh cũ
-                if (detail.ProductColorID.HasValue)
-                {
-                    var selectedColor = db.ProductColors
-                        .Include("ProductImages")
-                        .FirstOrDefault(c =>
-                            c.ProductColorID == detail.ProductColorID.Value &&
-                            c.ProductID == product.ProductID
-                        );
-
-                    if (selectedColor != null)
-                    {
-                        colorName = selectedColor.ColorName;
-
-                        var colorImage = selectedColor.ProductImages
-                            .FirstOrDefault();
-
-                        if (colorImage != null &&
-                            !string.IsNullOrEmpty(colorImage.ImagePath))
-                        {
-                            productImage = colorImage.ImagePath;
-                        }
-                    }
-                }
-
-                // Thêm đúng sản phẩm, màu sắc, giá và số lượng cũ
-                cart.AddItem(
-                    product.ProductID,
-                    productImage,
-                    product.ProductName,
-                    detail.UnitPrice,
-                    detail.Quantity,
-                    product.Category != null
-                        ? product.Category.CategoryName
-                        : "",
-                    detail.ProductColorID,
-                    colorName
-                );
+                TempData["Error"] = "Đơn hàng không có sản phẩm.";
+                return RedirectToAction("OrderHistory");
             }
 
-            // 10. Thông báo thành công
+            // 9. Chuyển đến trang chi tiết sản phẩm
             TempData["Success"] =
-                "Đã thay thế giỏ hàng bằng sản phẩm từ đơn hàng #" +
-                oldOrder.OrderID + " thành công!";
+                "Vui lòng chọn lại màu sắc và số lượng sản phẩm.";
 
-            return RedirectToAction("Index", "Cart");
+            return RedirectToAction(
+                "ProductDetails",
+                "Home",
+                new { id = firstDetail.ProductID }
+            );
         }
     }
 }
